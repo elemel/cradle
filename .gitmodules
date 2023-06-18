@@ -5,3 +5,4 @@
 [submodule "heart"]
 	path = heart
 	url = git@github.com:elemel/heart.git
+	branch = elemel/cradle
