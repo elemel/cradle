@@ -1,4 +1,4 @@
--- local GameScreen = require("cradle.screens.GameScreen")
+local GameScreen = require("cradle.screens.GameScreen")
 local MenuScreen = require("cradle.screens.MenuScreen")
 
 local M = {}
@@ -10,7 +10,7 @@ function M.new(application)
       {
         title = "Play",
         handler = function()
-          -- application:pushScreen(GameScreen.new(application))
+          application:pushScreen(GameScreen.new(application))
         end,
       },
 
