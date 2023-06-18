@@ -1,0 +1,8 @@
+[submodule "sparrow"]
+	path = sparrow
+	url = git@github.com:elemel/sparrow.git
+	branch = elemel/cradle
+[submodule "heart"]
+	path = heart
+	url = git@github.com:elemel/heart.git
+	branch = elemel/cradle
