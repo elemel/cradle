@@ -1,5 +1,6 @@
 local Class = require("cradle.Class")
 local DrawWorldHandler = require("cradle.handlers.DrawWorldHandler")
+local FixedUpdateWorldHandler = require("cradle.handlers.FixedUpdateWorldHandler")
 local heart = require("heart")
 local KeyPressedHandler = require("cradle.handlers.KeyPressedHandler")
 local UpdateClockHandler = require("cradle.handlers.UpdateClockHandler")
@@ -28,11 +29,12 @@ function M:init(application)
   local world = love.physics.newWorld(0, 10)
   self.engine:setProperty("world", world)
 
-  local body = love.physics.newBody(world)
+  local body = love.physics.newBody(world, 0, 0, "dynamic")
   local shape = love.physics.newCircleShape(0.5)
   local fixture = love.physics.newFixture(body, shape)
 
   self.engine:addEventHandler("draw", DrawWorldHandler.new(self.engine))
+  self.engine:addEventHandler("fixedupdate", FixedUpdateWorldHandler.new(self.engine))
   self.engine:addEventHandler("keypressed", KeyPressedHandler.new(self.engine))
   self.engine:addEventHandler("update", UpdateClockHandler.new(self.engine))
 end
