@@ -1,3 +1,4 @@
 [submodule "sparrow"]
 	path = sparrow
 	url = git@github.com:elemel/sparrow.git
+	branch = elemel/cradle
