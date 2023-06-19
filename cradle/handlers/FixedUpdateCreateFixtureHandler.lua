@@ -15,7 +15,19 @@ function M.new(engine)
 
   return function(dt)
     query:forEach(function(entity, body, fixtureConfig)
-      local shape = love.physics.newRectangleShape(1, 1)
+      local shapeConfig = fixtureConfig.shape or {}
+      local shapeType = fixtureConfig.shapeType or "rectangle"
+      local shape
+
+      if shapeType == "rectangle" then
+        local x, y = unpack(shapeConfig.position or { 0, 0 })
+        local width, height = unpack(shapeConfig.size or { 1, 1 })
+        local angle = shapeConfig.angle or 0
+        shape = love.physics.newRectangleShape(x, y, width, height, angle)
+      else
+        error("Invalid shape type: " .. shapeType)
+      end
+
       local fixture = love.physics.newFixture(body, shape)
       fixture:setUserData(entity)
       return fixture

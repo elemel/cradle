@@ -38,6 +38,7 @@ function M:init(application)
   sparrow.newColumn(database, "fixture")
   sparrow.newColumn(database, "fixtureConfig")
   sparrow.newColumn(database, "kinematic", "tag")
+  sparrow.newColumn(database, "shape")
   sparrow.newColumn(database, "static", "tag")
 
   self.engine:addEvent("draw")
@@ -80,7 +81,16 @@ function M:init(application)
       },
     },
 
-    fixtureConfig = {},
+    fixtureConfig = {
+      shape = {
+        shapeType = "rectangle",
+
+        size = {
+          0.5 + love.math.random(),
+          0.5 + love.math.random(),
+        },
+      },
+    },
   })
 end
 
