@@ -16,10 +16,14 @@ function M.new(engine)
   return function(dt)
     query:forEach(function(entity, body, fixtureConfig)
       local shapeConfig = fixtureConfig.shape or {}
-      local shapeType = fixtureConfig.shapeType or "rectangle"
+      local shapeType = shapeConfig.shapeType or "rectangle"
       local shape
 
-      if shapeType == "rectangle" then
+      if shapeType == "circle" then
+        local x, y = unpack(shapeConfig.position or { 0, 0 })
+        local radius = shapeConfig.radius or 0.5
+        shape = love.physics.newCircleShape(x, y, radius)
+      elseif shapeType == "rectangle" then
         local x, y = unpack(shapeConfig.position or { 0, 0 })
         local width, height = unpack(shapeConfig.size or { 1, 1 })
         local angle = shapeConfig.angle or 0

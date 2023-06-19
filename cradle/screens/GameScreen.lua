@@ -72,23 +72,41 @@ function M:init(application)
 
   sparrow.newRow(database, {
     bodyConfig = {
-      angularVelocity = 5 * (love.math.random() - 0.5),
-      bodyType = "dynamic",
-
-      linearVelocity = {
-        5 * (love.math.random() - 0.5),
-        -(2 + 5 * love.math.random()),
-      },
+      position = {0, 0.5},
     },
 
     fixtureConfig = {
       shape = {
         shapeType = "rectangle",
+        size = {10, 1},
+      },
+    },
+  })
 
-        size = {
-          0.5 + love.math.random(),
-          0.5 + love.math.random(),
-        },
+  sparrow.newRow(database, {
+    bodyConfig = {
+      bodyType = "dynamic",
+      position = {-0.65, -0.3},
+    },
+
+    fixtureConfig = {
+      shape = {
+        shapeType = "circle",
+        radius = 0.3,
+      },
+    },
+  })
+
+  sparrow.newRow(database, {
+    bodyConfig = {
+      bodyType = "dynamic",
+      position = {0.65, -0.3},
+    },
+
+    fixtureConfig = {
+      shape = {
+        shapeType = "circle",
+        radius = 0.3,
       },
     },
   })
