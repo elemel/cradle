@@ -1,9 +1,12 @@
 local Class = require("cradle.Class")
 local DrawWorldHandler = require("cradle.handlers.DrawWorldHandler")
 local ffi = require("ffi")
-local FixedUpdateCreateBodyHandler = require("cradle.handlers.FixedUpdateCreateBodyHandler")
-local FixedUpdateCreateFixtureHandler = require("cradle.handlers.FixedUpdateCreateFixtureHandler")
-local FixedUpdateWorldHandler = require("cradle.handlers.FixedUpdateWorldHandler")
+local FixedUpdateCreateBodyHandler =
+  require("cradle.handlers.FixedUpdateCreateBodyHandler")
+local FixedUpdateCreateFixtureHandler =
+  require("cradle.handlers.FixedUpdateCreateFixtureHandler")
+local FixedUpdateWorldHandler =
+  require("cradle.handlers.FixedUpdateWorldHandler")
 local heart = require("heart")
 local KeyPressedHandler = require("cradle.handlers.KeyPressedHandler")
 local sparrow = require("sparrow")
@@ -50,9 +53,18 @@ function M:init(application)
 
   self.engine:addEventHandler("draw", DrawWorldHandler.new(self.engine))
 
-  self.engine:addEventHandler("fixedupdate", FixedUpdateCreateBodyHandler.new(self.engine))
-  self.engine:addEventHandler("fixedupdate", FixedUpdateCreateFixtureHandler.new(self.engine))
-  self.engine:addEventHandler("fixedupdate", FixedUpdateWorldHandler.new(self.engine))
+  self.engine:addEventHandler(
+    "fixedupdate",
+    FixedUpdateCreateBodyHandler.new(self.engine)
+  )
+  self.engine:addEventHandler(
+    "fixedupdate",
+    FixedUpdateCreateFixtureHandler.new(self.engine)
+  )
+  self.engine:addEventHandler(
+    "fixedupdate",
+    FixedUpdateWorldHandler.new(self.engine)
+  )
 
   self.engine:addEventHandler("keypressed", KeyPressedHandler.new(self.engine))
   self.engine:addEventHandler("update", UpdateClockHandler.new(self.engine))

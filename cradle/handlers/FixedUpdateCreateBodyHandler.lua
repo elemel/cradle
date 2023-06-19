@@ -16,7 +16,7 @@ function M.new(engine)
   return function(dt)
     query:forEach(function(entity, bodyConfig)
       local bodyType = bodyConfig.bodyType or "static"
-      local x, y = unpack(bodyConfig.position or {0, 0})
+      local x, y = unpack(bodyConfig.position or { 0, 0 })
       local body = love.physics.newBody(world, x, y, bodyType)
       body:setUserData(entity)
       database:setCell(entity, bodyType, {})
