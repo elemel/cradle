@@ -3,6 +3,7 @@ local QuitScreen = require("cradle.screens.QuitScreen")
 local TitleScreen = require("cradle.screens.TitleScreen")
 
 function love.load()
+  love.physics.setMeter(1)
   application = Application.new()
   application:pushScreen(QuitScreen.new(application))
   application:pushScreen(TitleScreen.new(application))
