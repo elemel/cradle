@@ -7,15 +7,15 @@ function M.new(engine)
   local world = assert(engine:getProperty("world"))
 
   local query = sparrow.newQuery(database, {
-    inclusions = { "body", "fixtureConfig" },
-    exclusions = { "fixture" },
-    arguments = { "entity", "body", "fixtureConfig" },
-    results = { "fixture" },
+    inclusions = { "externalBody", "fixture" },
+    exclusions = { "externalFixture" },
+    arguments = { "entity", "externalBody", "fixture" },
+    results = { "externalFixture" },
   })
 
   return function(dt)
-    query:forEach(function(entity, body, fixtureConfig)
-      local shapeConfig = fixtureConfig.shape or {}
+    query:forEach(function(entity, externalBody, fixture)
+      local shapeConfig = fixture.shape or {}
       local shapeType = shapeConfig.shapeType or "rectangle"
       local shape
 
@@ -32,14 +32,14 @@ function M.new(engine)
         error("Invalid shape type: " .. shapeType)
       end
 
-      local fixture = love.physics.newFixture(body, shape)
-      fixture:setUserData(entity)
+      local externalFixture = love.physics.newFixture(externalBody, shape)
+      externalFixture:setUserData(entity)
 
-      if fixtureConfig.sensor ~= nil then
-        fixture:setSensor(fixtureConfig.sensor)
+      if fixture.sensor ~= nil then
+        externalFixture:setSensor(fixture.sensor)
       end
 
-      return fixture
+      return externalFixture
     end)
   end
 end
