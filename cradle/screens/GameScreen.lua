@@ -40,10 +40,10 @@ function M:init(application)
   local database = sparrow.newDatabase()
   self.engine:setProperty("database", database)
 
-  sparrow.newColumn(database, "body")
   sparrow.newColumn(database, "bodyConfig")
   sparrow.newColumn(database, "dynamic", "tag")
-  sparrow.newColumn(database, "fixture")
+  sparrow.newColumn(database, "externalBody")
+  sparrow.newColumn(database, "externalFixture")
   sparrow.newColumn(database, "fixtureConfig")
   sparrow.newColumn(database, "kinematic", "tag")
   sparrow.newColumn(database, "node", "node")
@@ -81,20 +81,20 @@ function M:init(application)
 
   sparrow.newRow(database, {
     bodyConfig = {
-      position = {0, 0.5},
+      position = { 0, 0.5 },
     },
 
     fixtureConfig = {
       shape = {
         shapeType = "rectangle",
-        size = {10, 1},
+        size = { 10, 1 },
       },
     },
   })
 
   local frameRow = sparrow.newRow(database, {
     bodyConfig = {
-      position = {0, -0.6},
+      position = { 0, -0.6 },
     },
 
     fixtureConfig = {
@@ -102,7 +102,7 @@ function M:init(application)
 
       shape = {
         shapeType = "rectangle",
-        size = {1.3, 0.6},
+        size = { 1.3, 0.6 },
       },
     },
   })
@@ -110,7 +110,7 @@ function M:init(application)
   local rearWheelRow = sparrow.newRow(database, {
     bodyConfig = {
       bodyType = "dynamic",
-      position = {-0.65, -0.3},
+      position = { -0.65, -0.3 },
     },
 
     fixtureConfig = {
@@ -124,7 +124,7 @@ function M:init(application)
   local frontWheelRow = sparrow.newRow(database, {
     bodyConfig = {
       bodyType = "dynamic",
-      position = {0.65, -0.3},
+      position = { 0.65, -0.3 },
     },
 
     fixtureConfig = {
