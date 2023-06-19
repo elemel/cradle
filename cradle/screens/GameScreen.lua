@@ -84,8 +84,7 @@ function M:init(application)
       position = { 0, 0.5 },
     },
 
-    fixture = {
-    },
+    fixture = {},
 
     shape = {
       shapeType = "rectangle",

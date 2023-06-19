@@ -26,12 +26,14 @@ function M.new(engine)
         local x, y = unpack(shape.position or { 0, 0 })
         local width, height = unpack(shape.size or { 1, 1 })
         local angle = shape.angle or 0
-        externalShape = love.physics.newRectangleShape(x, y, width, height, angle)
+        externalShape =
+          love.physics.newRectangleShape(x, y, width, height, angle)
       else
         error("Invalid shape type: " .. shapeType)
       end
 
-      local externalFixture = love.physics.newFixture(externalBody, externalShape)
+      local externalFixture =
+        love.physics.newFixture(externalBody, externalShape)
       externalFixture:setUserData(entity)
 
       if fixture.sensor ~= nil then
