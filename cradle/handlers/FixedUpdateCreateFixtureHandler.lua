@@ -34,6 +34,11 @@ function M.new(engine)
 
       local fixture = love.physics.newFixture(body, shape)
       fixture:setUserData(entity)
+
+      if fixtureConfig.sensor ~= nil then
+        fixture:setSensor(fixtureConfig.sensor)
+      end
+
       return fixture
     end)
   end

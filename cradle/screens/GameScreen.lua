@@ -8,6 +8,7 @@ local FixedUpdateCreateFixtureHandler =
 local FixedUpdateWorldHandler =
   require("cradle.handlers.FixedUpdateWorldHandler")
 local heart = require("heart")
+local nodeMod = require("cradle.node")
 local KeyPressedHandler = require("cradle.handlers.KeyPressedHandler")
 local sparrow = require("sparrow")
 local UpdateClockHandler = require("cradle.handlers.UpdateClockHandler")
@@ -15,6 +16,13 @@ local UpdateClockHandler = require("cradle.handlers.UpdateClockHandler")
 local M = Class.new()
 
 ffi.cdef([[
+  typedef struct node {
+    double parent;
+    double previousSibling;
+    double nextSibling;
+    double firstChild;
+  } node;
+
   typedef struct tag {} tag;
 ]])
 
@@ -38,6 +46,7 @@ function M:init(application)
   sparrow.newColumn(database, "fixture")
   sparrow.newColumn(database, "fixtureConfig")
   sparrow.newColumn(database, "kinematic", "tag")
+  sparrow.newColumn(database, "node", "node")
   sparrow.newColumn(database, "shape")
   sparrow.newColumn(database, "static", "tag")
 
@@ -83,7 +92,22 @@ function M:init(application)
     },
   })
 
-  sparrow.newRow(database, {
+  local frameRow = sparrow.newRow(database, {
+    bodyConfig = {
+      position = {0, -0.6},
+    },
+
+    fixtureConfig = {
+      sensor = true,
+
+      shape = {
+        shapeType = "rectangle",
+        size = {1.3, 0.6},
+      },
+    },
+  })
+
+  local rearWheelRow = sparrow.newRow(database, {
     bodyConfig = {
       bodyType = "dynamic",
       position = {-0.65, -0.3},
@@ -97,7 +121,7 @@ function M:init(application)
     },
   })
 
-  sparrow.newRow(database, {
+  local frontWheelRow = sparrow.newRow(database, {
     bodyConfig = {
       bodyType = "dynamic",
       position = {0.65, -0.3},
@@ -110,6 +134,9 @@ function M:init(application)
       },
     },
   })
+
+  nodeMod.setParent(database, rearWheelRow:getEntity(), frameRow:getEntity())
+  nodeMod.setParent(database, frontWheelRow:getEntity(), frameRow:getEntity())
 end
 
 function M:handleEvent(event, ...)
