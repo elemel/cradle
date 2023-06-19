@@ -40,11 +40,11 @@ function M:init(application)
   local database = sparrow.newDatabase()
   self.engine:setProperty("database", database)
 
-  sparrow.newColumn(database, "bodyConfig")
+  sparrow.newColumn(database, "body")
   sparrow.newColumn(database, "dynamic", "tag")
   sparrow.newColumn(database, "externalBody")
   sparrow.newColumn(database, "externalFixture")
-  sparrow.newColumn(database, "fixtureConfig")
+  sparrow.newColumn(database, "fixture")
   sparrow.newColumn(database, "kinematic", "tag")
   sparrow.newColumn(database, "node", "node")
   sparrow.newColumn(database, "shape")
@@ -80,11 +80,11 @@ function M:init(application)
   self.engine:addEventHandler("update", UpdateClockHandler.new(self.engine))
 
   sparrow.newRow(database, {
-    bodyConfig = {
+    body = {
       position = { 0, 0.5 },
     },
 
-    fixtureConfig = {
+    fixture = {
       shape = {
         shapeType = "rectangle",
         size = { 10, 1 },
@@ -93,11 +93,11 @@ function M:init(application)
   })
 
   local frameRow = sparrow.newRow(database, {
-    bodyConfig = {
+    body = {
       position = { 0, -0.6 },
     },
 
-    fixtureConfig = {
+    fixture = {
       sensor = true,
 
       shape = {
@@ -108,12 +108,12 @@ function M:init(application)
   })
 
   local rearWheelRow = sparrow.newRow(database, {
-    bodyConfig = {
+    body = {
       bodyType = "dynamic",
       position = { -0.65, -0.3 },
     },
 
-    fixtureConfig = {
+    fixture = {
       shape = {
         shapeType = "circle",
         radius = 0.3,
@@ -122,12 +122,12 @@ function M:init(application)
   })
 
   local frontWheelRow = sparrow.newRow(database, {
-    bodyConfig = {
+    body = {
       bodyType = "dynamic",
       position = { 0.65, -0.3 },
     },
 
-    fixtureConfig = {
+    fixture = {
       shape = {
         shapeType = "circle",
         radius = 0.3,

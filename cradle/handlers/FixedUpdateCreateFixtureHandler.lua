@@ -7,15 +7,15 @@ function M.new(engine)
   local world = assert(engine:getProperty("world"))
 
   local query = sparrow.newQuery(database, {
-    inclusions = { "externalBody", "fixtureConfig" },
+    inclusions = { "externalBody", "fixture" },
     exclusions = { "externalFixture" },
-    arguments = { "entity", "externalBody", "fixtureConfig" },
+    arguments = { "entity", "externalBody", "fixture" },
     results = { "externalFixture" },
   })
 
   return function(dt)
-    query:forEach(function(entity, externalBody, fixtureConfig)
-      local shapeConfig = fixtureConfig.shape or {}
+    query:forEach(function(entity, externalBody, fixture)
+      local shapeConfig = fixture.shape or {}
       local shapeType = shapeConfig.shapeType or "rectangle"
       local shape
 
@@ -35,8 +35,8 @@ function M.new(engine)
       local externalFixture = love.physics.newFixture(externalBody, shape)
       externalFixture:setUserData(entity)
 
-      if fixtureConfig.sensor ~= nil then
-        externalFixture:setSensor(fixtureConfig.sensor)
+      if fixture.sensor ~= nil then
+        externalFixture:setSensor(fixture.sensor)
       end
 
       return externalFixture
