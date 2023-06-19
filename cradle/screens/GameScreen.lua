@@ -85,10 +85,11 @@ function M:init(application)
     },
 
     fixture = {
-      shape = {
-        shapeType = "rectangle",
-        size = { 10, 1 },
-      },
+    },
+
+    shape = {
+      shapeType = "rectangle",
+      size = { 10, 1 },
     },
   })
 
@@ -99,11 +100,11 @@ function M:init(application)
 
     fixture = {
       sensor = true,
+    },
 
-      shape = {
-        shapeType = "rectangle",
-        size = { 1.3, 0.6 },
-      },
+    shape = {
+      shapeType = "rectangle",
+      size = { 1.3, 0.6 },
     },
   })
 
@@ -113,11 +114,11 @@ function M:init(application)
       position = { -0.65, -0.3 },
     },
 
-    fixture = {
-      shape = {
-        shapeType = "circle",
-        radius = 0.3,
-      },
+    fixture = {},
+
+    shape = {
+      shapeType = "circle",
+      radius = 0.3,
     },
   })
 
@@ -127,11 +128,11 @@ function M:init(application)
       position = { 0.65, -0.3 },
     },
 
-    fixture = {
-      shape = {
-        shapeType = "circle",
-        radius = 0.3,
-      },
+    fixture = {},
+
+    shape = {
+      shapeType = "circle",
+      radius = 0.3,
     },
   })
 
