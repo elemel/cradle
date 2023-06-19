@@ -8,11 +8,9 @@ function love.load()
   application:pushScreen(TitleScreen.new(application))
 end
 
-function love.update(dt)
-end
+function love.update(dt) end
 
-function love.draw()
-end
+function love.draw() end
 
 function love.draw(...)
   return application:handleEvent("draw", ...)
