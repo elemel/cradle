@@ -134,6 +134,7 @@ function M:init(application)
 
     creating = {},
     fixture = {},
+    node = {},
 
     shape = {
       shapeType = "rectangle",
@@ -154,6 +155,8 @@ function M:init(application)
     fixture = {
       sensor = true,
     },
+
+    node = {},
 
     shape = {
       shapeType = "rectangle",
@@ -178,6 +181,8 @@ function M:init(application)
       springFrequency = 5,
     },
 
+    node = {},
+
     shape = {
       shapeType = "circle",
       radius = 0.3,
@@ -200,6 +205,8 @@ function M:init(application)
       springDampingRatio = 0.5,
       springFrequency = 5,
     },
+
+    node = {},
 
     shape = {
       shapeType = "circle",

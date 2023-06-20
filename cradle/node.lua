@@ -1,22 +1,12 @@
 local M = {}
 
-function M.getParent(database, entity)
-  local node = database:getCell(entity, "node")
-  return node and node.parent
-end
-
 function M.setParent(database, entity, parent)
   parent = parent or 0
-  local node = database:getCell(entity, "node")
+  local node = assert(database:getCell(entity, "node"))
 
-  if parent ~= (node and node.parent or 0) then
-    if not node then
-      database:setCell(entity, "node", {})
-      node = database:getCell(entity, "node")
-    end
-
+  if parent ~= node.parent then
     if node.parent ~= 0 then
-      local parentNode = assert(database:getCell(node.parent))
+      local parentNode = assert(database:getCell(node.parent, "node"))
 
       if node.nextSibling == entity then
         assert(node.previousSibling == entity)
@@ -40,12 +30,7 @@ function M.setParent(database, entity, parent)
     end
 
     if parent ~= 0 then
-      local parentNode = database:getCell(parent, "node")
-
-      if not parentNode then
-        database:setCell(parent, "node", {})
-        parentNode = database:getCell(parent, "node")
-      end
+      local parentNode = assert(database:getCell(parent, "node"))
 
       if parentNode.firstChild == 0 then
         parentNode.firstChild = entity
