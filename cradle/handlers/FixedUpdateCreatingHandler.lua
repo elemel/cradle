@@ -7,7 +7,7 @@ function M.new(engine)
 
   local query = sparrow.newQuery(database, {
     inclusions = { "creating" },
-    arguments = { },
+    arguments = {},
     results = { "creating" },
   })
 

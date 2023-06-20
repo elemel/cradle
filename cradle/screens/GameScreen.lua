@@ -7,6 +7,12 @@ local FixedUpdateCreatingFixtureHandler =
   require("cradle.handlers.FixedUpdateCreatingFixtureHandler")
 local FixedUpdateCreatingHandler =
   require("cradle.handlers.FixedUpdateCreatingHandler")
+local FixedUpdateDestroyingBodyHandler =
+  require("cradle.handlers.FixedUpdateDestroyingBodyHandler")
+local FixedUpdateDestroyingFixtureHandler =
+  require("cradle.handlers.FixedUpdateDestroyingFixtureHandler")
+local FixedUpdateDestroyingHandler =
+  require("cradle.handlers.FixedUpdateDestroyingHandler")
 local FixedUpdateWorldHandler =
   require("cradle.handlers.FixedUpdateWorldHandler")
 local heart = require("heart")
@@ -87,6 +93,21 @@ function M:init(application)
     FixedUpdateWorldHandler.new(self.engine)
   )
 
+  self.engine:addEventHandler(
+    "fixedupdate",
+    FixedUpdateDestroyingFixtureHandler.new(self.engine)
+  )
+
+  self.engine:addEventHandler(
+    "fixedupdate",
+    FixedUpdateDestroyingBodyHandler.new(self.engine)
+  )
+
+  self.engine:addEventHandler(
+    "fixedupdate",
+    FixedUpdateDestroyingHandler.new(self.engine)
+  )
+
   self.engine:addEventHandler("keypressed", KeyPressedHandler.new(self.engine))
   self.engine:addEventHandler("update", UpdateClockHandler.new(self.engine))
 
@@ -110,6 +131,7 @@ function M:init(application)
     },
 
     creating = {},
+    destroying = {},
 
     fixture = {
       sensor = true,
