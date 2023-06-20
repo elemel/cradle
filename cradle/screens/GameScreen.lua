@@ -86,6 +86,7 @@ function M:init(application)
       position = { 0, 0.5 },
     },
 
+    creating = {},
     fixture = {},
 
     shape = {
@@ -98,6 +99,8 @@ function M:init(application)
     body = {
       position = { 0, -0.6 },
     },
+
+    creating = {},
 
     fixture = {
       sensor = true,
@@ -115,6 +118,7 @@ function M:init(application)
       position = { -0.65, -0.3 },
     },
 
+    creating = {},
     fixture = {},
 
     shape = {
@@ -129,6 +133,7 @@ function M:init(application)
       position = { 0.65, -0.3 },
     },
 
+    creating = {},
     fixture = {},
 
     shape = {
