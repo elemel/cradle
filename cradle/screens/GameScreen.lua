@@ -143,7 +143,9 @@ function M:init(application)
 
   local frameRow = sparrow.newRow(database, {
     body = {
+      angularVelocity = 1,
       bodyType = "dynamic",
+      linearVelocity = { 0, -10 },
       position = { 0, -0.6 },
     },
 
@@ -169,9 +171,11 @@ function M:init(application)
     fixture = {},
 
     joint = {
-      a = frameRow:getEntity(),
+      bodyA = frameRow:getEntity(),
+      jointType = "wheel",
       localAnchorA = { -0.65, 0.3 },
-      jointType = "revolute",
+      springDampingRatio = 0.5,
+      springFrequency = 5,
     },
 
     shape = {
@@ -190,9 +194,11 @@ function M:init(application)
     fixture = {},
 
     joint = {
-      a = frameRow:getEntity(),
+      bodyA = frameRow:getEntity(),
+      jointType = "wheel",
       localAnchorA = { 0.65, 0.3 },
-      jointType = "revolute",
+      springDampingRatio = 0.5,
+      springFrequency = 5,
     },
 
     shape = {

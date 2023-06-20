@@ -19,6 +19,8 @@ function M.new(engine)
 
       if jointType == "revolute" then
         return M.createRevoluteJoint(database, world, entity, joint)
+      elseif jointType == "wheel" then
+        return M.createWheelJoint(database, world, entity, joint)
       else
         error("Invalid joint type: " .. jointType)
       end
@@ -27,11 +29,11 @@ function M.new(engine)
 end
 
 function M.createRevoluteJoint(database, world, entity, joint)
-  local a = joint.a or entity
-  local b = joint.b or entity
+  local bodyEntityA = joint.bodyA or entity
+  local bodyEntityB = joint.bodyB or entity
 
-  local externalBodyA = assert(database:getCell(a, "externalBody"))
-  local externalBodyB = assert(database:getCell(b, "externalBody"))
+  local externalBodyA = assert(database:getCell(bodyEntityA, "externalBody"))
+  local externalBodyB = assert(database:getCell(bodyEntityB, "externalBody"))
 
   local ax, ay =
     externalBodyA:getWorldPoint(unpack(joint.localAnchorA or { 0, 0 }))
@@ -45,6 +47,7 @@ function M.createRevoluteJoint(database, world, entity, joint)
   end
 
   local referenceAngle = joint.referenceAngle or 0
+
   local externalJoint = love.physics.newRevoluteJoint(
     externalBodyA,
     externalBodyB,
@@ -55,7 +58,53 @@ function M.createRevoluteJoint(database, world, entity, joint)
     collideConnected,
     referenceAngle
   )
+
   externalJoint:setUserData(entity)
+  return externalJoint
+end
+
+function M.createWheelJoint(database, world, entity, joint)
+  local bodyEntityA = joint.bodyA or entity
+  local bodyEntityB = joint.bodyB or entity
+
+  local externalBodyA = assert(database:getCell(bodyEntityA, "externalBody"))
+  local externalBodyB = assert(database:getCell(bodyEntityB, "externalBody"))
+
+  local ax, ay =
+    externalBodyA:getWorldPoint(unpack(joint.localAnchorA or { 0, 0 }))
+  local bx, by =
+    externalBodyB:getWorldPoint(unpack(joint.localAnchorB or { 0, 0 }))
+  local axisX, axisY =
+    externalBodyA:getWorldVector(unpack(joint.localAxisA or { 0, -1 }))
+
+  local collideConnected = false
+
+  if joint.collideConnected ~= nil then
+    collideConnected = joint.collideConnected
+  end
+
+  local externalJoint = love.physics.newWheelJoint(
+    externalBodyA,
+    externalBodyB,
+    ax,
+    ay,
+    bx,
+    by,
+    axisX,
+    axisY,
+    collideConnected
+  )
+
+  externalJoint:setUserData(entity)
+
+  if joint.springFrequency then
+    externalJoint:setSpringFrequency(joint.springFrequency)
+  end
+
+  if joint.springDampingRatio then
+    externalJoint:setSpringDampingRatio(joint.springDampingRatio)
+  end
+
   return externalJoint
 end
 
