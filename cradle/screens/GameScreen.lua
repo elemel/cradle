@@ -1,10 +1,10 @@
 local Class = require("cradle.Class")
 local DrawWorldHandler = require("cradle.handlers.DrawWorldHandler")
 local ffi = require("ffi")
-local FixedUpdateCreateBodyHandler =
-  require("cradle.handlers.FixedUpdateCreateBodyHandler")
-local FixedUpdateCreateFixtureHandler =
-  require("cradle.handlers.FixedUpdateCreateFixtureHandler")
+local FixedUpdateCreatingBodyHandler =
+  require("cradle.handlers.FixedUpdateCreatingBodyHandler")
+local FixedUpdateCreatingFixtureHandler =
+  require("cradle.handlers.FixedUpdateCreatingFixtureHandler")
 local FixedUpdateWorldHandler =
   require("cradle.handlers.FixedUpdateWorldHandler")
 local heart = require("heart")
@@ -41,6 +41,8 @@ function M:init(application)
   self.engine:setProperty("database", database)
 
   sparrow.newColumn(database, "body")
+  sparrow.newColumn(database, "creating", "tag")
+  sparrow.newColumn(database, "destroying", "tag")
   sparrow.newColumn(database, "dynamic", "tag")
   sparrow.newColumn(database, "externalBody")
   sparrow.newColumn(database, "externalFixture")
@@ -65,11 +67,11 @@ function M:init(application)
 
   self.engine:addEventHandler(
     "fixedupdate",
-    FixedUpdateCreateBodyHandler.new(self.engine)
+    FixedUpdateCreatingBodyHandler.new(self.engine)
   )
   self.engine:addEventHandler(
     "fixedupdate",
-    FixedUpdateCreateFixtureHandler.new(self.engine)
+    FixedUpdateCreatingFixtureHandler.new(self.engine)
   )
   self.engine:addEventHandler(
     "fixedupdate",
