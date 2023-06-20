@@ -131,7 +131,6 @@ function M:init(application)
     },
 
     creating = {},
-    destroying = {},
 
     fixture = {
       sensor = true,

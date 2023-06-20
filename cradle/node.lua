@@ -5,14 +5,8 @@ function M.getParent(database, entity)
   return node and node.parent
 end
 
-function M.setParent(database, entity, parent, nextSibling)
+function M.setParent(database, entity, parent)
   parent = parent or 0
-  nextSibling = nextSibling or 0
-
-  if parent == 0 then
-    assert(nextSibling == 0)
-  end
-
   local node = database:getCell(entity, "node")
 
   if parent ~= (node and node.parent or 0) then
@@ -53,17 +47,14 @@ function M.setParent(database, entity, parent, nextSibling)
         parentNode = database:getCell(parent, "node")
       end
 
-      if nextSibling == 0 then
-        nextSibling = parentNode.firstChild
-      end
-
-      if nextSibling == 0 then
+      if parentNode.firstChild == 0 then
         parentNode.firstChild = entity
         node.parent = parent
 
         node.previousSibling = entity
         node.nextSibling = entity
       else
+        local nextSibling = parentNode.firstChild
         local nextNode = assert(database:getCell(nextSibling, "node"))
         assert(nextNode.parent == parent)
 
