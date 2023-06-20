@@ -17,6 +17,8 @@ local FixedUpdateDestroyingHandler =
   require("cradle.handlers.FixedUpdateDestroyingHandler")
 local FixedUpdateDestroyingJointHandler =
   require("cradle.handlers.FixedUpdateDestroyingJointHandler")
+local FixedUpdateInputHandler =
+  require("cradle.handlers.FixedUpdateInputHandler")
 local FixedUpdateWorldHandler =
   require("cradle.handlers.FixedUpdateWorldHandler")
 local heart = require("heart")
@@ -101,6 +103,11 @@ function M:init(application)
 
   self.engine:addEventHandler(
     "fixedupdate",
+    FixedUpdateInputHandler.new(self.engine)
+  )
+
+  self.engine:addEventHandler(
+    "fixedupdate",
     FixedUpdateWorldHandler.new(self.engine)
   )
 
@@ -144,9 +151,7 @@ function M:init(application)
 
   local frameRow = sparrow.newRow(database, {
     body = {
-      angularVelocity = 1,
       bodyType = "dynamic",
-      linearVelocity = { 0, -10 },
       position = { 0, -0.6 },
     },
 
@@ -171,12 +176,16 @@ function M:init(application)
     },
 
     creating = {},
-    fixture = {},
+
+    fixture = {
+      friction = 2,
+    },
 
     joint = {
       bodyA = frameRow:getEntity(),
       jointType = "wheel",
       localAnchorA = { -0.65, 0.3 },
+      maxMotorTorque = 10,
       springDampingRatio = 0.5,
       springFrequency = 5,
     },
@@ -196,12 +205,16 @@ function M:init(application)
     },
 
     creating = {},
-    fixture = {},
+
+    fixture = {
+      friction = 2,
+    },
 
     joint = {
       bodyA = frameRow:getEntity(),
       jointType = "wheel",
       localAnchorA = { 0.65, 0.3 },
+      maxMotorTorque = 10,
       springDampingRatio = 0.5,
       springFrequency = 5,
     },

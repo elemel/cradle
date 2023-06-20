@@ -97,12 +97,16 @@ function M.createWheelJoint(database, world, entity, joint)
 
   externalJoint:setUserData(entity)
 
-  if joint.springFrequency then
-    externalJoint:setSpringFrequency(joint.springFrequency)
+  if joint.maxMotorTorque then
+    externalJoint:setMaxMotorTorque(joint.maxMotorTorque)
   end
 
   if joint.springDampingRatio then
     externalJoint:setSpringDampingRatio(joint.springDampingRatio)
+  end
+
+  if joint.springFrequency then
+    externalJoint:setSpringFrequency(joint.springFrequency)
   end
 
   return externalJoint
