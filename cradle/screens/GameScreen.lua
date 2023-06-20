@@ -5,6 +5,8 @@ local FixedUpdateCreatingBodyHandler =
   require("cradle.handlers.FixedUpdateCreatingBodyHandler")
 local FixedUpdateCreatingFixtureHandler =
   require("cradle.handlers.FixedUpdateCreatingFixtureHandler")
+local FixedUpdateCreatingHandler =
+  require("cradle.handlers.FixedUpdateCreatingHandler")
 local FixedUpdateWorldHandler =
   require("cradle.handlers.FixedUpdateWorldHandler")
 local heart = require("heart")
@@ -69,10 +71,17 @@ function M:init(application)
     "fixedupdate",
     FixedUpdateCreatingBodyHandler.new(self.engine)
   )
+
   self.engine:addEventHandler(
     "fixedupdate",
     FixedUpdateCreatingFixtureHandler.new(self.engine)
   )
+
+  self.engine:addEventHandler(
+    "fixedupdate",
+    FixedUpdateCreatingHandler.new(self.engine)
+  )
+
   self.engine:addEventHandler(
     "fixedupdate",
     FixedUpdateWorldHandler.new(self.engine)
