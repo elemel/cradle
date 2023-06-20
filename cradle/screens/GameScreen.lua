@@ -7,12 +7,16 @@ local FixedUpdateCreatingFixtureHandler =
   require("cradle.handlers.FixedUpdateCreatingFixtureHandler")
 local FixedUpdateCreatingHandler =
   require("cradle.handlers.FixedUpdateCreatingHandler")
+local FixedUpdateCreatingJointHandler =
+  require("cradle.handlers.FixedUpdateCreatingJointHandler")
 local FixedUpdateDestroyingBodyHandler =
   require("cradle.handlers.FixedUpdateDestroyingBodyHandler")
 local FixedUpdateDestroyingFixtureHandler =
   require("cradle.handlers.FixedUpdateDestroyingFixtureHandler")
 local FixedUpdateDestroyingHandler =
   require("cradle.handlers.FixedUpdateDestroyingHandler")
+local FixedUpdateDestroyingJointHandler =
+  require("cradle.handlers.FixedUpdateDestroyingJointHandler")
 local FixedUpdateWorldHandler =
   require("cradle.handlers.FixedUpdateWorldHandler")
 local heart = require("heart")
@@ -54,7 +58,9 @@ function M:init(application)
   sparrow.newColumn(database, "dynamic", "tag")
   sparrow.newColumn(database, "externalBody")
   sparrow.newColumn(database, "externalFixture")
+  sparrow.newColumn(database, "externalJoint")
   sparrow.newColumn(database, "fixture")
+  sparrow.newColumn(database, "joint")
   sparrow.newColumn(database, "kinematic", "tag")
   sparrow.newColumn(database, "node", "node")
   sparrow.newColumn(database, "shape")
@@ -85,12 +91,22 @@ function M:init(application)
 
   self.engine:addEventHandler(
     "fixedupdate",
+    FixedUpdateCreatingJointHandler.new(self.engine)
+  )
+
+  self.engine:addEventHandler(
+    "fixedupdate",
     FixedUpdateCreatingHandler.new(self.engine)
   )
 
   self.engine:addEventHandler(
     "fixedupdate",
     FixedUpdateWorldHandler.new(self.engine)
+  )
+
+  self.engine:addEventHandler(
+    "fixedupdate",
+    FixedUpdateDestroyingJointHandler.new(self.engine)
   )
 
   self.engine:addEventHandler(
@@ -127,6 +143,7 @@ function M:init(application)
 
   local frameRow = sparrow.newRow(database, {
     body = {
+      bodyType = "dynamic",
       position = { 0, -0.6 },
     },
 
@@ -151,6 +168,12 @@ function M:init(application)
     creating = {},
     fixture = {},
 
+    joint = {
+      a = frameRow:getEntity(),
+      localAnchorA = { -0.65, 0.3 },
+      jointType = "revolute",
+    },
+
     shape = {
       shapeType = "circle",
       radius = 0.3,
@@ -165,6 +188,12 @@ function M:init(application)
 
     creating = {},
     fixture = {},
+
+    joint = {
+      a = frameRow:getEntity(),
+      localAnchorA = { 0.65, 0.3 },
+      jointType = "revolute",
+    },
 
     shape = {
       shapeType = "circle",
