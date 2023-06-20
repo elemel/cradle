@@ -36,6 +36,14 @@ function M.new(engine)
         love.physics.newFixture(externalBody, externalShape)
       externalFixture:setUserData(entity)
 
+      if fixture.friction then
+        externalFixture:setFriction(fixture.friction)
+      end
+
+      if fixture.restitution then
+        externalFixture:setRestitution(fixture.restitution)
+      end
+
       if fixture.sensor ~= nil then
         externalFixture:setSensor(fixture.sensor)
       end
