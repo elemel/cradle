@@ -40,6 +40,10 @@ function M.new(engine)
         externalFixture:setFriction(fixture.friction)
       end
 
+      if fixture.groupIndex then
+        externalFixture:setGroupIndex(fixture.groupIndex)
+      end
+
       if fixture.restitution then
         externalFixture:setRestitution(fixture.restitution)
       end

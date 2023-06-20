@@ -158,7 +158,7 @@ function M:init(application)
     creating = {},
 
     fixture = {
-      sensor = true,
+      groupIndex = -1,
     },
 
     node = {},
@@ -179,6 +179,7 @@ function M:init(application)
 
     fixture = {
       friction = 2,
+      groupIndex = -1,
     },
 
     joint = {
@@ -208,6 +209,7 @@ function M:init(application)
 
     fixture = {
       friction = 2,
+      groupIndex = -1,
     },
 
     joint = {
