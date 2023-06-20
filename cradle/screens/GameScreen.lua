@@ -1,6 +1,8 @@
 local Class = require("cradle.Class")
 local DrawWorldHandler = require("cradle.handlers.DrawWorldHandler")
 local ffi = require("ffi")
+local FixedUpdateCameraHandler =
+  require("cradle.handlers.FixedUpdateCameraHandler")
 local FixedUpdateCreatingBodyHandler =
   require("cradle.handlers.FixedUpdateCreatingBodyHandler")
 local FixedUpdateCreatingFixtureHandler =
@@ -38,6 +40,11 @@ ffi.cdef([[
   } node;
 
   typedef struct tag {} tag;
+
+  typedef struct vec2 {
+    double x;
+    double y;
+  } vec2;
 ]])
 
 function M:init(application)
@@ -55,6 +62,7 @@ function M:init(application)
   self.engine:setProperty("database", database)
 
   sparrow.newColumn(database, "body")
+  sparrow.newColumn(database, "camera", "tag")
   sparrow.newColumn(database, "creating", "tag")
   sparrow.newColumn(database, "destroying", "tag")
   sparrow.newColumn(database, "dynamic", "tag")
@@ -62,9 +70,11 @@ function M:init(application)
   sparrow.newColumn(database, "externalFixture")
   sparrow.newColumn(database, "externalJoint")
   sparrow.newColumn(database, "fixture")
+  sparrow.newColumn(database, "frame", "tag")
   sparrow.newColumn(database, "joint")
   sparrow.newColumn(database, "kinematic", "tag")
   sparrow.newColumn(database, "node", "node")
+  sparrow.newColumn(database, "position", "vec2")
   sparrow.newColumn(database, "shape")
   sparrow.newColumn(database, "static", "tag")
 
@@ -109,6 +119,11 @@ function M:init(application)
   self.engine:addEventHandler(
     "fixedupdate",
     FixedUpdateWorldHandler.new(self.engine)
+  )
+
+  self.engine:addEventHandler(
+    "fixedupdate",
+    FixedUpdateCameraHandler.new(self.engine)
   )
 
   self.engine:addEventHandler(
@@ -161,6 +176,7 @@ function M:init(application)
       groupIndex = -1,
     },
 
+    frame = {},
     node = {},
 
     shape = {
@@ -227,6 +243,11 @@ function M:init(application)
       shapeType = "circle",
       radius = 0.3,
     },
+  })
+
+  local cameraRow = sparrow.newRow(database, {
+    camera = {},
+    position = {},
   })
 
   nodeMod.setParent(database, rearWheelRow:getEntity(), frameRow:getEntity())
