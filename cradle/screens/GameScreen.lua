@@ -1,10 +1,18 @@
 local Class = require("cradle.Class")
 local DrawWorldHandler = require("cradle.handlers.DrawWorldHandler")
 local ffi = require("ffi")
-local FixedUpdateCreateBodyHandler =
-  require("cradle.handlers.FixedUpdateCreateBodyHandler")
-local FixedUpdateCreateFixtureHandler =
-  require("cradle.handlers.FixedUpdateCreateFixtureHandler")
+local FixedUpdateCreatingBodyHandler =
+  require("cradle.handlers.FixedUpdateCreatingBodyHandler")
+local FixedUpdateCreatingFixtureHandler =
+  require("cradle.handlers.FixedUpdateCreatingFixtureHandler")
+local FixedUpdateCreatingHandler =
+  require("cradle.handlers.FixedUpdateCreatingHandler")
+local FixedUpdateDestroyingBodyHandler =
+  require("cradle.handlers.FixedUpdateDestroyingBodyHandler")
+local FixedUpdateDestroyingFixtureHandler =
+  require("cradle.handlers.FixedUpdateDestroyingFixtureHandler")
+local FixedUpdateDestroyingHandler =
+  require("cradle.handlers.FixedUpdateDestroyingHandler")
 local FixedUpdateWorldHandler =
   require("cradle.handlers.FixedUpdateWorldHandler")
 local heart = require("heart")
@@ -41,6 +49,8 @@ function M:init(application)
   self.engine:setProperty("database", database)
 
   sparrow.newColumn(database, "body")
+  sparrow.newColumn(database, "creating", "tag")
+  sparrow.newColumn(database, "destroying", "tag")
   sparrow.newColumn(database, "dynamic", "tag")
   sparrow.newColumn(database, "externalBody")
   sparrow.newColumn(database, "externalFixture")
@@ -65,15 +75,37 @@ function M:init(application)
 
   self.engine:addEventHandler(
     "fixedupdate",
-    FixedUpdateCreateBodyHandler.new(self.engine)
+    FixedUpdateCreatingBodyHandler.new(self.engine)
   )
+
   self.engine:addEventHandler(
     "fixedupdate",
-    FixedUpdateCreateFixtureHandler.new(self.engine)
+    FixedUpdateCreatingFixtureHandler.new(self.engine)
   )
+
+  self.engine:addEventHandler(
+    "fixedupdate",
+    FixedUpdateCreatingHandler.new(self.engine)
+  )
+
   self.engine:addEventHandler(
     "fixedupdate",
     FixedUpdateWorldHandler.new(self.engine)
+  )
+
+  self.engine:addEventHandler(
+    "fixedupdate",
+    FixedUpdateDestroyingFixtureHandler.new(self.engine)
+  )
+
+  self.engine:addEventHandler(
+    "fixedupdate",
+    FixedUpdateDestroyingBodyHandler.new(self.engine)
+  )
+
+  self.engine:addEventHandler(
+    "fixedupdate",
+    FixedUpdateDestroyingHandler.new(self.engine)
   )
 
   self.engine:addEventHandler("keypressed", KeyPressedHandler.new(self.engine))
@@ -84,8 +116,8 @@ function M:init(application)
       position = { 0, 0.5 },
     },
 
-    fixture = {
-    },
+    creating = {},
+    fixture = {},
 
     shape = {
       shapeType = "rectangle",
@@ -97,6 +129,9 @@ function M:init(application)
     body = {
       position = { 0, -0.6 },
     },
+
+    creating = {},
+    destroying = {},
 
     fixture = {
       sensor = true,
@@ -114,6 +149,7 @@ function M:init(application)
       position = { -0.65, -0.3 },
     },
 
+    creating = {},
     fixture = {},
 
     shape = {
@@ -128,6 +164,7 @@ function M:init(application)
       position = { 0.65, -0.3 },
     },
 
+    creating = {},
     fixture = {},
 
     shape = {
