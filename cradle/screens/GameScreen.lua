@@ -149,13 +149,17 @@ function M:init(application)
   self.engine:addEventHandler("keypressed", KeyPressedHandler.new(self.engine))
   self.engine:addEventHandler("update", UpdateClockHandler.new(self.engine))
 
-  sparrow.newRow(database, {
+  database:insertRow({
     body = {
       position = { 0, 0.5 },
     },
 
     creating = {},
-    fixture = {},
+
+    fixture = {
+      friction = 0.5,
+    },
+
     node = {},
 
     shape = {
@@ -164,7 +168,7 @@ function M:init(application)
     },
   })
 
-  local frameRow = sparrow.newRow(database, {
+  local frameEntity = database:insertRow({
     body = {
       bodyType = "dynamic",
       position = { 0, -0.6 },
@@ -173,6 +177,7 @@ function M:init(application)
     creating = {},
 
     fixture = {
+      friction = 0.5,
       groupIndex = -1,
     },
 
@@ -185,7 +190,7 @@ function M:init(application)
     },
   })
 
-  local rearWheelRow = sparrow.newRow(database, {
+  local rearWheelEntity = database:insertRow({
     body = {
       bodyType = "dynamic",
       position = { -0.65, -0.3 },
@@ -199,7 +204,7 @@ function M:init(application)
     },
 
     joint = {
-      bodyA = frameRow:getEntity(),
+      bodyA = frameEntity,
       jointType = "wheel",
       localAnchorA = { -0.65, 0.3 },
       maxMotorTorque = 10,
@@ -215,7 +220,7 @@ function M:init(application)
     },
   })
 
-  local frontWheelRow = sparrow.newRow(database, {
+  local frontWheelEntity = database:insertRow({
     body = {
       bodyType = "dynamic",
       position = { 0.65, -0.3 },
@@ -229,7 +234,7 @@ function M:init(application)
     },
 
     joint = {
-      bodyA = frameRow:getEntity(),
+      bodyA = frameEntity,
       jointType = "wheel",
       localAnchorA = { 0.65, 0.3 },
       maxMotorTorque = 10,
@@ -245,13 +250,13 @@ function M:init(application)
     },
   })
 
-  local cameraRow = sparrow.newRow(database, {
+  database:insertRow({
     camera = {},
     position = {},
   })
 
-  nodeMod.setParent(database, rearWheelRow:getEntity(), frameRow:getEntity())
-  nodeMod.setParent(database, frontWheelRow:getEntity(), frameRow:getEntity())
+  nodeMod.setParent(database, rearWheelEntity, frameEntity)
+  nodeMod.setParent(database, frontWheelEntity, frameEntity)
 end
 
 function M:handleEvent(event, ...)
