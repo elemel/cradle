@@ -45,6 +45,11 @@ ffi.cdef([[
     double x;
     double y;
   } vec2;
+
+  typedef struct transform {
+    vec2 translation;
+    complex rotation;
+  } transform;
 ]])
 
 function M:init(application)
@@ -77,6 +82,8 @@ function M:init(application)
   database:createColumn("position", "vec2")
   database:createColumn("shape")
   database:createColumn("static", "tag")
+  database:createColumn("transform", "transform")
+  database:createColumn("worldTransform", "transform")
 
   self.engine:addEvent("draw")
   self.engine:addEvent("fixedupdate")
@@ -309,13 +316,17 @@ function M:init(application)
     },
   })
 
-  database:insertRow({
-    camera = {},
-    position = {},
-  })
-
   nodeMod.setParent(database, rearWheelEntity, frameEntity)
   nodeMod.setParent(database, frontWheelEntity, frameEntity)
+
+  database:insertRow({
+    camera = {},
+
+    transform = {
+      translation = { 0, 0 },
+      rotation = { 1, 0 },
+    },
+  })
 end
 
 function M:handleEvent(event, ...)
