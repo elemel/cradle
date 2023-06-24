@@ -164,7 +164,66 @@ function M:init(application)
 
     shape = {
       shapeType = "rectangle",
-      size = { 10, 1 },
+      size = { 5, 1 },
+    },
+  })
+
+  database:insertRow({
+    body = {
+      angle = -0.5,
+      position = { 4, -0.5 },
+    },
+
+    creating = {},
+
+    fixture = {
+      friction = 0.5,
+    },
+
+    node = {},
+
+    shape = {
+      shapeType = "rectangle",
+      size = { 5, 1 },
+    },
+  })
+
+  database:insertRow({
+    body = {
+      angle = 0.5,
+      position = { 15, -0.5 },
+    },
+
+    creating = {},
+
+    fixture = {
+      friction = 0.5,
+    },
+
+    node = {},
+
+    shape = {
+      shapeType = "rectangle",
+      size = { 5, 1 },
+    },
+  })
+
+  database:insertRow({
+    body = {
+      position = { 19, 0.5 },
+    },
+
+    creating = {},
+
+    fixture = {
+      friction = 0.5,
+    },
+
+    node = {},
+
+    shape = {
+      shapeType = "rectangle",
+      size = { 5, 1 },
     },
   })
 
