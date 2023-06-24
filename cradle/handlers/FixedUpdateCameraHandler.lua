@@ -6,8 +6,8 @@ function M.new(engine)
   local database = assert(engine:getProperty("database"))
 
   local cameraQuery = sparrow.newQuery(database, {
-    arguments = { "position" },
-    inclusions = { "camera", "position" },
+    arguments = { "transform" },
+    inclusions = { "camera", "transform" },
   })
 
   local frameQuery = sparrow.newQuery(database, {
@@ -16,9 +16,10 @@ function M.new(engine)
   })
 
   return function(dt)
-    cameraQuery:forEach(function(position)
+    cameraQuery:forEach(function(transform)
       frameQuery:forEach(function(externalBody)
-        position.x, position.y = externalBody:getPosition()
+        transform.translation.x, transform.translation.y =
+          externalBody:getPosition()
       end)
     end)
   end
