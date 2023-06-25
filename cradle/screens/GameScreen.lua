@@ -157,10 +157,7 @@ function M:init(application)
   self.engine:addEventHandler("update", UpdateClockHandler.new(self.engine))
 
   database:insertRow({
-    body = {
-      position = { 0, 0.5 },
-    },
-
+    body = {},
     creating = {},
 
     fixture = {
@@ -172,15 +169,16 @@ function M:init(application)
     shape = {
       shapeType = "rectangle",
       size = { 5, 1 },
+    },
+
+    transform = {
+      rotation = { 1, 0 },
+      translation = { 0, 0.5 },
     },
   })
 
   database:insertRow({
-    body = {
-      angle = -0.5,
-      position = { 4, -0.5 },
-    },
-
+    body = {},
     creating = {},
 
     fixture = {
@@ -192,15 +190,16 @@ function M:init(application)
     shape = {
       shapeType = "rectangle",
       size = { 5, 1 },
+    },
+
+    transform = {
+      rotation = { math.cos(-0.5), math.sin(-0.5) },
+      translation = { 4, -0.5 },
     },
   })
 
   database:insertRow({
-    body = {
-      angle = 0.5,
-      position = { 15, -0.5 },
-    },
-
+    body = {},
     creating = {},
 
     fixture = {
@@ -212,14 +211,16 @@ function M:init(application)
     shape = {
       shapeType = "rectangle",
       size = { 5, 1 },
+    },
+
+    transform = {
+      rotation = { math.cos(0.5), math.sin(0.5) },
+      translation = { 15, -0.5 },
     },
   })
 
   database:insertRow({
-    body = {
-      position = { 19, 0.5 },
-    },
-
+    body = {},
     creating = {},
 
     fixture = {
@@ -231,13 +232,17 @@ function M:init(application)
     shape = {
       shapeType = "rectangle",
       size = { 5, 1 },
+    },
+
+    transform = {
+      rotation = { 1, 0 },
+      translation = { 19, 0.5 },
     },
   })
 
   local frameEntity = database:insertRow({
     body = {
       bodyType = "dynamic",
-      position = { 0, -0.6 },
     },
 
     creating = {},
@@ -254,12 +259,16 @@ function M:init(application)
       shapeType = "rectangle",
       size = { 1.3, 0.6 },
     },
+
+    transform = {
+      rotation = { 1, 0 },
+      translation = { 0, -0.6 },
+    },
   })
 
   local rearWheelEntity = database:insertRow({
     body = {
       bodyType = "dynamic",
-      position = { -0.65, -0.3 },
     },
 
     creating = {},
@@ -284,12 +293,16 @@ function M:init(application)
       shapeType = "circle",
       radius = 0.3,
     },
+
+    transform = {
+      rotation = { 1, 0 },
+      translation = { -0.65, -0.3 },
+    },
   })
 
   local frontWheelEntity = database:insertRow({
     body = {
       bodyType = "dynamic",
-      position = { 0.65, -0.3 },
     },
 
     creating = {},
@@ -313,6 +326,11 @@ function M:init(application)
     shape = {
       shapeType = "circle",
       radius = 0.3,
+    },
+
+    transform = {
+      rotation = { 1, 0 },
+      translation = { 0.65, -0.3 },
     },
   })
 
