@@ -6,7 +6,7 @@ function M.new(engine)
   local database = assert(engine:getProperty("database"))
 
   local query = sparrow.newQuery(database, {
-    inclusions = { "externalBody", "destroying" },
+    inclusions = { "externalBody", "deleting" },
     arguments = { "externalBody" },
     results = { "externalBody" },
   })
