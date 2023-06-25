@@ -7,23 +7,25 @@ function M.new(engine)
   local world = assert(engine:getProperty("world"))
 
   local query = sparrow.newQuery(database, {
-    inclusions = { "body", "creating" },
+    arguments = { "entity", "body", "transform" },
     exclusions = { "externalBody" },
-    arguments = { "entity", "body" },
+    inclusions = { "body", "creating", "transform" },
     results = { "externalBody" },
   })
 
   return function(dt)
-    query:forEach(function(entity, body)
+    query:forEach(function(entity, body, transform)
       local bodyType = body.bodyType or "static"
-      local x, y = unpack(body.position or { 0, 0 })
+
+      local x = transform.translation.x
+      local y = transform.translation.y
+
       local externalBody = love.physics.newBody(world, x, y, bodyType)
       externalBody:setUserData(entity)
       database:setCell(entity, bodyType, {})
 
-      if body.angle then
-        externalBody:setAngle(body.angle)
-      end
+      local angle = math.atan2(transform.rotation.im, transform.rotation.re)
+      externalBody:setAngle(angle)
 
       if body.angularVelocity then
         externalBody:setAngularVelocity(body.angularVelocity)
