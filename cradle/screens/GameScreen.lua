@@ -58,8 +58,10 @@ function M:init(application)
   self.engine:setProperty("application", application)
 
   self.engine:setProperty("clock", {
-    fixedDt = 1 / 60,
     accumulatedDt = 0,
+    fixedDt = 1 / 60,
+    fixedFrame = 0,
+    frame = 0,
     maxAccumulatedDt = 0.1,
   })
 
