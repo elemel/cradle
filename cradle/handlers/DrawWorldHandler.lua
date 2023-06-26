@@ -23,7 +23,7 @@ function M.new(engine, config)
       love.graphics.scale(scale)
       love.graphics.setLineWidth(1 / scale)
 
-      local angle = math.atan2(transform.rotation.im, transform.rotation.re)
+      local angle = math.atan2(transform.rotation.y, transform.rotation.x)
       love.graphics.rotate(-angle)
 
       love.graphics.translate(

@@ -24,7 +24,7 @@ function M.new(engine)
       externalBody:setUserData(entity)
       database:setCell(entity, bodyType, {})
 
-      local angle = math.atan2(transform.rotation.im, transform.rotation.re)
+      local angle = math.atan2(transform.rotation.y, transform.rotation.x)
       externalBody:setAngle(angle)
 
       if body.angularVelocity then

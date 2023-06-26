@@ -1,6 +1,6 @@
+local cdefMod = require("cradle.cdef")
 local Class = require("cradle.Class")
 local DrawWorldHandler = require("cradle.handlers.DrawWorldHandler")
-local ffi = require("ffi")
 local FixedUpdateCameraHandler =
   require("cradle.handlers.FixedUpdateCameraHandler")
 local FixedUpdateCreatingBodyHandler =
@@ -11,6 +11,8 @@ local FixedUpdateCreatingHandler =
   require("cradle.handlers.FixedUpdateCreatingHandler")
 local FixedUpdateCreatingJointHandler =
   require("cradle.handlers.FixedUpdateCreatingJointHandler")
+local FixedUpdateCreatingTransformHandler =
+  require("cradle.handlers.FixedUpdateCreatingTransformHandler")
 local FixedUpdateDeletingBodyHandler =
   require("cradle.handlers.FixedUpdateDeletingBodyHandler")
 local FixedUpdateDeletingFixtureHandler =
@@ -30,27 +32,6 @@ local sparrow = require("sparrow")
 local UpdateClockHandler = require("cradle.handlers.UpdateClockHandler")
 
 local M = Class.new()
-
-ffi.cdef([[
-  typedef struct node {
-    double parent;
-    double previousSibling;
-    double nextSibling;
-    double firstChild;
-  } node;
-
-  typedef struct tag {} tag;
-
-  typedef struct vec2 {
-    double x;
-    double y;
-  } vec2;
-
-  typedef struct transform {
-    vec2 translation;
-    complex rotation;
-  } transform;
-]])
 
 function M:init(application)
   self.application = assert(application)
@@ -80,12 +61,12 @@ function M:init(application)
   database:createColumn("frame", "tag")
   database:createColumn("joint")
   database:createColumn("kinematic", "tag")
+  database:createColumn("localTransform", "transform")
   database:createColumn("node", "node")
   database:createColumn("position", "vec2")
   database:createColumn("shape")
   database:createColumn("static", "tag")
   database:createColumn("transform", "transform")
-  database:createColumn("worldTransform", "transform")
 
   self.engine:addEvent("draw")
   self.engine:addEvent("fixedupdate")
@@ -99,6 +80,11 @@ function M:init(application)
   self.engine:setProperty("world", world)
 
   self.engine:addEventHandler("draw", DrawWorldHandler.new(self.engine))
+
+  self.engine:addEventHandler(
+    "fixedupdate",
+    FixedUpdateCreatingTransformHandler.new(self.engine)
+  )
 
   self.engine:addEventHandler(
     "fixedupdate",
@@ -166,17 +152,19 @@ function M:init(application)
       friction = 0.5,
     },
 
-    node = {},
-
-    shape = {
-      shapeType = "rectangle",
-      size = { 5, 1 },
-    },
-
-    transform = {
+    localTransform = {
       rotation = { 1, 0 },
       translation = { 0, 0.5 },
     },
+
+    node = {},
+
+    shape = {
+      shapeType = "rectangle",
+      size = { 5, 1 },
+    },
+
+    transform = {},
   })
 
   database:insertRow({
@@ -187,17 +175,19 @@ function M:init(application)
       friction = 0.5,
     },
 
-    node = {},
-
-    shape = {
-      shapeType = "rectangle",
-      size = { 5, 1 },
-    },
-
-    transform = {
+    localTransform = {
       rotation = { math.cos(-0.5), math.sin(-0.5) },
       translation = { 4, -0.5 },
     },
+
+    node = {},
+
+    shape = {
+      shapeType = "rectangle",
+      size = { 5, 1 },
+    },
+
+    transform = {},
   })
 
   database:insertRow({
@@ -208,17 +198,19 @@ function M:init(application)
       friction = 0.5,
     },
 
-    node = {},
-
-    shape = {
-      shapeType = "rectangle",
-      size = { 5, 1 },
-    },
-
-    transform = {
+    localTransform = {
       rotation = { math.cos(0.5), math.sin(0.5) },
       translation = { 15, -0.5 },
     },
+
+    node = {},
+
+    shape = {
+      shapeType = "rectangle",
+      size = { 5, 1 },
+    },
+
+    transform = {},
   })
 
   database:insertRow({
@@ -229,6 +221,11 @@ function M:init(application)
       friction = 0.5,
     },
 
+    localTransform = {
+      rotation = { 1, 0 },
+      translation = { 19, 0.5 },
+    },
+
     node = {},
 
     shape = {
@@ -236,10 +233,7 @@ function M:init(application)
       size = { 5, 1 },
     },
 
-    transform = {
-      rotation = { 1, 0 },
-      translation = { 19, 0.5 },
-    },
+    transform = {},
   })
 
   local frameEntity = database:insertRow({
@@ -255,6 +249,12 @@ function M:init(application)
     },
 
     frame = {},
+
+    localTransform = {
+      rotation = { 1, 0 },
+      translation = { 0, -0.6 },
+    },
+
     node = {},
 
     shape = {
@@ -262,10 +262,7 @@ function M:init(application)
       size = { 1.3, 0.6 },
     },
 
-    transform = {
-      rotation = { 1, 0 },
-      translation = { 0, -0.6 },
-    },
+    transform = {},
   })
 
   local rearWheelEntity = database:insertRow({
@@ -289,6 +286,11 @@ function M:init(application)
       springFrequency = 5,
     },
 
+    localTransform = {
+      rotation = { 1, 0 },
+      translation = { -0.65, 0.3 },
+    },
+
     node = {},
 
     shape = {
@@ -296,10 +298,7 @@ function M:init(application)
       radius = 0.3,
     },
 
-    transform = {
-      rotation = { 1, 0 },
-      translation = { -0.65, -0.3 },
-    },
+    transform = {},
   })
 
   local frontWheelEntity = database:insertRow({
@@ -323,6 +322,11 @@ function M:init(application)
       springFrequency = 5,
     },
 
+    localTransform = {
+      rotation = { 1, 0 },
+      translation = { 0.65, 0.3 },
+    },
+
     node = {},
 
     shape = {
@@ -330,10 +334,7 @@ function M:init(application)
       radius = 0.3,
     },
 
-    transform = {
-      rotation = { 1, 0 },
-      translation = { 0.65, -0.3 },
-    },
+    transform = {},
   })
 
   nodeMod.setParent(database, rearWheelEntity, frameEntity)
@@ -342,10 +343,12 @@ function M:init(application)
   database:insertRow({
     camera = {},
 
-    transform = {
-      translation = { 0, 0 },
+    localTransform = {
       rotation = { 1, 0 },
+      translation = { 0.65, 0.3 },
     },
+
+    transform = {},
   })
 end
 
