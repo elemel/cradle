@@ -59,6 +59,18 @@ function M.createRevoluteJoint(database, world, entity, joint)
     referenceAngle
   )
 
+  if joint.limitsEnabled ~= nil then
+    externalJoint:setLimitsEnabled(joint.limitsEnabled)
+  end
+
+  if joint.lowerLimit then
+    externalJoint:setLowerLimit(joint.lowerLimit)
+  end
+
+  if joint.upperLimit then
+    externalJoint:setUpperLimit(joint.upperLimit)
+  end
+
   externalJoint:setUserData(entity)
   return externalJoint
 end
