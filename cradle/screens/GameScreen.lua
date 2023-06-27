@@ -23,11 +23,15 @@ local FixedUpdateDeletingJointHandler =
   require("cradle.handlers.FixedUpdateDeletingJointHandler")
 local FixedUpdateInputHandler =
   require("cradle.handlers.FixedUpdateInputHandler")
+local FixedUpdateRiderHandler =
+  require("cradle.handlers.FixedUpdateRiderHandler")
 local FixedUpdateWorldHandler =
   require("cradle.handlers.FixedUpdateWorldHandler")
 local heart = require("heart")
+local motorcycleMod = require("cradle.motorcycle")
 local nodeMod = require("cradle.node")
 local KeyPressedHandler = require("cradle.handlers.KeyPressedHandler")
+local riderMod = require("cradle.rider")
 local sparrow = require("sparrow")
 local UpdateClockHandler = require("cradle.handlers.UpdateClockHandler")
 
@@ -58,12 +62,13 @@ function M:init(application)
   database:createColumn("externalFixture")
   database:createColumn("externalJoint")
   database:createColumn("fixture")
-  database:createColumn("frame", "tag")
   database:createColumn("joint")
   database:createColumn("kinematic", "tag")
   database:createColumn("localTransform", "transform")
+  database:createColumn("motorcycle", "tag")
   database:createColumn("node", "node")
   database:createColumn("position", "vec2")
+  database:createColumn("rider", "tag")
   database:createColumn("shape")
   database:createColumn("static", "tag")
   database:createColumn("transform", "transform")
@@ -109,6 +114,11 @@ function M:init(application)
   self.engine:addEventHandler(
     "fixedupdate",
     FixedUpdateInputHandler.new(self.engine)
+  )
+
+  self.engine:addEventHandler(
+    "fixedupdate",
+    FixedUpdateRiderHandler.new(self.engine)
   )
 
   self.engine:addEventHandler(
@@ -236,109 +246,15 @@ function M:init(application)
     transform = {},
   })
 
-  local frameEntity = database:insertRow({
-    body = {
-      bodyType = "dynamic",
-    },
-
-    creating = {},
-
-    fixture = {
-      friction = 0.5,
-      groupIndex = -1,
-    },
-
-    frame = {},
-
-    localTransform = {
-      rotation = { 1, 0 },
-      translation = { 0, -0.6 },
-    },
-
-    node = {},
-
-    shape = {
-      shapeType = "rectangle",
-      size = { 1.3, 0.6 },
-    },
-
-    transform = {},
+  local frameEntity = motorcycleMod.createMotorcycle(database, {
+    rotation = { 1, 0 },
+    translation = { 0, -0.45 },
   })
 
-  local rearWheelEntity = database:insertRow({
-    body = {
-      bodyType = "dynamic",
-    },
-
-    creating = {},
-
-    fixture = {
-      friction = 2,
-      groupIndex = -1,
-    },
-
-    joint = {
-      bodyA = frameEntity,
-      jointType = "wheel",
-      localAnchorA = { -0.65, 0.3 },
-      maxMotorTorque = 10,
-      springDampingRatio = 0.5,
-      springFrequency = 5,
-    },
-
-    localTransform = {
-      rotation = { 1, 0 },
-      translation = { -0.65, 0.3 },
-    },
-
-    node = {},
-
-    shape = {
-      shapeType = "circle",
-      radius = 0.3,
-    },
-
-    transform = {},
+  local trunkEntity = riderMod.createRider(database, frameEntity, {
+    rotation = { 1, 0 },
+    translation = { 0, -0.6 },
   })
-
-  local frontWheelEntity = database:insertRow({
-    body = {
-      bodyType = "dynamic",
-    },
-
-    creating = {},
-
-    fixture = {
-      friction = 2,
-      groupIndex = -1,
-    },
-
-    joint = {
-      bodyA = frameEntity,
-      jointType = "wheel",
-      localAnchorA = { 0.65, 0.3 },
-      maxMotorTorque = 10,
-      springDampingRatio = 0.5,
-      springFrequency = 5,
-    },
-
-    localTransform = {
-      rotation = { 1, 0 },
-      translation = { 0.65, 0.3 },
-    },
-
-    node = {},
-
-    shape = {
-      shapeType = "circle",
-      radius = 0.3,
-    },
-
-    transform = {},
-  })
-
-  nodeMod.setParent(database, rearWheelEntity, frameEntity)
-  nodeMod.setParent(database, frontWheelEntity, frameEntity)
 
   database:insertRow({
     camera = {},
