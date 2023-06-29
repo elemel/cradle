@@ -6,15 +6,13 @@ function M.new(engine)
   local database = assert(engine:getProperty("database"))
 
   local query = sparrow.newQuery(database, {
-    inclusions = { "externalFixture", "deleting" },
-    arguments = { "externalFixture" },
-    results = { "externalFixture" },
+    inclusions = { "destroying" },
+    arguments = { "entity" },
   })
 
   return function(dt)
-    query:forEach(function(externalFixture)
-      externalFixture:destroy()
-      return nil
+    query:forEach(function(entity)
+      database:deleteRow(entity)
     end)
   end
 end

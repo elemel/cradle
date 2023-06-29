@@ -13,14 +13,14 @@ local FixedUpdateCreatingJointHandler =
   require("cradle.handlers.FixedUpdateCreatingJointHandler")
 local FixedUpdateCreatingTransformHandler =
   require("cradle.handlers.FixedUpdateCreatingTransformHandler")
-local FixedUpdateDeletingBodyHandler =
-  require("cradle.handlers.FixedUpdateDeletingBodyHandler")
-local FixedUpdateDeletingFixtureHandler =
-  require("cradle.handlers.FixedUpdateDeletingFixtureHandler")
-local FixedUpdateDeletingHandler =
-  require("cradle.handlers.FixedUpdateDeletingHandler")
-local FixedUpdateDeletingJointHandler =
-  require("cradle.handlers.FixedUpdateDeletingJointHandler")
+local FixedUpdateDestroyingBodyHandler =
+  require("cradle.handlers.FixedUpdateDestroyingBodyHandler")
+local FixedUpdateDestroyingFixtureHandler =
+  require("cradle.handlers.FixedUpdateDestroyingFixtureHandler")
+local FixedUpdateDestroyingHandler =
+  require("cradle.handlers.FixedUpdateDestroyingHandler")
+local FixedUpdateDestroyingJointHandler =
+  require("cradle.handlers.FixedUpdateDestroyingJointHandler")
 local FixedUpdateInputHandler =
   require("cradle.handlers.FixedUpdateInputHandler")
 local FixedUpdateRiderHandler =
@@ -57,7 +57,7 @@ function M:init(application)
   database:createColumn("body")
   database:createColumn("camera", "tag")
   database:createColumn("creating", "tag")
-  database:createColumn("deleting", "tag")
+  database:createColumn("destroying", "tag")
   database:createColumn("dynamic", "tag")
   database:createColumn("externalBody")
   database:createColumn("externalFixture")
@@ -136,22 +136,22 @@ function M:init(application)
 
   self.engine:addEventHandler(
     "fixedupdate",
-    FixedUpdateDeletingJointHandler.new(self.engine)
+    FixedUpdateDestroyingJointHandler.new(self.engine)
   )
 
   self.engine:addEventHandler(
     "fixedupdate",
-    FixedUpdateDeletingFixtureHandler.new(self.engine)
+    FixedUpdateDestroyingFixtureHandler.new(self.engine)
   )
 
   self.engine:addEventHandler(
     "fixedupdate",
-    FixedUpdateDeletingBodyHandler.new(self.engine)
+    FixedUpdateDestroyingBodyHandler.new(self.engine)
   )
 
   self.engine:addEventHandler(
     "fixedupdate",
-    FixedUpdateDeletingHandler.new(self.engine)
+    FixedUpdateDestroyingHandler.new(self.engine)
   )
 
   self.engine:addEventHandler("keypressed", KeyPressedHandler.new(self.engine))
