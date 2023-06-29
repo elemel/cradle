@@ -54,7 +54,7 @@ function M:init(application)
   local database = sparrow.newDatabase()
   self.engine:setProperty("database", database)
 
-  database:createColumn("body")
+  database:createColumn("bodyConfig")
   database:createColumn("camera", "tag")
   database:createColumn("creating", "tag")
   database:createColumn("destroying", "tag")
@@ -62,8 +62,8 @@ function M:init(application)
   database:createColumn("externalBody")
   database:createColumn("externalFixture")
   database:createColumn("externalJoint")
-  database:createColumn("fixture")
-  database:createColumn("joint")
+  database:createColumn("fixtureConfig")
+  database:createColumn("jointConfig")
   database:createColumn("kinematic", "tag")
   database:createColumn("localTransform", "transform")
   database:createColumn("motorcycle", "tag")
@@ -159,10 +159,10 @@ function M:init(application)
   self.engine:addEventHandler("update", UpdateClockHandler.new(self.engine))
 
   database:insertRow({
-    body = {},
+    bodyConfig = {},
     creating = {},
 
-    fixture = {
+    fixtureConfig = {
       friction = 0.5,
     },
 
@@ -182,10 +182,10 @@ function M:init(application)
   })
 
   database:insertRow({
-    body = {},
+    bodyConfig = {},
     creating = {},
 
-    fixture = {
+    fixtureConfig = {
       friction = 0.5,
     },
 
@@ -205,10 +205,10 @@ function M:init(application)
   })
 
   database:insertRow({
-    body = {},
+    bodyConfig = {},
     creating = {},
 
-    fixture = {
+    fixtureConfig = {
       friction = 0.5,
     },
 
@@ -228,10 +228,10 @@ function M:init(application)
   })
 
   database:insertRow({
-    body = {},
+    bodyConfig = {},
     creating = {},
 
-    fixture = {
+    fixtureConfig = {
       friction = 0.5,
     },
 
