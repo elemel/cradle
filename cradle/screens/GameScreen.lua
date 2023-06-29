@@ -54,15 +54,15 @@ function M:init(application)
   local database = sparrow.newDatabase()
   self.engine:setProperty("database", database)
 
+  database:createColumn("body")
   database:createColumn("bodyConfig")
   database:createColumn("camera", "tag")
   database:createColumn("creating", "tag")
   database:createColumn("destroying", "tag")
   database:createColumn("dynamic", "tag")
-  database:createColumn("externalBody")
-  database:createColumn("externalFixture")
-  database:createColumn("externalJoint")
+  database:createColumn("fixture")
   database:createColumn("fixtureConfig")
+  database:createColumn("joint")
   database:createColumn("jointConfig")
   database:createColumn("kinematic", "tag")
   database:createColumn("localTransform", "transform")
@@ -70,7 +70,7 @@ function M:init(application)
   database:createColumn("node", "node")
   database:createColumn("position", "vec2")
   database:createColumn("rider", "tag")
-  database:createColumn("shape")
+  database:createColumn("shapeConfig")
   database:createColumn("spring")
   database:createColumn("static", "tag")
   database:createColumn("transform", "transform")
@@ -173,7 +173,7 @@ function M:init(application)
 
     node = {},
 
-    shape = {
+    shapeConfig = {
       shapeType = "rectangle",
       size = { 5, 1 },
     },
@@ -196,7 +196,7 @@ function M:init(application)
 
     node = {},
 
-    shape = {
+    shapeConfig = {
       shapeType = "rectangle",
       size = { 5, 1 },
     },
@@ -219,7 +219,7 @@ function M:init(application)
 
     node = {},
 
-    shape = {
+    shapeConfig = {
       shapeType = "rectangle",
       size = { 5, 1 },
     },
@@ -242,7 +242,7 @@ function M:init(application)
 
     node = {},
 
-    shape = {
+    shapeConfig = {
       shapeType = "rectangle",
       size = { 5, 1 },
     },

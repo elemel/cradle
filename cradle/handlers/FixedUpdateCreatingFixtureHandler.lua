@@ -7,52 +7,50 @@ function M.new(engine)
   local world = assert(engine:getProperty("world"))
 
   local query = sparrow.newQuery(database, {
-    inclusions = { "creating", "externalBody", "fixtureConfig", "shape" },
-    exclusions = { "externalFixture" },
-    arguments = { "entity", "externalBody", "fixtureConfig", "shape" },
-    results = { "externalFixture" },
+    inclusions = { "creating", "body", "fixtureConfig", "shapeConfig" },
+    exclusions = { "fixture" },
+    arguments = { "entity", "body", "fixtureConfig", "shapeConfig" },
+    results = { "fixture" },
   })
 
   return function(dt)
-    query:forEach(function(entity, externalBody, fixtureConfig, shape)
-      local shapeType = shape.shapeType or "rectangle"
-      local externalShape
+    query:forEach(function(entity, body, fixtureConfig, shapeConfig)
+      local shapeType = shapeConfig.shapeType or "rectangle"
+      local shape
 
       if shapeType == "circle" then
-        local x, y = unpack(shape.position or { 0, 0 })
-        local radius = shape.radius or 0.5
-        externalShape = love.physics.newCircleShape(x, y, radius)
+        local x, y = unpack(shapeConfig.position or { 0, 0 })
+        local radius = shapeConfig.radius or 0.5
+        shape = love.physics.newCircleShape(x, y, radius)
       elseif shapeType == "rectangle" then
-        local x, y = unpack(shape.position or { 0, 0 })
-        local width, height = unpack(shape.size or { 1, 1 })
-        local angle = shape.angle or 0
-        externalShape =
-          love.physics.newRectangleShape(x, y, width, height, angle)
+        local x, y = unpack(shapeConfig.position or { 0, 0 })
+        local width, height = unpack(shapeConfig.size or { 1, 1 })
+        local angle = shapeConfig.angle or 0
+        shape = love.physics.newRectangleShape(x, y, width, height, angle)
       else
         error("Invalid shape type: " .. shapeType)
       end
 
-      local externalFixture =
-        love.physics.newFixture(externalBody, externalShape)
-      externalFixture:setUserData(entity)
+      local fixture = love.physics.newFixture(body, shape)
+      fixture:setUserData(entity)
 
       if fixtureConfig.friction then
-        externalFixture:setFriction(fixtureConfig.friction)
+        fixture:setFriction(fixtureConfig.friction)
       end
 
       if fixtureConfig.groupIndex then
-        externalFixture:setGroupIndex(fixtureConfig.groupIndex)
+        fixture:setGroupIndex(fixtureConfig.groupIndex)
       end
 
       if fixtureConfig.restitution then
-        externalFixture:setRestitution(fixtureConfig.restitution)
+        fixture:setRestitution(fixtureConfig.restitution)
       end
 
       if fixtureConfig.sensor ~= nil then
-        externalFixture:setSensor(fixtureConfig.sensor)
+        fixture:setSensor(fixtureConfig.sensor)
       end
 
-      return externalFixture
+      return fixture
     end)
   end
 end

@@ -23,7 +23,7 @@ function M.createMotorcycle(database, localTransform)
     motorcycle = {},
     node = {},
 
-    shape = {
+    shapeConfig = {
       shapeType = "rectangle",
       size = { 1.3, 0.3 },
     },
@@ -59,7 +59,7 @@ function M.createMotorcycle(database, localTransform)
 
     node = {},
 
-    shape = {
+    shapeConfig = {
       shapeType = "circle",
       radius = 0.3,
     },
@@ -96,7 +96,7 @@ function M.createMotorcycle(database, localTransform)
 
     node = {},
 
-    shape = {
+    shapeConfig = {
       shapeType = "circle",
       radius = 0.3,
     },

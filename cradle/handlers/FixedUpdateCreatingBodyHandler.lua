@@ -8,9 +8,9 @@ function M.new(engine)
 
   local query = sparrow.newQuery(database, {
     arguments = { "entity", "bodyConfig", "transform" },
-    exclusions = { "externalBody" },
+    exclusions = { "body" },
     inclusions = { "bodyConfig", "creating", "transform" },
-    results = { "externalBody" },
+    results = { "body" },
   })
 
   return function(dt)
@@ -20,22 +20,22 @@ function M.new(engine)
       local x = transform.translation.x
       local y = transform.translation.y
 
-      local externalBody = love.physics.newBody(world, x, y, bodyType)
-      externalBody:setUserData(entity)
+      local body = love.physics.newBody(world, x, y, bodyType)
+      body:setUserData(entity)
       database:setCell(entity, bodyType, {})
 
       local angle = math.atan2(transform.rotation.y, transform.rotation.x)
-      externalBody:setAngle(angle)
+      body:setAngle(angle)
 
       if bodyConfig.angularVelocity then
-        externalBody:setAngularVelocity(bodyConfig.angularVelocity)
+        body:setAngularVelocity(bodyConfig.angularVelocity)
       end
 
       if bodyConfig.linearVelocity then
-        externalBody:setLinearVelocity(unpack(bodyConfig.linearVelocity))
+        body:setLinearVelocity(unpack(bodyConfig.linearVelocity))
       end
 
-      return externalBody
+      return body
     end)
   end
 end
