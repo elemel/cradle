@@ -45,11 +45,11 @@ function M.createMotorcycle(database, localTransform)
 
     joint = {
       bodyA = frameEntity,
+      damping = 20,
       jointType = "wheel",
       localAnchorA = { -0.65, 0.15 },
       maxMotorTorque = 10,
-      springDampingRatio = 1,
-      springFrequency = 10,
+      stiffness = 200,
     },
 
     localTransform = {
@@ -65,6 +65,7 @@ function M.createMotorcycle(database, localTransform)
     },
 
     transform = {},
+    wheel = {},
   })
 
   local frontWheelEntity = database:insertRow({
@@ -81,11 +82,11 @@ function M.createMotorcycle(database, localTransform)
 
     joint = {
       bodyA = frameEntity,
+      damping = 20,
       jointType = "wheel",
       localAnchorA = { 0.65, 0.15 },
       maxMotorTorque = 10,
-      springDampingRatio = 1,
-      springFrequency = 10,
+      stiffness = 200,
     },
 
     localTransform = {
@@ -101,6 +102,7 @@ function M.createMotorcycle(database, localTransform)
     },
 
     transform = {},
+    wheel = {},
   })
 
   nodeMod.setParent(database, rearWheelEntity, frameEntity)

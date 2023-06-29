@@ -4,6 +4,7 @@ local TitleScreen = require("cradle.screens.TitleScreen")
 
 function love.load()
   love.physics.setMeter(1)
+  love.mouse.setRelativeMode(true)
   application = Application.new()
   application:pushScreen(QuitScreen.new(application))
   application:pushScreen(TitleScreen.new(application))

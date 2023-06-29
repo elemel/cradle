@@ -17,7 +17,9 @@ function M.new(engine)
     query:forEach(function(entity, joint)
       local jointType = assert(joint.jointType)
 
-      if jointType == "revolute" then
+      if jointType == "motor" then
+        return M.createMotorJoint(database, world, entity, joint)
+      elseif jointType == "revolute" then
         return M.createRevoluteJoint(database, world, entity, joint)
       elseif jointType == "wheel" then
         return M.createWheelJoint(database, world, entity, joint)
@@ -26,6 +28,47 @@ function M.new(engine)
       end
     end)
   end
+end
+
+function M.createMotorJoint(database, world, entity, joint)
+  local bodyEntityA = joint.bodyA or entity
+  local bodyEntityB = joint.bodyB or entity
+
+  local externalBodyA = assert(database:getCell(bodyEntityA, "externalBody"))
+  local externalBodyB = assert(database:getCell(bodyEntityB, "externalBody"))
+
+  local correctionFactor = joint.correctionFactor or 0.3
+  local collideConnected = false
+
+  if joint.collideConnected ~= nil then
+    collideConnected = joint.collideConnected
+  end
+
+  local externalJoint = love.physics.newMotorJoint(
+    externalBodyA,
+    externalBodyB,
+    correctionFactor,
+    collideConnected
+  )
+
+  if joint.linearOffset then
+    externalJoint:setLinearOffset(unpack(joint.linearOffset))
+  end
+
+  if joint.angularOffset then
+    externalJoint:setAngularOffset(joint.angularOffset)
+  end
+
+  if joint.maxForce then
+    externalJoint:setMaxForce(joint.maxForce)
+  end
+
+  if joint.maxTorque then
+    externalJoint:setMaxTorque(joint.maxTorque)
+  end
+
+  externalJoint:setUserData(entity)
+  return externalJoint
 end
 
 function M.createRevoluteJoint(database, world, entity, joint)
@@ -113,12 +156,12 @@ function M.createWheelJoint(database, world, entity, joint)
     externalJoint:setMaxMotorTorque(joint.maxMotorTorque)
   end
 
-  if joint.springDampingRatio then
-    externalJoint:setSpringDampingRatio(joint.springDampingRatio)
+  if joint.damping then
+    externalJoint:setDamping(joint.damping)
   end
 
-  if joint.springFrequency then
-    externalJoint:setSpringFrequency(joint.springFrequency)
+  if joint.stiffness then
+    externalJoint:setStiffness(joint.stiffness)
   end
 
   return externalJoint
