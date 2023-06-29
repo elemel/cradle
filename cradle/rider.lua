@@ -377,6 +377,15 @@ function M.createRider(database, frameEntity, localTransform)
       size = { 0.3, 0.7 },
     },
 
+    joint = {
+      angularOffset = 0.125 * math.pi,
+      bodyA = frameEntity,
+      linearOffset = { 0, -0.75 },
+      jointType = "motor",
+      maxForce = 100,
+      maxTorque = 10,
+    },
+
     transform = {},
   })
 

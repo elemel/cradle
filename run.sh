@@ -1,1 +1,1 @@
-LUA_PATH='heart/?.lua;heart/?/init.lua;sparrow/?.lua;sparrow/?/init.lua' love .
+LUA_PATH='heart/?.lua;heart/?/init.lua;sparrow/?.lua;sparrow/?/init.lua' love-12.0 .
