@@ -6,12 +6,12 @@ function M.new(engine)
   local database = assert(engine:getProperty("database"))
 
   local riderQuery = sparrow.newQuery(database, {
-    arguments = { "externalJoint" },
-    inclusions = { "externalJoint", "rider" },
+    arguments = { "joint" },
+    inclusions = { "joint", "rider" },
   })
 
   return function(dt)
-    riderQuery:forEach(function(externalJoint) end)
+    riderQuery:forEach(function(joint) end)
   end
 end
 
