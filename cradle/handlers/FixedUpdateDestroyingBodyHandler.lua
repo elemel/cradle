@@ -6,14 +6,14 @@ function M.new(engine)
   local database = assert(engine:getProperty("database"))
 
   local query = sparrow.newQuery(database, {
-    inclusions = { "externalJoint", "deleting" },
-    arguments = { "externalJoint" },
-    results = { "externalJoint" },
+    inclusions = { "externalBody", "destroying" },
+    arguments = { "externalBody" },
+    results = { "externalBody" },
   })
 
   return function(dt)
-    query:forEach(function(externalJoint)
-      externalJoint:destroy()
+    query:forEach(function(externalBody)
+      externalBody:destroy()
       return nil
     end)
   end
