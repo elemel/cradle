@@ -5,6 +5,10 @@ function M.new(engine)
 
   return function(key, scancode, isrepeat)
     if key == "escape" then
+      local width, height = love.graphics.getDimensions()
+      love.mouse.setPosition(0.75 * width, 0.75 * height)
+      love.mouse.setRelativeMode(false)
+
       application:popScreen()
       local screen = application:peekScreen()
 
