@@ -4,7 +4,6 @@ local TitleScreen = require("cradle.screens.TitleScreen")
 
 function love.load()
   love.physics.setMeter(1)
-  love.mouse.setRelativeMode(true)
   application = Application.new()
   application:pushScreen(QuitScreen.new(application))
   application:pushScreen(TitleScreen.new(application))
@@ -30,10 +29,26 @@ function love.mousemoved(...)
   return application:handleEvent("mousemoved", ...)
 end
 
+function love.mousepressed(...)
+  return application:handleEvent("mousepressed", ...)
+end
+
+function love.mousereleased(...)
+  return application:handleEvent("mousereleased", ...)
+end
+
 function love.resize(...)
   return application:handleEvent("resize", ...)
 end
 
+function love.textinput(...)
+  return application:handleEvent("textinput", ...)
+end
+
 function love.update(...)
   return application:handleEvent("update", ...)
+end
+
+function love.wheelmoved(...)
+  return application:handleEvent("wheelmoved", ...)
 end
