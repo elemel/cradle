@@ -1,11 +1,25 @@
+local cdefMod = require("cradle.cdef")
 local Class = require("cradle.Class")
+local nodeMod = require("cradle.node")
 local Slab = require("Slab")
+local sparrow = require("sparrow")
 
 local M = Class.new()
 
 function M:init(application)
   self.application = assert(application)
   Slab.Initialize({}, true)
+  self.database = sparrow.newDatabase()
+  self.database:createColumn("node", "node")
+
+  local entity1 = self.database:insertRow({ node = {} })
+  local entity2 = self.database:insertRow({ node = {} })
+  local entity3 = self.database:insertRow({ node = {} })
+  local entity4 = self.database:insertRow({ node = {} })
+
+  nodeMod.setParent(self.database, entity2, entity1)
+  nodeMod.setParent(self.database, entity3, entity2)
+  nodeMod.setParent(self.database, entity4, entity1)
 end
 
 function M:handleEvent(event, ...)
@@ -62,7 +76,6 @@ end
 
 function M:update(dt)
   Slab.Update(dt)
-
   local width, height = love.graphics.getDimensions()
 
   local layout = {
@@ -87,6 +100,7 @@ function M:update(dt)
     Y = 0,
   })
 
+  self:updateEntityTree()
   Slab.EndWindow()
 
   Slab.BeginWindow("rightDock", {
@@ -122,6 +136,41 @@ end
 
 function M:wheelmoved(...)
   Slab.OnWheelMoved(...)
+end
+
+function M:updateEntityTree()
+  for entity in self.database.getNextEntity, self.database do
+    local node = self.database:getCell(entity, "node")
+
+    if node and node.parent == 0 then
+      self:updateEntityNode(entity)
+    end
+  end
+end
+
+function M:updateEntityNode(entity)
+  local node = self.database:getCell(entity, "node")
+  local leaf = node.firstChild == 0
+
+  local open = Slab.BeginTree(
+    "entity" .. entity,
+    { IsLeaf = leaf, Label = "Entity #" .. entity, OpenWithHighlight = false }
+  )
+
+  if open then
+    if not leaf then
+      local childEntity = node.firstChild
+
+      repeat
+        self:updateEntityNode(childEntity)
+
+        local childNode = self.database:getCell(childEntity, "node")
+        childEntity = childNode.nextSibling
+      until childEntity == node.firstChild
+    end
+
+    Slab.EndTree()
+  end
 end
 
 return M
