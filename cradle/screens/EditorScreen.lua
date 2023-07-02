@@ -3,6 +3,7 @@ local Class = require("cradle.Class")
 local nodeMod = require("cradle.node")
 local Slab = require("Slab")
 local sparrow = require("sparrow")
+local tableMod = require("cradle.table")
 
 local M = Class.new()
 
@@ -10,12 +11,45 @@ function M:init(application)
   self.application = assert(application)
   Slab.Initialize({}, true)
   self.database = sparrow.newDatabase()
-  self.database:createColumn("node", "node")
 
-  local entity1 = self.database:insertRow({ node = {} })
-  local entity2 = self.database:insertRow({ node = {} })
-  local entity3 = self.database:insertRow({ node = {} })
-  local entity4 = self.database:insertRow({ node = {} })
+  self.database:createColumn("label")
+  self.database:createColumn("localTransform", "transform")
+  self.database:createColumn("node", "node")
+  self.database:createColumn("transform", "transform")
+  self.database:createColumn("selected", "tag")
+
+  self.selectedQuery = sparrow.newQuery(self.database, {
+    arguments = { "entity" },
+    inclusions = { "selected" },
+  })
+
+  local entity1 = self.database:insertRow({
+    label = "A",
+    localTransform = { rotation = { 1, 0 } },
+    node = {},
+    transform = {},
+  })
+
+  local entity2 = self.database:insertRow({
+    label = "B",
+    localTransform = { rotation = { 1, 0 } },
+    node = {},
+    transform = {},
+  })
+
+  local entity3 = self.database:insertRow({
+    label = "C",
+    localTransform = { rotation = { 1, 0 } },
+    node = {},
+    transform = {},
+  })
+
+  local entity4 = self.database:insertRow({
+    label = "D",
+    localTransform = { rotation = { 1, 0 } },
+    node = {},
+    transform = {},
+  })
 
   nodeMod.setParent(self.database, entity2, entity1)
   nodeMod.setParent(self.database, entity3, entity2)
@@ -116,6 +150,7 @@ function M:update(dt)
     Y = 0,
   })
 
+  self:updateComponentList()
   Slab.EndWindow()
 
   Slab.BeginWindow("bottomDock", {
@@ -149,20 +184,33 @@ function M:updateEntityTree()
 end
 
 function M:updateEntityNode(entity)
+  local label = self.database:getCell(entity, "label") or "Entity " .. entity
   local node = self.database:getCell(entity, "node")
   local leaf = node.firstChild == 0
+  local selected = self.database:containsCell(entity, "selected")
 
-  local open = Slab.BeginTree(
-    "entity" .. entity,
-    { IsLeaf = leaf, Label = "Entity #" .. entity, OpenWithHighlight = false }
-  )
+  local open = Slab.BeginTree("entity" .. entity, {
+    IsLeaf = leaf,
+    IsSelected = selected,
+    Label = label,
+    OpenWithHighlight = false,
+  })
+
+  if Slab.IsControlClicked() then
+    self.selectedQuery:forEach(function(selectedEntity)
+      self.database:setCell(selectedEntity, "selected", nil)
+    end)
+
+    self.database:setCell(entity, "selected", {})
+    selected = true
+  end
 
   if open then
     if not leaf then
       local childEntity = node.firstChild
 
       repeat
-        self:updateEntityNode(childEntity)
+        self:updateEntityNode(childEntity, selectedEntitites)
 
         local childNode = self.database:getCell(childEntity, "node")
         childEntity = childNode.nextSibling
@@ -171,6 +219,43 @@ function M:updateEntityNode(entity)
 
     Slab.EndTree()
   end
+end
+
+function M:updateComponentList()
+  local selectedEntity = self:getSelectedEntity()
+
+  if not selectedEntity then
+    return
+  end
+
+  local archetype = self.database:getArchetype(selectedEntity)
+  local sortedComponents = tableMod.sortedKeys(archetype)
+
+  for _, component in ipairs(sortedComponents) do
+    Slab.Text(component)
+  end
+end
+
+function M:getSelectedEntity()
+  local count = 0
+  local result
+
+  self.selectedQuery:forEach(function(entity)
+    count = count + 1
+    result = entity
+  end)
+
+  return count == 1 and result or nil
+end
+
+function M:getSelectedEntities(result)
+  result = result or {}
+
+  self.selectedQuery:forEach(function(entity)
+    result[entity] = true
+  end)
+
+  return result
 end
 
 return M
