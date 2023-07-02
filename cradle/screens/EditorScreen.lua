@@ -12,48 +12,52 @@ function M:init(application)
   Slab.Initialize({}, true)
   self.database = sparrow.newDatabase()
 
-  self.database:createColumn("label")
   self.database:createColumn("localTransform", "transform")
   self.database:createColumn("node", "node")
+  self.database:createColumn("title")
   self.database:createColumn("transform", "transform")
-  self.database:createColumn("selected", "tag")
 
-  self.selectedQuery = sparrow.newQuery(self.database, {
-    arguments = { "entity" },
-    inclusions = { "selected" },
-  })
+  self.componentTitles = {
+    localTransform = "Local Transform",
+    node = "Node",
+    title = "Title",
+    transform = "Transform",
+  }
 
   local entity1 = self.database:insertRow({
-    label = "A",
     localTransform = { rotation = { 1, 0 } },
     node = {},
+    title = "A",
     transform = {},
   })
 
   local entity2 = self.database:insertRow({
-    label = "B",
     localTransform = { rotation = { 1, 0 } },
     node = {},
+    title = "B",
     transform = {},
   })
 
   local entity3 = self.database:insertRow({
-    label = "C",
     localTransform = { rotation = { 1, 0 } },
     node = {},
+    title = "C",
     transform = {},
   })
 
   local entity4 = self.database:insertRow({
-    label = "D",
     localTransform = { rotation = { 1, 0 } },
     node = {},
+    title = "D",
     transform = {},
   })
 
   nodeMod.setParent(self.database, entity2, entity1)
   nodeMod.setParent(self.database, entity3, entity2)
   nodeMod.setParent(self.database, entity4, entity1)
+
+  self.selectedEntities = {}
+  self.selectedComponents = {}
 end
 
 function M:handleEvent(event, ...)
@@ -66,6 +70,7 @@ end
 
 function M:draw()
   love.graphics.push("all")
+  love.graphics.clear()
   Slab.Draw()
   love.graphics.pop()
 end
@@ -142,6 +147,7 @@ function M:update(dt)
     AllowResize = false,
     AutoSizeWindow = false,
     Border = layout.border,
+    ContentW = layout.rightDockWidth - layout.border,
     H = layout.height - layout.bottomDockHeight - layout.border,
     ResetLayout = true,
     ShowMinimize = false,
@@ -174,6 +180,9 @@ function M:wheelmoved(...)
 end
 
 function M:updateEntityTree()
+  Slab.Text("Entities")
+  Slab.Separator()
+
   for entity in self.database.getNextEntity, self.database do
     local node = self.database:getCell(entity, "node")
 
@@ -184,10 +193,10 @@ function M:updateEntityTree()
 end
 
 function M:updateEntityNode(entity)
-  local label = self.database:getCell(entity, "label") or "Entity " .. entity
+  local label = self.database:getCell(entity, "title") or "Entity " .. entity
   local node = self.database:getCell(entity, "node")
   local leaf = node.firstChild == 0
-  local selected = self.database:containsCell(entity, "selected")
+  local selected = self.selectedEntities[entity] or false
 
   local open = Slab.BeginTree("entity" .. entity, {
     IsLeaf = leaf,
@@ -197,11 +206,8 @@ function M:updateEntityNode(entity)
   })
 
   if Slab.IsControlClicked() then
-    self.selectedQuery:forEach(function(selectedEntity)
-      self.database:setCell(selectedEntity, "selected", nil)
-    end)
-
-    self.database:setCell(entity, "selected", {})
+    tableMod.clear(self.selectedEntities)
+    self.selectedEntities[entity] = true
     selected = true
   end
 
@@ -222,40 +228,41 @@ function M:updateEntityNode(entity)
 end
 
 function M:updateComponentList()
-  local selectedEntity = self:getSelectedEntity()
+  local entity = tableMod.count(self.selectedEntities) == 1
+    and next(self.selectedEntities)
 
-  if not selectedEntity then
+  if not entity then
     return
   end
 
-  local archetype = self.database:getArchetype(selectedEntity)
+  Slab.Text("Components")
+
+  local archetype = self.database:getArchetype(entity)
   local sortedComponents = tableMod.sortedKeys(archetype)
 
   for _, component in ipairs(sortedComponents) do
-    Slab.Text(component)
+    Slab.Separator()
+    local label = self.componentTitles[component] or component
+    local selected = self.selectedComponents[component] or false
+
+    if Slab.Text(label, { IsSelectable = true, IsSelected = selected }) then
+      tableMod.clear(self.selectedComponents)
+      self.selectedComponents[component] = true
+      selected = true
+    end
+
+    if component == "title" then
+      local changed = Slab.Input("title", {
+        Align = "left",
+        Text = self.database:getCell(entity, "title"),
+        W = 192,
+      })
+
+      if changed then
+        self.database:setCell(entity, "title", Slab.GetInputText())
+      end
+    end
   end
-end
-
-function M:getSelectedEntity()
-  local count = 0
-  local result
-
-  self.selectedQuery:forEach(function(entity)
-    count = count + 1
-    result = entity
-  end)
-
-  return count == 1 and result or nil
-end
-
-function M:getSelectedEntities(result)
-  result = result or {}
-
-  self.selectedQuery:forEach(function(entity)
-    result[entity] = true
-  end)
-
-  return result
 end
 
 return M
