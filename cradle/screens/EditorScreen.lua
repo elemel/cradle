@@ -1,6 +1,8 @@
+local AddCellCommand = require("cradle.commands.AddCellCommand")
 local cdefMod = require("cradle.cdef")
 local Class = require("cradle.Class")
 local nodeMod = require("cradle.node")
+local RemoveCellCommand = require("cradle.commands.RemoveCellCommand")
 local Slab = require("Slab")
 local sparrow = require("sparrow")
 local tableMod = require("cradle.table")
@@ -10,6 +12,10 @@ local M = Class.new()
 function M:init(application)
   self.application = assert(application)
   Slab.Initialize({}, true)
+
+  self.commandHistory = {}
+  self.commandFuture = {}
+
   self.database = sparrow.newDatabase()
 
   self.database:createColumn("localTransform", "transform")
@@ -22,6 +28,24 @@ function M:init(application)
     node = "Node",
     title = "Title",
     transform = "Transform",
+  }
+
+  self.constructors = {
+    localTransform = function()
+      return { rotation = { 1, 0 }, translation = { 0, 0 } }
+    end,
+
+    node = function()
+      return {}
+    end,
+
+    title = function()
+      return ""
+    end,
+
+    transform = function()
+      return { rotation = { 1, 0 }, translation = { 0, 0 } }
+    end,
   }
 
   self.sortedComponents = tableMod.keys(self.componentTitles)
@@ -190,7 +214,7 @@ function M:updateEntityTree()
   do
     Slab.Text("Entities")
 
-    Slab.BeginLayout("insertAndDeleteRow", { Columns = 2, ExpandW = true })
+    Slab.BeginLayout("insertAndDeleteEntity", { Columns = 2, ExpandW = true })
     Slab.SetLayoutColumn(1)
 
     if Slab.Button("Insert") then
@@ -219,7 +243,8 @@ end
 
 function M:updateEntityNode(entity)
   local title = self.database:getCell(entity, "title")
-  local label = title and title .. " @" .. entity or "@" .. entity
+  local label = title and title ~= "" and title .. " @" .. entity
+    or "@" .. entity
   local node = self.database:getCell(entity, "node")
   local leaf = node.firstChild == 0
   local selected = self.selectedEntities[entity] or false
@@ -262,7 +287,7 @@ function M:updateComponentList()
   end
 
   do
-    Slab.BeginLayout("addAndRemoveCell", { Columns = 2, ExpandW = true })
+    Slab.BeginLayout("addAndRemoveComponent", { Columns = 2, ExpandW = true })
 
     Slab.SetLayoutColumn(1)
     Slab.Text("Entity")
@@ -297,7 +322,7 @@ function M:updateComponentList()
       or self.database:getCell(entity, self.selectedComponent) ~= nil
 
     if Slab.Button("Add", { Disabled = addDisabled }) then
-      self:doCommand(AddCellCommand.new(self))
+      self:doCommand(AddCellCommand.new(self, entity, self.selectedComponent))
     end
 
     Slab.SetLayoutColumn(2)
@@ -306,7 +331,9 @@ function M:updateComponentList()
       or self.database:getCell(entity, self.selectedComponent) == nil
 
     if Slab.Button("Remove", { Disabled = removeDisabled }) then
-      self:doCommand(RemoveCellCommand.new(self))
+      self:doCommand(
+        RemoveCellCommand.new(self, entity, self.selectedComponent)
+      )
     end
 
     Slab.EndLayout()
@@ -350,6 +377,34 @@ function M:updateComponentList()
       end
     end
   end
+end
+
+function M:doCommand(command)
+  command:redo()
+  table.insert(self.commandHistory, command)
+  self.commandFuture = {}
+end
+
+function M:undoCommand()
+  local command = table.remove(self.commandHistory)
+
+  if not command then
+    error("Nothing to undo")
+  end
+
+  command:undo()
+  table.insert(self.commandFuture, command)
+end
+
+function M:redoCommand()
+  local command = table.remove(self.commandFuture)
+
+  if not command then
+    error("Nothing to redo")
+  end
+
+  command:redo()
+  table.insert(self.commandHistory, command)
 end
 
 return M
