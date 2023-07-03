@@ -24,6 +24,12 @@ function M:init(application)
     transform = "Transform",
   }
 
+  self.sortedComponents = tableMod.keys(self.componentTitles)
+
+  table.sort(self.sortedComponents, function(a, b)
+    return self.componentTitles[a] < self.componentTitles[b]
+  end)
+
   local entity1 = self.database:insertRow({
     localTransform = { rotation = { 1, 0 } },
     node = {},
@@ -57,7 +63,7 @@ function M:init(application)
   nodeMod.setParent(self.database, entity4, entity1)
 
   self.selectedEntities = {}
-  self.selectedComponents = {}
+  self.font = love.graphics.newFont(12)
 end
 
 function M:handleEvent(event, ...)
@@ -115,6 +121,8 @@ end
 
 function M:update(dt)
   Slab.Update(dt)
+  Slab.PushFont(self.font)
+
   local width, height = love.graphics.getDimensions()
 
   local layout = {
@@ -128,12 +136,12 @@ function M:update(dt)
 
   Slab.BeginWindow("leftDock", {
     AllowMove = false,
-    AllowResize = false,
+    AllowResize = true,
+    AutoSizeContent = true,
     AutoSizeWindow = false,
     Border = layout.border,
     H = layout.height - layout.bottomDockHeight - layout.border,
-    ResetLayout = true,
-    ShowMinimize = false,
+    ResetLayout = false,
     W = layout.leftDockWidth - layout.border,
     X = 0,
     Y = 0,
@@ -144,13 +152,12 @@ function M:update(dt)
 
   Slab.BeginWindow("rightDock", {
     AllowMove = false,
-    AllowResize = false,
+    AllowResize = true,
+    AutoSizeContent = true,
     AutoSizeWindow = false,
     Border = layout.border,
-    ContentW = layout.rightDockWidth - layout.border,
     H = layout.height - layout.bottomDockHeight - layout.border,
-    ResetLayout = true,
-    ShowMinimize = false,
+    ResetLayout = false,
     W = layout.rightDockWidth - layout.border,
     X = layout.width - layout.rightDockWidth,
     Y = 0,
@@ -161,18 +168,18 @@ function M:update(dt)
 
   Slab.BeginWindow("bottomDock", {
     AllowMove = false,
-    AllowResize = false,
+    AllowResize = true,
+    AutoSizeContent = true,
     AutoSizeWindow = false,
-    Border = layout.border,
     H = layout.bottomDockHeight - layout.border,
-    ResetLayout = true,
-    ShowMinimize = false,
+    ResetLayout = false,
     W = layout.width - layout.border,
     X = 0,
     Y = layout.height - layout.bottomDockHeight,
   })
 
   Slab.EndWindow()
+  Slab.PopFont()
 end
 
 function M:wheelmoved(...)
@@ -180,7 +187,25 @@ function M:wheelmoved(...)
 end
 
 function M:updateEntityTree()
-  Slab.Text("Entities")
+  do
+    Slab.Text("Entities")
+
+    Slab.BeginLayout("insertAndDeleteRow", { Columns = 2, ExpandW = true })
+    Slab.SetLayoutColumn(1)
+
+    if Slab.Button("Insert") then
+      self:doCommand(InsertRowCommand.new(self))
+    end
+
+    Slab.SetLayoutColumn(2)
+
+    if Slab.Button("Delete", { Disabled = true }) then
+      self:doCommand(DeleteRowCommand.new(self))
+    end
+
+    Slab.EndLayout()
+  end
+
   Slab.Separator()
 
   for entity in self.database.getNextEntity, self.database do
@@ -193,7 +218,8 @@ function M:updateEntityTree()
 end
 
 function M:updateEntityNode(entity)
-  local label = self.database:getCell(entity, "title") or "Entity " .. entity
+  local title = self.database:getCell(entity, "title")
+  local label = title and title .. " @" .. entity or "@" .. entity
   local node = self.database:getCell(entity, "node")
   local leaf = node.firstChild == 0
   local selected = self.selectedEntities[entity] or false
@@ -235,31 +261,92 @@ function M:updateComponentList()
     return
   end
 
-  Slab.Text("Components")
+  do
+    Slab.BeginLayout("addAndRemoveCell", { Columns = 2, ExpandW = true })
+
+    Slab.SetLayoutColumn(1)
+    Slab.Text("Entity")
+
+    Slab.SetLayoutColumn(2)
+    Slab.Text(entity)
+
+    Slab.SetLayoutColumn(1)
+    Slab.Text("Component")
+
+    Slab.SetLayoutColumn(2)
+    local selectedLabel = self.selectedComponent
+        and self.componentTitles[self.selectedComponent]
+      or self.selectedComponent
+
+    if Slab.BeginComboBox("component", { Selected = selectedLabel }) then
+      for i, component in pairs(self.sortedComponents) do
+        local label = self.componentTitles[component] or component
+        local selected = label == selectedLabel
+
+        if Slab.TextSelectable(label, { IsSelected = selected }) then
+          self.selectedComponent = component
+        end
+      end
+
+      Slab.EndComboBox()
+    end
+
+    Slab.SetLayoutColumn(1)
+
+    local addDisabled = not self.selectedComponent
+      or self.database:getCell(entity, self.selectedComponent) ~= nil
+
+    if Slab.Button("Add", { Disabled = addDisabled }) then
+      self:doCommand(AddCellCommand.new(self))
+    end
+
+    Slab.SetLayoutColumn(2)
+
+    local removeDisabled = not self.selectedComponent
+      or self.database:getCell(entity, self.selectedComponent) == nil
+
+    if Slab.Button("Remove", { Disabled = removeDisabled }) then
+      self:doCommand(RemoveCellCommand.new(self))
+    end
+
+    Slab.EndLayout()
+  end
 
   local archetype = self.database:getArchetype(entity)
-  local sortedComponents = tableMod.sortedKeys(archetype)
+  local sortedComponents = tableMod.keys(archetype)
+
+  table.sort(sortedComponents, function(a, b)
+    return self.componentTitles[a] < self.componentTitles[b]
+  end)
 
   for _, component in ipairs(sortedComponents) do
     Slab.Separator()
     local label = self.componentTitles[component] or component
-    local selected = self.selectedComponents[component] or false
-
-    if Slab.Text(label, { IsSelectable = true, IsSelected = selected }) then
-      tableMod.clear(self.selectedComponents)
-      self.selectedComponents[component] = true
-      selected = true
-    end
+    local selected = component == self.selectedComponent
 
     if component == "title" then
+      Slab.BeginLayout("titleComponent", { Columns = 2, ExpandW = true })
+      Slab.SetLayoutColumn(1)
+
+      if Slab.Text(label, { IsSelectable = true, IsSelected = selected }) then
+        self.selectedComponent = component
+      end
+
+      Slab.SetLayoutColumn(2)
+
       local changed = Slab.Input("title", {
         Align = "left",
         Text = self.database:getCell(entity, "title"),
-        W = 192,
       })
 
       if changed then
         self.database:setCell(entity, "title", Slab.GetInputText())
+      end
+
+      Slab.EndLayout()
+    else
+      if Slab.Text(label, { IsSelectable = true, IsSelected = selected }) then
+        self.selectedComponent = component
       end
     end
   end
