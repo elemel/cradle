@@ -1,6 +1,8 @@
 local AddCellCommand = require("cradle.commands.AddCellCommand")
 local cdefMod = require("cradle.cdef")
 local Class = require("cradle.Class")
+local DeleteRowCommand = require("cradle.commands.DeleteRowCommand")
+local InsertRowCommand = require("cradle.commands.InsertRowCommand")
 local nodeMod = require("cradle.node")
 local RemoveCellCommand = require("cradle.commands.RemoveCellCommand")
 local Slab = require("Slab")
@@ -87,7 +89,6 @@ function M:init(application)
   nodeMod.setParent(self.database, entity4, entity1)
 
   self.selectedEntities = {}
-  self.font = love.graphics.newFont(12)
 end
 
 function M:handleEvent(event, ...)
@@ -106,6 +107,8 @@ function M:draw()
 end
 
 function M:keypressed(key, scancode, isrepeat)
+  local isGuiDown = love.keyboard.isDown("lgui") or love.keyboard.isDown("rgui")
+
   if key == "escape" then
     Slab.OnQuit()
 
@@ -118,6 +121,16 @@ function M:keypressed(key, scancode, isrepeat)
     end
 
     return
+  end
+
+  if key == "y" and isGuiDown then
+    if #self.commandFuture >= 1 then
+      self:redoCommand()
+    end
+  elseif key == "z" and isGuiDown then
+    if #self.commandHistory >= 1 then
+      self:undoCommand()
+    end
   end
 
   Slab.OnKeyPressed(key, scancode, isrepeat)
@@ -145,7 +158,6 @@ end
 
 function M:update(dt)
   Slab.Update(dt)
-  Slab.PushFont(self.font)
 
   local width, height = love.graphics.getDimensions()
 
@@ -171,7 +183,7 @@ function M:update(dt)
     Y = 0,
   })
 
-  self:updateEntityTree()
+  self:updateRowsView()
   Slab.EndWindow()
 
   Slab.BeginWindow("rightDock", {
@@ -187,7 +199,7 @@ function M:update(dt)
     Y = 0,
   })
 
-  self:updateComponentList()
+  self:updateCellsView()
   Slab.EndWindow()
 
   Slab.BeginWindow("bottomDock", {
@@ -203,18 +215,17 @@ function M:update(dt)
   })
 
   Slab.EndWindow()
-  Slab.PopFont()
 end
 
 function M:wheelmoved(...)
   Slab.OnWheelMoved(...)
 end
 
-function M:updateEntityTree()
+function M:updateRowsView()
   do
-    Slab.Text("Entities")
+    Slab.Text("Rows")
 
-    Slab.BeginLayout("insertAndDeleteEntity", { Columns = 2, ExpandW = true })
+    Slab.BeginLayout("insertAndDeleteRow", { Columns = 2, ExpandW = true })
     Slab.SetLayoutColumn(1)
 
     if Slab.Button("Insert") then
@@ -222,9 +233,11 @@ function M:updateEntityTree()
     end
 
     Slab.SetLayoutColumn(2)
+    local deleteDisabled = tableMod.count(self.selectedEntities) ~= 1
 
-    if Slab.Button("Delete", { Disabled = true }) then
-      self:doCommand(DeleteRowCommand.new(self))
+    if Slab.Button("Delete", { Disabled = deleteDisabled }) then
+      local entity = next(self.selectedEntities)
+      self:doCommand(DeleteRowCommand.new(self, entity))
     end
 
     Slab.EndLayout()
@@ -278,7 +291,7 @@ function M:updateEntityNode(entity)
   end
 end
 
-function M:updateComponentList()
+function M:updateCellsView()
   local entity = tableMod.count(self.selectedEntities) == 1
     and next(self.selectedEntities)
 
@@ -286,14 +299,10 @@ function M:updateComponentList()
     return
   end
 
+  Slab.Text("Cells")
+
   do
-    Slab.BeginLayout("addAndRemoveComponent", { Columns = 2, ExpandW = true })
-
-    Slab.SetLayoutColumn(1)
-    Slab.Text("Entity")
-
-    Slab.SetLayoutColumn(2)
-    Slab.Text(entity)
+    Slab.BeginLayout("addAndRemoveCell", { Columns = 2, ExpandW = true })
 
     Slab.SetLayoutColumn(1)
     Slab.Text("Component")
@@ -348,33 +357,98 @@ function M:updateComponentList()
 
   for _, component in ipairs(sortedComponents) do
     Slab.Separator()
-    local label = self.componentTitles[component] or component
-    local selected = component == self.selectedComponent
+    self:updateCellView(entity, component)
+  end
+end
 
-    if component == "title" then
-      Slab.BeginLayout("titleComponent", { Columns = 2, ExpandW = true })
-      Slab.SetLayoutColumn(1)
+function M:updateCellView(entity, component)
+  local label = self.componentTitles[component] or component
+  local selected = component == self.selectedComponent
 
-      if Slab.Text(label, { IsSelectable = true, IsSelected = selected }) then
-        self.selectedComponent = component
-      end
+  if component == "title" then
+    Slab.BeginLayout("titleComponent", { Columns = 2, ExpandW = true })
+    Slab.SetLayoutColumn(1)
 
-      Slab.SetLayoutColumn(2)
+    if Slab.Text(label, { IsSelectable = true, IsSelected = selected }) then
+      self.selectedComponent = component
+    end
 
-      local changed = Slab.Input("title", {
+    Slab.SetLayoutColumn(2)
+
+    local changed = Slab.Input("title", {
+      Align = "left",
+      Text = self.database:getCell(entity, "title"),
+    })
+
+    if changed then
+      self.database:setCell(entity, "title", Slab.GetInputText())
+    end
+
+    Slab.EndLayout()
+  elseif component == "localTransform" or component == "transform" then
+    if Slab.Text(label, { IsSelectable = true, IsSelected = selected }) then
+      self.selectedComponent = component
+    end
+
+    local transform = self.database:getCell(entity, component)
+
+    Slab.BeginLayout(component .. "Component", { Columns = 2, ExpandW = true })
+
+    Slab.SetLayoutColumn(1)
+    Slab.Text("X")
+
+    Slab.SetLayoutColumn(2)
+
+    if
+      Slab.Input(component .. "ComponentX", {
         Align = "left",
-        Text = self.database:getCell(entity, "title"),
+        ReturnOnText = true,
+        Text = transform.translation.x,
       })
+    then
+      transform.translation.x = Slab.GetInputNumber()
+    end
 
-      if changed then
-        self.database:setCell(entity, "title", Slab.GetInputText())
-      end
+    Slab.SetLayoutColumn(1)
+    Slab.Text("Y")
 
-      Slab.EndLayout()
-    else
-      if Slab.Text(label, { IsSelectable = true, IsSelected = selected }) then
-        self.selectedComponent = component
-      end
+    Slab.SetLayoutColumn(2)
+
+    if
+      Slab.Input(component .. "ComponentY", {
+        Align = "left",
+        ReturnOnText = true,
+        Text = transform.translation.y,
+      })
+    then
+      transform.translation.y = Slab.GetInputNumber()
+    end
+
+    Slab.SetLayoutColumn(1)
+    Slab.Text("Angle")
+
+    Slab.SetLayoutColumn(2)
+    local angleDeg = 180
+      / math.pi
+      * math.atan2(transform.rotation.y, transform.rotation.x)
+
+    if
+      Slab.Input(component .. "ComponentAngle", {
+        Align = "left",
+        ReturnOnText = true,
+        Text = angleDeg,
+      })
+    then
+      local angleRad = Slab.GetInputNumber() * math.pi / 180
+
+      transform.rotation.x = math.cos(angleRad)
+      transform.rotation.y = math.sin(angleRad)
+    end
+
+    Slab.EndLayout()
+  else
+    if Slab.Text(label, { IsSelectable = true, IsSelected = selected }) then
+      self.selectedComponent = component
     end
   end
 end
