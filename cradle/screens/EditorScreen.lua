@@ -20,24 +20,48 @@ function M:init(application)
 
   self.database = sparrow.newDatabase()
 
+  self.database:createColumn("bodyConfig")
+  self.database:createColumn("fixtureConfig")
+  self.database:createColumn("jointConfig")
   self.database:createColumn("localTransform", "transform")
   self.database:createColumn("node", "node")
+  self.database:createColumn("shapeConfig")
   self.database:createColumn("title")
   self.database:createColumn("transform", "transform")
 
   self.componentTitles = {
+    bodyConfig = "Body Config",
     localTransform = "Local Transform",
+    fixtureConfig = "Fixture Config",
+    jointConfig = "Joint Config",
     node = "Node",
+    shapeConfig = "Shape Config",
     title = "Title",
     transform = "Transform",
   }
 
   self.constructors = {
+    bodyConfig = function()
+      return {}
+    end,
+
     localTransform = function()
       return { rotation = { 1, 0 }, translation = { 0, 0 } }
     end,
 
+    fixtureConfig = function()
+      return {}
+    end,
+
+    jointConfig = function()
+      return {}
+    end,
+
     node = function()
+      return {}
+    end,
+
+    shapeConfig = function()
       return {}
     end,
 
@@ -229,7 +253,10 @@ function M:updateRowsView()
     Slab.SetLayoutColumn(1)
 
     if Slab.Button("Insert") then
-      self:doCommand(InsertRowCommand.new(self))
+      local parentEntity = tableMod.count(self.selectedEntities) == 1
+        and next(self.selectedEntities)
+
+      self:doCommand(InsertRowCommand.new(self, parentEntity))
     end
 
     Slab.SetLayoutColumn(2)
@@ -256,8 +283,7 @@ end
 
 function M:updateEntityNode(entity)
   local title = self.database:getCell(entity, "title")
-  local label = title and title ~= "" and title .. " @" .. entity
-    or "@" .. entity
+  local label = title and title ~= "" and title or "Row " .. entity
   local node = self.database:getCell(entity, "node")
   local leaf = node.firstChild == 0
   local selected = self.selectedEntities[entity] or false
