@@ -17,8 +17,8 @@ function M.setParent(database, entity, parent)
           parentNode.firstChild = node.nextSibling
         end
 
-        local previousNode = database:getCell(node.previousSibling)
-        local nextNode = database:getCell(node.nextSibling)
+        local previousNode = database:getCell(node.previousSibling, "node")
+        local nextNode = database:getCell(node.nextSibling, "node")
 
         previousNode.nextSibling = node.nextSibling
         nextNode.previousSibling = node.previousSibling
