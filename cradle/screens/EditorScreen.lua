@@ -7,6 +7,7 @@ local nodeMod = require("cradle.node")
 local RemoveCellCommand = require("cradle.commands.RemoveCellCommand")
 local Slab = require("Slab")
 local sparrow = require("sparrow")
+local TransformComponentView = require("cradle.views.components.TransformComponentView")
 local tableMod = require("cradle.table")
 
 local M = Class.new()
@@ -62,7 +63,10 @@ function M:init(application)
     end,
 
     shapeConfig = function()
-      return {}
+      return {
+        shapeType = "rectangle",
+        size = { 1, 1 },
+      }
     end,
 
     title = function()
@@ -113,6 +117,9 @@ function M:init(application)
   nodeMod.setParent(self.database, entity4, entity1)
 
   self.selectedEntities = {}
+
+  self.localTransformComponentView = TransformComponentView.new(self, "localTransform")
+  self.transformComponentView = TransformComponentView.new(self, "transform")
 end
 
 function M:handleEvent(event, ...)
@@ -247,7 +254,7 @@ end
 
 function M:updateRowsView()
   do
-    Slab.Text("Rows")
+    Slab.Text("Entities")
 
     Slab.BeginLayout("insertAndDeleteRow", { Columns = 2, ExpandW = true })
     Slab.SetLayoutColumn(1)
@@ -325,7 +332,7 @@ function M:updateCellsView()
     return
   end
 
-  Slab.Text("Cells")
+  Slab.Text("Components")
 
   do
     Slab.BeginLayout("addAndRemoveCell", { Columns = 2, ExpandW = true })
@@ -391,7 +398,9 @@ function M:updateCellView(entity, component)
   local label = self.componentTitles[component] or component
   local selected = component == self.selectedComponent
 
-  if component == "title" then
+  if component == "localTransform" then
+    self.localTransformComponentView:render()
+  elseif component == "title" then
     Slab.BeginLayout("titleComponent", { Columns = 2, ExpandW = true })
     Slab.SetLayoutColumn(1)
 
@@ -411,64 +420,85 @@ function M:updateCellView(entity, component)
     end
 
     Slab.EndLayout()
-  elseif component == "localTransform" or component == "transform" then
+  elseif component == "transform" then
+    self.transformComponentView:render()
+  elseif component == "shapeConfig" then
     if Slab.Text(label, { IsSelectable = true, IsSelected = selected }) then
       self.selectedComponent = component
     end
 
-    local transform = self.database:getCell(entity, component)
+    local shapeConfig = self.database:getCell(entity, component)
 
-    Slab.BeginLayout(component .. "Component", { Columns = 2, ExpandW = true })
+    Slab.BeginLayout("shapeComponent", { Columns = 2, ExpandW = true })
 
     Slab.SetLayoutColumn(1)
-    Slab.Text("X")
+    Slab.Text("Type")
 
     Slab.SetLayoutColumn(2)
 
-    if
-      Slab.Input(component .. "ComponentX", {
-        Align = "left",
-        ReturnOnText = true,
-        Text = transform.translation.x,
-      })
-    then
-      transform.translation.x = Slab.GetInputNumber()
+    local shapeTypeLabels = { circle = "Circle", polygon = "Polygon", rectangle = "Rectangle" }
+    local selectedShapeTypeLabel = shapeConfig.shapeType and shapeTypeLabels[shapeConfig.shapeType]
+
+    if Slab.BeginComboBox("shapeType", { Selected = selectedShapeTypeLabel }) then
+      for i, shapeType in pairs({ "circle", "polygon", "rectangle" }) do
+        local label = shapeType and shapeTypeLabels[shapeType]
+        local selected = label == selectedShapeTypeLabel
+
+        if Slab.TextSelectable(label, { IsSelected = selected }) then
+          shapeConfig.shapeType = shapeType
+        end
+      end
+
+      Slab.EndComboBox()
     end
 
-    Slab.SetLayoutColumn(1)
-    Slab.Text("Y")
+    if shapeConfig.shapeType == "circle" then
+      Slab.SetLayoutColumn(1)
+      Slab.Text("Radius")
 
-    Slab.SetLayoutColumn(2)
+      Slab.SetLayoutColumn(2)
 
-    if
-      Slab.Input(component .. "ComponentY", {
-        Align = "left",
-        ReturnOnText = true,
-        Text = transform.translation.y,
-      })
-    then
-      transform.translation.y = Slab.GetInputNumber()
-    end
+      if
+        Slab.Input(component .. "Radius", {
+          Align = "left",
+          ReturnOnText = true,
+          Text = shapeConfig.radius or 0.5,
+        })
+      then
+        shapeConfig.radius = Slab.GetInputNumber()
+      end
+    elseif shapeConfig.shapeType == "rectangle" then
+      Slab.SetLayoutColumn(1)
+      Slab.Text("Width")
 
-    Slab.SetLayoutColumn(1)
-    Slab.Text("Angle")
+      Slab.SetLayoutColumn(2)
 
-    Slab.SetLayoutColumn(2)
-    local angleDeg = 180
-      / math.pi
-      * math.atan2(transform.rotation.y, transform.rotation.x)
+      if
+        Slab.Input(component .. "Width", {
+          Align = "left",
+          ReturnOnText = true,
+          Text = shapeConfig.size and shapeConfig.size[1] or 1,
+        })
+      then
+        shapeConfig.size = shapeConfig.size or { 1, 1 }
+        shapeConfig.size[1] = Slab.GetInputNumber()
+      end
 
-    if
-      Slab.Input(component .. "ComponentAngle", {
-        Align = "left",
-        ReturnOnText = true,
-        Text = angleDeg,
-      })
-    then
-      local angleRad = Slab.GetInputNumber() * math.pi / 180
+      Slab.SetLayoutColumn(1)
+      Slab.Text("Height")
 
-      transform.rotation.x = math.cos(angleRad)
-      transform.rotation.y = math.sin(angleRad)
+      Slab.SetLayoutColumn(2)
+
+      if
+        Slab.Input(component .. "Height", {
+          Align = "left",
+          ReturnOnText = true,
+          Text = shapeConfig.size and shapeConfig.size[2] or 1,
+        })
+      then
+        shapeConfig.size = shapeConfig.size or { 1, 1 }
+        shapeConfig.size[2] = Slab.GetInputNumber()
+      end
     end
 
     Slab.EndLayout()
