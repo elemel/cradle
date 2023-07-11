@@ -7,7 +7,8 @@ local nodeMod = require("cradle.node")
 local RemoveCellCommand = require("cradle.commands.RemoveCellCommand")
 local Slab = require("Slab")
 local sparrow = require("sparrow")
-local TransformComponentView = require("cradle.views.components.TransformComponentView")
+local TransformComponentView =
+  require("cradle.views.components.TransformComponentView")
 local tableMod = require("cradle.table")
 
 local M = Class.new()
@@ -58,8 +59,8 @@ function M:init(application)
 
     shape = function()
       return {
-        shapeType = "rectangle",
         size = { 1, 1 },
+        type = "rectangle",
       }
     end,
 
@@ -423,23 +424,26 @@ function M:updateCellView(entity, component)
 
     Slab.SetLayoutColumn(2)
 
-    local shapeTypeLabels = { circle = "Circle", polygon = "Polygon", rectangle = "Rectangle" }
-    local selectedShapeTypeLabel = shape.shapeType and shapeTypeLabels[shape.shapeType]
+    local shapeTypeLabels =
+      { circle = "Circle", polygon = "Polygon", rectangle = "Rectangle" }
+    local selectedShapeTypeLabel = shape.type and shapeTypeLabels[shape.type]
 
-    if Slab.BeginComboBox("shapeType", { Selected = selectedShapeTypeLabel }) then
+    if
+      Slab.BeginComboBox("shapeType", { Selected = selectedShapeTypeLabel })
+    then
       for i, shapeType in pairs({ "circle", "polygon", "rectangle" }) do
         local label = shapeType and shapeTypeLabels[shapeType]
         local selected = label == selectedShapeTypeLabel
 
         if Slab.TextSelectable(label, { IsSelected = selected }) then
-          shape.shapeType = shapeType
+          shape.type = shapeType
         end
       end
 
       Slab.EndComboBox()
     end
 
-    if shape.shapeType == "circle" then
+    if shape.type == "circle" then
       Slab.SetLayoutColumn(1)
       Slab.Text("Radius")
 
@@ -454,7 +458,7 @@ function M:updateCellView(entity, component)
       then
         shape.radius = Slab.GetInputNumber()
       end
-    elseif shape.shapeType == "rectangle" then
+    elseif shape.type == "rectangle" then
       Slab.SetLayoutColumn(1)
       Slab.Text("Width")
 
