@@ -24,7 +24,6 @@ function M:init(application)
   self.database:createColumn("bodyConfig")
   self.database:createColumn("fixtureConfig")
   self.database:createColumn("jointConfig")
-  self.database:createColumn("localTransform", "transform")
   self.database:createColumn("node", "node")
   self.database:createColumn("shapeConfig")
   self.database:createColumn("title")
@@ -32,7 +31,6 @@ function M:init(application)
 
   self.componentTitles = {
     bodyConfig = "Body Config",
-    localTransform = "Local Transform",
     fixtureConfig = "Fixture Config",
     jointConfig = "Joint Config",
     node = "Node",
@@ -44,10 +42,6 @@ function M:init(application)
   self.constructors = {
     bodyConfig = function()
       return {}
-    end,
-
-    localTransform = function()
-      return { rotation = { 1, 0 }, translation = { 0, 0 } }
     end,
 
     fixtureConfig = function()
@@ -85,31 +79,27 @@ function M:init(application)
   end)
 
   local entity1 = self.database:insertRow({
-    localTransform = { rotation = { 1, 0 } },
     node = {},
     title = "A",
-    transform = {},
+    transform = { rotation = { 1, 0 } },
   })
 
   local entity2 = self.database:insertRow({
-    localTransform = { rotation = { 1, 0 } },
     node = {},
     title = "B",
-    transform = {},
+    transform = { rotation = { 1, 0 } },
   })
 
   local entity3 = self.database:insertRow({
-    localTransform = { rotation = { 1, 0 } },
     node = {},
     title = "C",
-    transform = {},
+    transform = { rotation = { 1, 0 } },
   })
 
   local entity4 = self.database:insertRow({
-    localTransform = { rotation = { 1, 0 } },
     node = {},
     title = "D",
-    transform = {},
+    transform = { rotation = { 1, 0 } },
   })
 
   nodeMod.setParent(self.database, entity2, entity1)
@@ -118,7 +108,6 @@ function M:init(application)
 
   self.selectedEntities = {}
 
-  self.localTransformComponentView = TransformComponentView.new(self, "localTransform")
   self.transformComponentView = TransformComponentView.new(self, "transform")
 end
 
@@ -398,9 +387,7 @@ function M:updateCellView(entity, component)
   local label = self.componentTitles[component] or component
   local selected = component == self.selectedComponent
 
-  if component == "localTransform" then
-    self.localTransformComponentView:render()
-  elseif component == "title" then
+  if component == "title" then
     Slab.BeginLayout("titleComponent", { Columns = 2, ExpandW = true })
     Slab.SetLayoutColumn(1)
 
