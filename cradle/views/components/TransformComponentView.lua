@@ -77,7 +77,7 @@ function M:render()
     transform.rotation.y = math.sin(angleRad)
   end
 
-  Slab.EndLayout()  
+  Slab.EndLayout()
 end
 
 return M

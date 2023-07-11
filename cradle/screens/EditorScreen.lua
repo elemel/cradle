@@ -7,7 +7,8 @@ local nodeMod = require("cradle.node")
 local RemoveCellCommand = require("cradle.commands.RemoveCellCommand")
 local Slab = require("Slab")
 local sparrow = require("sparrow")
-local TransformComponentView = require("cradle.views.components.TransformComponentView")
+local TransformComponentView =
+  require("cradle.views.components.TransformComponentView")
 local tableMod = require("cradle.table")
 
 local M = Class.new()
@@ -21,40 +22,34 @@ function M:init(application)
 
   self.database = sparrow.newDatabase()
 
-  self.database:createColumn("bodyConfig")
-  self.database:createColumn("fixtureConfig")
-  self.database:createColumn("jointConfig")
-  self.database:createColumn("localTransform", "transform")
+  self.database:createColumn("body")
+  self.database:createColumn("fixture")
+  self.database:createColumn("joint")
   self.database:createColumn("node", "node")
-  self.database:createColumn("shapeConfig")
+  self.database:createColumn("shape")
   self.database:createColumn("title")
   self.database:createColumn("transform", "transform")
 
   self.componentTitles = {
-    bodyConfig = "Body Config",
-    localTransform = "Local Transform",
-    fixtureConfig = "Fixture Config",
-    jointConfig = "Joint Config",
+    body = "Body",
+    fixture = "Fixture",
+    joint = "Joint",
     node = "Node",
-    shapeConfig = "Shape Config",
+    shape = "Shape",
     title = "Title",
     transform = "Transform",
   }
 
   self.constructors = {
-    bodyConfig = function()
+    body = function()
       return {}
     end,
 
-    localTransform = function()
-      return { rotation = { 1, 0 }, translation = { 0, 0 } }
-    end,
-
-    fixtureConfig = function()
+    fixture = function()
       return {}
     end,
 
-    jointConfig = function()
+    joint = function()
       return {}
     end,
 
@@ -62,10 +57,10 @@ function M:init(application)
       return {}
     end,
 
-    shapeConfig = function()
+    shape = function()
       return {
-        shapeType = "rectangle",
         size = { 1, 1 },
+        type = "rectangle",
       }
     end,
 
@@ -85,31 +80,27 @@ function M:init(application)
   end)
 
   local entity1 = self.database:insertRow({
-    localTransform = { rotation = { 1, 0 } },
     node = {},
     title = "A",
-    transform = {},
+    transform = { rotation = { 1, 0 } },
   })
 
   local entity2 = self.database:insertRow({
-    localTransform = { rotation = { 1, 0 } },
     node = {},
     title = "B",
-    transform = {},
+    transform = { rotation = { 1, 0 } },
   })
 
   local entity3 = self.database:insertRow({
-    localTransform = { rotation = { 1, 0 } },
     node = {},
     title = "C",
-    transform = {},
+    transform = { rotation = { 1, 0 } },
   })
 
   local entity4 = self.database:insertRow({
-    localTransform = { rotation = { 1, 0 } },
     node = {},
     title = "D",
-    transform = {},
+    transform = { rotation = { 1, 0 } },
   })
 
   nodeMod.setParent(self.database, entity2, entity1)
@@ -118,7 +109,6 @@ function M:init(application)
 
   self.selectedEntities = {}
 
-  self.localTransformComponentView = TransformComponentView.new(self, "localTransform")
   self.transformComponentView = TransformComponentView.new(self, "transform")
 end
 
@@ -398,9 +388,7 @@ function M:updateCellView(entity, component)
   local label = self.componentTitles[component] or component
   local selected = component == self.selectedComponent
 
-  if component == "localTransform" then
-    self.localTransformComponentView:render()
-  elseif component == "title" then
+  if component == "title" then
     Slab.BeginLayout("titleComponent", { Columns = 2, ExpandW = true })
     Slab.SetLayoutColumn(1)
 
@@ -422,12 +410,12 @@ function M:updateCellView(entity, component)
     Slab.EndLayout()
   elseif component == "transform" then
     self.transformComponentView:render()
-  elseif component == "shapeConfig" then
+  elseif component == "shape" then
     if Slab.Text(label, { IsSelectable = true, IsSelected = selected }) then
       self.selectedComponent = component
     end
 
-    local shapeConfig = self.database:getCell(entity, component)
+    local shape = self.database:getCell(entity, component)
 
     Slab.BeginLayout("shapeComponent", { Columns = 2, ExpandW = true })
 
@@ -436,23 +424,26 @@ function M:updateCellView(entity, component)
 
     Slab.SetLayoutColumn(2)
 
-    local shapeTypeLabels = { circle = "Circle", polygon = "Polygon", rectangle = "Rectangle" }
-    local selectedShapeTypeLabel = shapeConfig.shapeType and shapeTypeLabels[shapeConfig.shapeType]
+    local shapeTypeLabels =
+      { circle = "Circle", polygon = "Polygon", rectangle = "Rectangle" }
+    local selectedShapeTypeLabel = shape.type and shapeTypeLabels[shape.type]
 
-    if Slab.BeginComboBox("shapeType", { Selected = selectedShapeTypeLabel }) then
+    if
+      Slab.BeginComboBox("shapeType", { Selected = selectedShapeTypeLabel })
+    then
       for i, shapeType in pairs({ "circle", "polygon", "rectangle" }) do
         local label = shapeType and shapeTypeLabels[shapeType]
         local selected = label == selectedShapeTypeLabel
 
         if Slab.TextSelectable(label, { IsSelected = selected }) then
-          shapeConfig.shapeType = shapeType
+          shape.type = shapeType
         end
       end
 
       Slab.EndComboBox()
     end
 
-    if shapeConfig.shapeType == "circle" then
+    if shape.type == "circle" then
       Slab.SetLayoutColumn(1)
       Slab.Text("Radius")
 
@@ -462,12 +453,12 @@ function M:updateCellView(entity, component)
         Slab.Input(component .. "Radius", {
           Align = "left",
           ReturnOnText = true,
-          Text = shapeConfig.radius or 0.5,
+          Text = shape.radius or 0.5,
         })
       then
-        shapeConfig.radius = Slab.GetInputNumber()
+        shape.radius = Slab.GetInputNumber()
       end
-    elseif shapeConfig.shapeType == "rectangle" then
+    elseif shape.type == "rectangle" then
       Slab.SetLayoutColumn(1)
       Slab.Text("Width")
 
@@ -477,11 +468,11 @@ function M:updateCellView(entity, component)
         Slab.Input(component .. "Width", {
           Align = "left",
           ReturnOnText = true,
-          Text = shapeConfig.size and shapeConfig.size[1] or 1,
+          Text = shape.size and shape.size[1] or 1,
         })
       then
-        shapeConfig.size = shapeConfig.size or { 1, 1 }
-        shapeConfig.size[1] = Slab.GetInputNumber()
+        shape.size = shape.size or { 1, 1 }
+        shape.size[1] = Slab.GetInputNumber()
       end
 
       Slab.SetLayoutColumn(1)
@@ -493,11 +484,11 @@ function M:updateCellView(entity, component)
         Slab.Input(component .. "Height", {
           Align = "left",
           ReturnOnText = true,
-          Text = shapeConfig.size and shapeConfig.size[2] or 1,
+          Text = shape.size and shape.size[2] or 1,
         })
       then
-        shapeConfig.size = shapeConfig.size or { 1, 1 }
-        shapeConfig.size[2] = Slab.GetInputNumber()
+        shape.size = shape.size or { 1, 1 }
+        shape.size[2] = Slab.GetInputNumber()
       end
     end
 
