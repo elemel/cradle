@@ -6,6 +6,8 @@ local heart = require("heart")
 local InsertRowCommand = require("cradle.editor.commands.InsertRowCommand")
 local nodeMod = require("cradle.node")
 local RemoveCellCommand = require("cradle.editor.commands.RemoveCellCommand")
+local ShapeComponentView =
+  require("cradle.editor.views.components.ShapeComponentView")
 local Slab = require("Slab")
 local sparrow = require("sparrow")
 local TransformComponentView =
@@ -111,6 +113,7 @@ function M:init(application)
 
   self.selectedEntities = {}
 
+  self.shapeComponentView = ShapeComponentView.new(self)
   self.transformComponentView = TransformComponentView.new(self, "transform")
 end
 
@@ -412,88 +415,7 @@ function M:updateCellView(entity, component)
   elseif component == "transform" then
     self.transformComponentView:render()
   elseif component == "shape" then
-    if Slab.Text(label, { IsSelectable = true, IsSelected = selected }) then
-      self.selectedComponent = component
-    end
-
-    local shape = self.database:getCell(entity, component)
-
-    Slab.BeginLayout("shapeComponent", { Columns = 2, ExpandW = true })
-
-    Slab.SetLayoutColumn(1)
-    Slab.Text("Type")
-
-    Slab.SetLayoutColumn(2)
-
-    local shapeTypeLabels =
-      { circle = "Circle", polygon = "Polygon", rectangle = "Rectangle" }
-    local selectedShapeTypeLabel = shape.type and shapeTypeLabels[shape.type]
-
-    if
-      Slab.BeginComboBox("shapeType", { Selected = selectedShapeTypeLabel })
-    then
-      for i, shapeType in pairs({ "circle", "polygon", "rectangle" }) do
-        local label = shapeType and shapeTypeLabels[shapeType]
-        local selected = label == selectedShapeTypeLabel
-
-        if Slab.TextSelectable(label, { IsSelected = selected }) then
-          shape.type = shapeType
-        end
-      end
-
-      Slab.EndComboBox()
-    end
-
-    if shape.type == "circle" then
-      Slab.SetLayoutColumn(1)
-      Slab.Text("Radius")
-
-      Slab.SetLayoutColumn(2)
-
-      if
-        Slab.Input(component .. "Radius", {
-          Align = "left",
-          ReturnOnText = true,
-          Text = shape.radius or 0.5,
-        })
-      then
-        shape.radius = Slab.GetInputNumber()
-      end
-    elseif shape.type == "rectangle" then
-      Slab.SetLayoutColumn(1)
-      Slab.Text("Width")
-
-      Slab.SetLayoutColumn(2)
-
-      if
-        Slab.Input(component .. "Width", {
-          Align = "left",
-          ReturnOnText = true,
-          Text = shape.size and shape.size[1] or 1,
-        })
-      then
-        shape.size = shape.size or { 1, 1 }
-        shape.size[1] = Slab.GetInputNumber()
-      end
-
-      Slab.SetLayoutColumn(1)
-      Slab.Text("Height")
-
-      Slab.SetLayoutColumn(2)
-
-      if
-        Slab.Input(component .. "Height", {
-          Align = "left",
-          ReturnOnText = true,
-          Text = shape.size and shape.size[2] or 1,
-        })
-      then
-        shape.size = shape.size or { 1, 1 }
-        shape.size[2] = Slab.GetInputNumber()
-      end
-    end
-
-    Slab.EndLayout()
+    self.shapeComponentView:render()
   else
     if Slab.Text(label, { IsSelectable = true, IsSelected = selected }) then
       self.selectedComponent = component
