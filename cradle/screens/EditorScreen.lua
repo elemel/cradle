@@ -1,20 +1,22 @@
-local AddCellCommand = require("cradle.commands.AddCellCommand")
+local AddCellCommand = require("cradle.editor.commands.AddCellCommand")
 local cdefMod = require("cradle.cdef")
 local Class = require("cradle.Class")
-local DeleteRowCommand = require("cradle.commands.DeleteRowCommand")
-local InsertRowCommand = require("cradle.commands.InsertRowCommand")
+local DeleteRowCommand = require("cradle.editor.commands.DeleteRowCommand")
+local heart = require("heart")
+local InsertRowCommand = require("cradle.editor.commands.InsertRowCommand")
 local nodeMod = require("cradle.node")
-local RemoveCellCommand = require("cradle.commands.RemoveCellCommand")
+local RemoveCellCommand = require("cradle.editor.commands.RemoveCellCommand")
 local Slab = require("Slab")
 local sparrow = require("sparrow")
 local TransformComponentView =
-  require("cradle.views.components.TransformComponentView")
+  require("cradle.editor.views.components.TransformComponentView")
 local tableMod = require("cradle.table")
 
 local M = Class.new()
 
 function M:init(application)
   self.application = assert(application)
+  self.engine = heart.newEngine()
   Slab.Initialize({}, true)
 
   self.commandHistory = {}
@@ -122,7 +124,6 @@ end
 
 function M:draw()
   love.graphics.push("all")
-  love.graphics.clear()
   Slab.Draw()
   love.graphics.pop()
 end
