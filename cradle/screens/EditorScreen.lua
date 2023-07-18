@@ -341,10 +341,14 @@ function M:updateCellsView()
     return
   end
 
-  Slab.Text("Components")
-
   do
     Slab.BeginLayout("addAndRemoveComponent", { Columns = 2, ExpandW = true })
+
+    Slab.SetLayoutColumn(1)
+    Slab.Text("Entity")
+
+    Slab.SetLayoutColumn(2)
+    Slab.Text(entity)
 
     Slab.SetLayoutColumn(1)
     Slab.Text("Component")
