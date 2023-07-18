@@ -3,26 +3,33 @@ local Slab = require("Slab")
 
 local M = Class.new()
 
-function M:init(editorScreen)
+function M:init(editorScreen, component, title)
   self.editorScreen = assert(editorScreen)
-  self.title = assert(self.editorScreen.componentTitles.shape)
+  self.component = assert(component)
+  self.title = assert(title)
 
   self.shapeTypes = { "circle", "polygon", "rectangle" }
   self.shapeTypeTitles =
     { circle = "Circle", polygon = "Polygon", rectangle = "Rectangle" }
+
+  self.heightId = self.component .. "ComponentHeight"
+  self.id = self.component .. "Component"
+  self.radiusId = self.component .. "ComponentRadius"
+  self.typeId = self.component .. "ComponentType"
+  self.widthId = self.component .. "ComponentWidth"
 end
 
 function M:render()
   local entity = assert(next(self.editorScreen.selectedEntities))
-  local selected = self.editorScreen.selectedComponent == "shape"
+  local selected = self.editorScreen.selectedComponent == self.component
 
   if Slab.Text(self.title, { IsSelectable = true, IsSelected = selected }) then
-    self.editorScreen.selectedComponent = "shape"
+    self.editorScreen.selectedComponent = self.component
   end
 
-  local shape = self.editorScreen.database:getCell(entity, "shape")
+  local shape = self.editorScreen.database:getCell(entity, self.component)
 
-  Slab.BeginLayout("shapeComponent", { Columns = 2, ExpandW = true })
+  Slab.BeginLayout(self.id, { Columns = 2, ExpandW = true })
 
   Slab.SetLayoutColumn(1)
   Slab.Text("Type")
@@ -31,12 +38,7 @@ function M:render()
 
   local selectedShapeTypeTitle = shape.type and self.shapeTypeTitles[shape.type]
 
-  if
-    Slab.BeginComboBox(
-      "shapeComponentType",
-      { Selected = selectedShapeTypeTitle }
-    )
-  then
+  if Slab.BeginComboBox(self.typeId, { Selected = selectedShapeTypeTitle }) then
     for i, shapeType in pairs(self.shapeTypes) do
       local shapeTypeTitle = shapeType and self.shapeTypeTitles[shapeType]
       local selected = selectedShapeTypeTitle == shapeTypeTitle
@@ -56,7 +58,7 @@ function M:render()
     Slab.SetLayoutColumn(2)
 
     if
-      Slab.Input("shapeComponentRadius", {
+      Slab.Input(self.radiusId, {
         Align = "left",
         ReturnOnText = true,
         Text = shape.radius or 0.5,
@@ -71,7 +73,7 @@ function M:render()
     Slab.SetLayoutColumn(2)
 
     if
-      Slab.Input("shapeComponentWidth", {
+      Slab.Input(self.widthId, {
         Align = "left",
         ReturnOnText = true,
         Text = shape.size and shape.size[1] or 1,
@@ -87,7 +89,7 @@ function M:render()
     Slab.SetLayoutColumn(2)
 
     if
-      Slab.Input("shapeComponentHeight", {
+      Slab.Input(self.heightId, {
         Align = "left",
         ReturnOnText = true,
         Text = shape.size and shape.size[2] or 1,
