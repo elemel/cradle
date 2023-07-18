@@ -299,7 +299,7 @@ end
 
 function M:updateEntityNode(entity)
   local title = self.database:getCell(entity, "title")
-  local label = title and title ~= "" and title or "Row " .. entity
+  local label = title and title ~= "" and title or "Entity " .. entity
   local node = self.database:getCell(entity, "node")
   local leaf = node.firstChild == 0
   local selected = self.selectedEntities[entity] or false
