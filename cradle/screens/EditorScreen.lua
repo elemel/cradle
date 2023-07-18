@@ -223,7 +223,7 @@ function M:update(dt)
     Y = 0,
   })
 
-  self:updateRowsView()
+  self:updateEntityTreeView()
   Slab.EndWindow()
 
   Slab.BeginWindow("rightDock", {
@@ -261,7 +261,7 @@ function M:wheelmoved(...)
   Slab.OnWheelMoved(...)
 end
 
-function M:updateRowsView()
+function M:updateEntityTreeView()
   do
     Slab.Text("Entities")
 
