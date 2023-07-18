@@ -66,7 +66,7 @@ function M:init(application)
     transform = "Transform",
   }
 
-  self.constructors = {
+  self.componentConstructors = {
     body = function()
       return {}
     end,

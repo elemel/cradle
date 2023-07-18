@@ -9,7 +9,8 @@ function M:init(editorScreen, entity, component)
 end
 
 function M:redo()
-  local constructor = assert(self.editorScreen.constructors[self.component])
+  local constructor =
+    assert(self.editorScreen.componentConstructors[self.component])
   local value = constructor()
   self.editorScreen.database:setCell(self.entity, self.component, value)
 end
