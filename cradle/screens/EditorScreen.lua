@@ -259,7 +259,7 @@ function M:update(dt)
     Y = 0,
   })
 
-  self:updateCellsView()
+  self:updateEntityView()
   Slab.EndWindow()
 
   Slab.BeginWindow("bottomDock", {
@@ -353,7 +353,7 @@ function M:updateEntityNode(entity)
   end
 end
 
-function M:updateCellsView()
+function M:updateEntityView()
   local entity = tableMod.count(self.selectedEntities) == 1
     and next(self.selectedEntities)
 
