@@ -1,11 +1,15 @@
-local AddCellCommand = require("cradle.editor.commands.AddCellCommand")
+local AddComponentCommand =
+  require("cradle.editor.commands.AddComponentCommand")
 local cdefMod = require("cradle.cdef")
 local Class = require("cradle.Class")
-local DeleteRowCommand = require("cradle.editor.commands.DeleteRowCommand")
+local DeleteEntityCommand =
+  require("cradle.editor.commands.DeleteEntityCommand")
 local heart = require("heart")
-local InsertRowCommand = require("cradle.editor.commands.InsertRowCommand")
+local InsertEntityCommand =
+  require("cradle.editor.commands.InsertEntityCommand")
 local nodeMod = require("cradle.node")
-local RemoveCellCommand = require("cradle.editor.commands.RemoveCellCommand")
+local RemoveComponentCommand =
+  require("cradle.editor.commands.RemoveComponentCommand")
 local ShapeComponentView =
   require("cradle.editor.views.components.ShapeComponentView")
 local Slab = require("Slab")
@@ -268,7 +272,7 @@ function M:updateRowsView()
       local parentEntity = tableMod.count(self.selectedEntities) == 1
         and next(self.selectedEntities)
 
-      self:doCommand(InsertRowCommand.new(self, parentEntity))
+      self:doCommand(InsertEntityCommand.new(self, parentEntity))
     end
 
     Slab.SetLayoutColumn(2)
@@ -276,7 +280,7 @@ function M:updateRowsView()
 
     if Slab.Button("Delete", { Disabled = deleteDisabled }) then
       local entity = next(self.selectedEntities)
-      self:doCommand(DeleteRowCommand.new(self, entity))
+      self:doCommand(DeleteEntityCommand.new(self, entity))
     end
 
     Slab.EndLayout()
@@ -369,7 +373,9 @@ function M:updateCellsView()
       or self.database:getCell(entity, self.selectedComponent) ~= nil
 
     if Slab.Button("Add", { Disabled = addDisabled }) then
-      self:doCommand(AddCellCommand.new(self, entity, self.selectedComponent))
+      self:doCommand(
+        AddComponentCommand.new(self, entity, self.selectedComponent)
+      )
     end
 
     Slab.SetLayoutColumn(2)
@@ -379,7 +385,7 @@ function M:updateCellsView()
 
     if Slab.Button("Remove", { Disabled = removeDisabled }) then
       self:doCommand(
-        RemoveCellCommand.new(self, entity, self.selectedComponent)
+        RemoveComponentCommand.new(self, entity, self.selectedComponent)
       )
     end
 
