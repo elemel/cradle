@@ -1,15 +1,9 @@
-local AddComponentCommand =
-  require("cradle.editor.commands.AddComponentCommand")
 local cdefMod = require("cradle.cdef")
 local Class = require("cradle.Class")
-local DeleteEntityCommand =
-  require("cradle.editor.commands.DeleteEntityCommand")
+local EntityTreeView = require("cradle.editor.views.EntityTreeView")
+local EntityView = require("cradle.editor.views.EntityView")
 local heart = require("heart")
-local InsertEntityCommand =
-  require("cradle.editor.commands.InsertEntityCommand")
 local nodeMod = require("cradle.node")
-local RemoveComponentCommand =
-  require("cradle.editor.commands.RemoveComponentCommand")
 local ShapeComponentView =
   require("cradle.editor.views.components.ShapeComponentView")
 local Slab = require("Slab")
@@ -26,7 +20,21 @@ local M = Class.new()
 
 function M:init(application)
   self.application = assert(application)
+
   self.engine = heart.newEngine()
+  self.engine:setProperty("application", self.application)
+
+  self.engine:addEvent("draw")
+  self.engine:addEvent("keypressed")
+  self.engine:addEvent("keyreleased")
+  self.engine:addEvent("mousemoved")
+  self.engine:addEvent("mousepressed")
+  self.engine:addEvent("mousereleased")
+  self.engine:addEvent("resize")
+  self.engine:addEvent("textinput")
+  self.engine:addEvent("update")
+  self.engine:addEvent("wheelmoved")
+
   Slab.Initialize({}, true)
 
   self.commandHistory = {}
@@ -52,7 +60,7 @@ function M:init(application)
     transform = "Transform",
   }
 
-  self.constructors = {
+  self.componentConstructors = {
     body = function()
       return {}
     end,
@@ -121,6 +129,9 @@ function M:init(application)
 
   self.selectedEntities = {}
 
+  self.entityTreeView = EntityTreeView.new(self)
+  self.entityView = EntityView.new(self)
+
   self.componentViews = {
     body = TagComponentView.new(self, "body"),
     fixture = TagComponentView.new(self, "fixture"),
@@ -133,6 +144,12 @@ function M:init(application)
 end
 
 function M:handleEvent(event, ...)
+  local result = self.engine:handleEvent(event, ...)
+
+  if result then
+    return result
+  end
+
   local handler = self[event]
 
   if handler then
@@ -223,7 +240,7 @@ function M:update(dt)
     Y = 0,
   })
 
-  self:updateEntityTreeView()
+  self.entityTreeView:render()
   Slab.EndWindow()
 
   Slab.BeginWindow("rightDock", {
@@ -239,7 +256,7 @@ function M:update(dt)
     Y = 0,
   })
 
-  self:updateCellsView()
+  self.entityView:render()
   Slab.EndWindow()
 
   Slab.BeginWindow("bottomDock", {
@@ -259,155 +276,6 @@ end
 
 function M:wheelmoved(...)
   Slab.OnWheelMoved(...)
-end
-
-function M:updateEntityTreeView()
-  do
-    Slab.Text("Entities")
-
-    Slab.BeginLayout("insertAndDeleteEntity", { Columns = 2, ExpandW = true })
-    Slab.SetLayoutColumn(1)
-
-    if Slab.Button("Insert") then
-      local parentEntity = tableMod.count(self.selectedEntities) == 1
-        and next(self.selectedEntities)
-
-      self:doCommand(InsertEntityCommand.new(self, parentEntity))
-    end
-
-    Slab.SetLayoutColumn(2)
-    local deleteDisabled = tableMod.count(self.selectedEntities) ~= 1
-
-    if Slab.Button("Delete", { Disabled = deleteDisabled }) then
-      local entity = next(self.selectedEntities)
-      self:doCommand(DeleteEntityCommand.new(self, entity))
-    end
-
-    Slab.EndLayout()
-  end
-
-  Slab.Separator()
-
-  for entity in self.database.getNextEntity, self.database do
-    local node = self.database:getCell(entity, "node")
-
-    if node and node.parent == 0 then
-      self:updateEntityNode(entity)
-    end
-  end
-end
-
-function M:updateEntityNode(entity)
-  local title = self.database:getCell(entity, "title")
-  local label = title and title ~= "" and title or "Entity " .. entity
-  local node = self.database:getCell(entity, "node")
-  local leaf = node.firstChild == 0
-  local selected = self.selectedEntities[entity] or false
-
-  local open = Slab.BeginTree("entity" .. entity, {
-    IsLeaf = leaf,
-    IsSelected = selected,
-    Label = label,
-    OpenWithHighlight = false,
-  })
-
-  if Slab.IsControlClicked() then
-    tableMod.clear(self.selectedEntities)
-    self.selectedEntities[entity] = true
-    selected = true
-  end
-
-  if open then
-    if not leaf then
-      local childEntity = node.firstChild
-
-      repeat
-        self:updateEntityNode(childEntity, selectedEntitites)
-
-        local childNode = self.database:getCell(childEntity, "node")
-        childEntity = childNode.nextSibling
-      until childEntity == node.firstChild
-    end
-
-    Slab.EndTree()
-  end
-end
-
-function M:updateCellsView()
-  local entity = tableMod.count(self.selectedEntities) == 1
-    and next(self.selectedEntities)
-
-  if not entity then
-    return
-  end
-
-  do
-    Slab.BeginLayout("addAndRemoveComponent", { Columns = 2, ExpandW = true })
-
-    Slab.SetLayoutColumn(1)
-    Slab.Text("Entity")
-
-    Slab.SetLayoutColumn(2)
-    Slab.Text(entity)
-
-    Slab.SetLayoutColumn(1)
-    Slab.Text("Component")
-
-    Slab.SetLayoutColumn(2)
-    local selectedLabel = self.selectedComponent
-        and self.componentTitles[self.selectedComponent]
-      or self.selectedComponent
-
-    if Slab.BeginComboBox("component", { Selected = selectedLabel }) then
-      for i, component in pairs(self.sortedComponents) do
-        local label = self.componentTitles[component] or component
-        local selected = label == selectedLabel
-
-        if Slab.TextSelectable(label, { IsSelected = selected }) then
-          self.selectedComponent = component
-        end
-      end
-
-      Slab.EndComboBox()
-    end
-
-    Slab.SetLayoutColumn(1)
-
-    local addDisabled = not self.selectedComponent
-      or self.database:getCell(entity, self.selectedComponent) ~= nil
-
-    if Slab.Button("Add", { Disabled = addDisabled }) then
-      self:doCommand(
-        AddComponentCommand.new(self, entity, self.selectedComponent)
-      )
-    end
-
-    Slab.SetLayoutColumn(2)
-
-    local removeDisabled = not self.selectedComponent
-      or self.database:getCell(entity, self.selectedComponent) == nil
-
-    if Slab.Button("Remove", { Disabled = removeDisabled }) then
-      self:doCommand(
-        RemoveComponentCommand.new(self, entity, self.selectedComponent)
-      )
-    end
-
-    Slab.EndLayout()
-  end
-
-  local archetype = self.database:getArchetype(entity)
-  local sortedComponents = tableMod.keys(archetype)
-
-  table.sort(sortedComponents, function(a, b)
-    return self.componentTitles[a] < self.componentTitles[b]
-  end)
-
-  for _, component in ipairs(sortedComponents) do
-    Slab.Separator()
-    local view = assert(self.componentViews[component])
-    view:render()
-  end
 end
 
 function M:doCommand(command)
