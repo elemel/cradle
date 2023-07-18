@@ -265,7 +265,7 @@ function M:updateEntityTreeView()
   do
     Slab.Text("Entities")
 
-    Slab.BeginLayout("insertAndDeleteRow", { Columns = 2, ExpandW = true })
+    Slab.BeginLayout("insertAndDeleteEntity", { Columns = 2, ExpandW = true })
     Slab.SetLayoutColumn(1)
 
     if Slab.Button("Insert") then
@@ -344,7 +344,7 @@ function M:updateCellsView()
   Slab.Text("Components")
 
   do
-    Slab.BeginLayout("addAndRemoveCell", { Columns = 2, ExpandW = true })
+    Slab.BeginLayout("addAndRemoveComponent", { Columns = 2, ExpandW = true })
 
     Slab.SetLayoutColumn(1)
     Slab.Text("Component")
