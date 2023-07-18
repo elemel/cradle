@@ -1,5 +1,6 @@
 local cdefMod = require("cradle.cdef")
 local Class = require("cradle.Class")
+local DrawSlabHandler = require("cradle.editor.handlers.DrawSlabHandler")
 local EntityTreeView = require("cradle.editor.views.EntityTreeView")
 local EntityView = require("cradle.editor.views.EntityView")
 local heart = require("heart")
@@ -34,6 +35,8 @@ function M:init(application)
   self.engine:addEvent("textinput")
   self.engine:addEvent("update")
   self.engine:addEvent("wheelmoved")
+
+  self.engine:addEventHandler("draw", DrawSlabHandler.new(self.engine))
 
   Slab.Initialize({}, true)
 
@@ -155,12 +158,6 @@ function M:handleEvent(event, ...)
   if handler then
     handler(self, ...)
   end
-end
-
-function M:draw()
-  love.graphics.push("all")
-  Slab.Draw()
-  love.graphics.pop()
 end
 
 function M:keypressed(key, scancode, isrepeat)
