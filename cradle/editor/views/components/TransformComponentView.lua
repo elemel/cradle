@@ -6,7 +6,6 @@ local M = Class.new()
 function M:init(editorScreen, component)
   self.editorScreen = assert(editorScreen)
   self.component = assert(component)
-  self.title = assert(self.editorScreen.componentTitles[self.component])
 
   self.id = self.component .. "Component"
   self.xId = self.component .. "ComponentX"
@@ -16,9 +15,10 @@ end
 
 function M:render()
   local entity = assert(next(self.editorScreen.selectedEntities))
+  local title = assert(self.editorScreen.componentTitles[self.component])
   local selected = self.component == self.editorScreen.selectedComponent
 
-  if Slab.Text(self.title, { IsSelectable = true, IsSelected = selected }) then
+  if Slab.Text(title, { IsSelectable = true, IsSelected = selected }) then
     self.editorScreen.selectedComponent = self.component
   end
 

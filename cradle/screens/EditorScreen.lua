@@ -113,7 +113,7 @@ function M:init(application)
 
   self.selectedEntities = {}
 
-  self.shapeComponentView = ShapeComponentView.new(self, "shape", "Shape")
+  self.shapeComponentView = ShapeComponentView.new(self, "shape")
   self.transformComponentView = TransformComponentView.new(self, "transform")
 end
 
