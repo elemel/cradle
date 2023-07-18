@@ -1,12 +1,9 @@
-local AddComponentCommand =
-  require("cradle.editor.commands.AddComponentCommand")
 local cdefMod = require("cradle.cdef")
 local Class = require("cradle.Class")
 local EntityTreeView = require("cradle.editor.views.EntityTreeView")
+local EntityView = require("cradle.editor.views.EntityView")
 local heart = require("heart")
 local nodeMod = require("cradle.node")
-local RemoveComponentCommand =
-  require("cradle.editor.commands.RemoveComponentCommand")
 local ShapeComponentView =
   require("cradle.editor.views.components.ShapeComponentView")
 local Slab = require("Slab")
@@ -131,7 +128,9 @@ function M:init(application)
   nodeMod.setParent(self.database, entity4, entity1)
 
   self.selectedEntities = {}
+
   self.entityTreeView = EntityTreeView.new(self)
+  self.entityView = EntityView.new(self)
 
   self.componentViews = {
     body = TagComponentView.new(self, "body"),
@@ -257,7 +256,7 @@ function M:update(dt)
     Y = 0,
   })
 
-  self:updateEntityView()
+  self.entityView:render()
   Slab.EndWindow()
 
   Slab.BeginWindow("bottomDock", {
@@ -277,83 +276,6 @@ end
 
 function M:wheelmoved(...)
   Slab.OnWheelMoved(...)
-end
-
-function M:updateEntityView()
-  local entity = tableMod.count(self.selectedEntities) == 1
-    and next(self.selectedEntities)
-
-  if not entity then
-    return
-  end
-
-  do
-    Slab.BeginLayout("addAndRemoveComponent", { Columns = 2, ExpandW = true })
-
-    Slab.SetLayoutColumn(1)
-    Slab.Text("Entity")
-
-    Slab.SetLayoutColumn(2)
-    Slab.Text(entity)
-
-    Slab.SetLayoutColumn(1)
-    Slab.Text("Component")
-
-    Slab.SetLayoutColumn(2)
-    local selectedLabel = self.selectedComponent
-        and self.componentTitles[self.selectedComponent]
-      or self.selectedComponent
-
-    if Slab.BeginComboBox("component", { Selected = selectedLabel }) then
-      for i, component in pairs(self.sortedComponents) do
-        local label = self.componentTitles[component] or component
-        local selected = label == selectedLabel
-
-        if Slab.TextSelectable(label, { IsSelected = selected }) then
-          self.selectedComponent = component
-        end
-      end
-
-      Slab.EndComboBox()
-    end
-
-    Slab.SetLayoutColumn(1)
-
-    local addDisabled = not self.selectedComponent
-      or self.database:getCell(entity, self.selectedComponent) ~= nil
-
-    if Slab.Button("Add", { Disabled = addDisabled }) then
-      self:doCommand(
-        AddComponentCommand.new(self, entity, self.selectedComponent)
-      )
-    end
-
-    Slab.SetLayoutColumn(2)
-
-    local removeDisabled = not self.selectedComponent
-      or self.database:getCell(entity, self.selectedComponent) == nil
-
-    if Slab.Button("Remove", { Disabled = removeDisabled }) then
-      self:doCommand(
-        RemoveComponentCommand.new(self, entity, self.selectedComponent)
-      )
-    end
-
-    Slab.EndLayout()
-  end
-
-  local archetype = self.database:getArchetype(entity)
-  local sortedComponents = tableMod.keys(archetype)
-
-  table.sort(sortedComponents, function(a, b)
-    return self.componentTitles[a] < self.componentTitles[b]
-  end)
-
-  for _, component in ipairs(sortedComponents) do
-    Slab.Separator()
-    local view = assert(self.componentViews[component])
-    view:render()
-  end
 end
 
 function M:doCommand(command)
