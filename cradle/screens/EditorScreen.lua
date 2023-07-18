@@ -10,6 +10,8 @@ local ShapeComponentView =
   require("cradle.editor.views.components.ShapeComponentView")
 local Slab = require("Slab")
 local sparrow = require("sparrow")
+local StringComponentView =
+  require("cradle.editor.views.components.StringComponentView")
 local TransformComponentView =
   require("cradle.editor.views.components.TransformComponentView")
 local tableMod = require("cradle.table")
@@ -114,6 +116,7 @@ function M:init(application)
   self.selectedEntities = {}
 
   self.shapeComponentView = ShapeComponentView.new(self, "shape")
+  self.titleComponentView = StringComponentView.new(self, "title")
   self.transformComponentView = TransformComponentView.new(self, "transform")
 end
 
@@ -393,25 +396,7 @@ function M:updateCellView(entity, component)
   local selected = component == self.selectedComponent
 
   if component == "title" then
-    Slab.BeginLayout("titleComponent", { Columns = 2, ExpandW = true })
-    Slab.SetLayoutColumn(1)
-
-    if Slab.Text(label, { IsSelectable = true, IsSelected = selected }) then
-      self.selectedComponent = component
-    end
-
-    Slab.SetLayoutColumn(2)
-
-    local changed = Slab.Input("title", {
-      Align = "left",
-      Text = self.database:getCell(entity, "title"),
-    })
-
-    if changed then
-      self.database:setCell(entity, "title", Slab.GetInputText())
-    end
-
-    Slab.EndLayout()
+    self.titleComponentView:render()
   elseif component == "transform" then
     self.transformComponentView:render()
   elseif component == "shape" then
