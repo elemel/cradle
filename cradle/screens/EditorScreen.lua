@@ -1,6 +1,7 @@
 local cdefMod = require("cradle.cdef")
 local Class = require("cradle.Class")
 local DrawSlabHandler = require("cradle.editor.handlers.DrawSlabHandler")
+local DrawShapeHandler = require("cradle.editor.handlers.DrawShapeHandler")
 local EntityTreeView = require("cradle.editor.views.EntityTreeView")
 local EntityView = require("cradle.editor.views.EntityView")
 local heart = require("heart")
@@ -21,9 +22,19 @@ local M = Class.new()
 
 function M:init(application)
   self.application = assert(application)
+  self.database = sparrow.newDatabase()
+
+  self.database:createColumn("body")
+  self.database:createColumn("fixture")
+  self.database:createColumn("joint")
+  self.database:createColumn("node", "node")
+  self.database:createColumn("shape")
+  self.database:createColumn("title")
+  self.database:createColumn("transform", "transform")
 
   self.engine = heart.newEngine()
   self.engine:setProperty("application", self.application)
+  self.engine:setProperty("database", self.database)
 
   self.engine:addEvent("draw")
   self.engine:addEvent("keypressed")
@@ -36,22 +47,13 @@ function M:init(application)
   self.engine:addEvent("update")
   self.engine:addEvent("wheelmoved")
 
+  self.engine:addEventHandler("draw", DrawShapeHandler.new(self.engine))
   self.engine:addEventHandler("draw", DrawSlabHandler.new(self.engine))
 
   Slab.Initialize({}, true)
 
   self.commandHistory = {}
   self.commandFuture = {}
-
-  self.database = sparrow.newDatabase()
-
-  self.database:createColumn("body")
-  self.database:createColumn("fixture")
-  self.database:createColumn("joint")
-  self.database:createColumn("node", "node")
-  self.database:createColumn("shape")
-  self.database:createColumn("title")
-  self.database:createColumn("transform", "transform")
 
   self.componentTitles = {
     body = "Body",
@@ -110,25 +112,12 @@ function M:init(application)
 
   local entity2 = self.database:insertRow({
     node = {},
+    shape = { type = "rectangle", size = { 1, 1 } },
     title = "B",
     transform = { rotation = { 1, 0 } },
   })
 
-  local entity3 = self.database:insertRow({
-    node = {},
-    title = "C",
-    transform = { rotation = { 1, 0 } },
-  })
-
-  local entity4 = self.database:insertRow({
-    node = {},
-    title = "D",
-    transform = { rotation = { 1, 0 } },
-  })
-
   nodeMod.setParent(self.database, entity2, entity1)
-  nodeMod.setParent(self.database, entity3, entity2)
-  nodeMod.setParent(self.database, entity4, entity1)
 
   self.selectedEntities = {}
 
