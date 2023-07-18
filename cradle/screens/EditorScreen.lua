@@ -26,7 +26,21 @@ local M = Class.new()
 
 function M:init(application)
   self.application = assert(application)
+
   self.engine = heart.newEngine()
+  self.engine:setProperty("application", self.application)
+
+  self.engine:addEvent("draw")
+  self.engine:addEvent("keypressed")
+  self.engine:addEvent("keyreleased")
+  self.engine:addEvent("mousemoved")
+  self.engine:addEvent("mousepressed")
+  self.engine:addEvent("mousereleased")
+  self.engine:addEvent("resize")
+  self.engine:addEvent("textinput")
+  self.engine:addEvent("update")
+  self.engine:addEvent("wheelmoved")
+
   Slab.Initialize({}, true)
 
   self.commandHistory = {}
@@ -133,6 +147,12 @@ function M:init(application)
 end
 
 function M:handleEvent(event, ...)
+  local result = self.engine:handleEvent(event, ...)
+
+  if result then
+    return result
+  end
+
   local handler = self[event]
 
   if handler then
