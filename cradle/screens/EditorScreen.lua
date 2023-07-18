@@ -2,11 +2,8 @@ local AddComponentCommand =
   require("cradle.editor.commands.AddComponentCommand")
 local cdefMod = require("cradle.cdef")
 local Class = require("cradle.Class")
-local DeleteEntityCommand =
-  require("cradle.editor.commands.DeleteEntityCommand")
+local EntityTreeView = require("cradle.editor.views.EntityTreeView")
 local heart = require("heart")
-local InsertEntityCommand =
-  require("cradle.editor.commands.InsertEntityCommand")
 local nodeMod = require("cradle.node")
 local RemoveComponentCommand =
   require("cradle.editor.commands.RemoveComponentCommand")
@@ -134,6 +131,7 @@ function M:init(application)
   nodeMod.setParent(self.database, entity4, entity1)
 
   self.selectedEntities = {}
+  self.entityTreeView = EntityTreeView.new(self)
 
   self.componentViews = {
     body = TagComponentView.new(self, "body"),
@@ -243,7 +241,7 @@ function M:update(dt)
     Y = 0,
   })
 
-  self:updateEntityTreeView()
+  self.entityTreeView:render()
   Slab.EndWindow()
 
   Slab.BeginWindow("rightDock", {
@@ -279,78 +277,6 @@ end
 
 function M:wheelmoved(...)
   Slab.OnWheelMoved(...)
-end
-
-function M:updateEntityTreeView()
-  do
-    Slab.Text("Entities")
-
-    Slab.BeginLayout("insertAndDeleteEntity", { Columns = 2, ExpandW = true })
-    Slab.SetLayoutColumn(1)
-
-    if Slab.Button("Insert") then
-      local parentEntity = tableMod.count(self.selectedEntities) == 1
-        and next(self.selectedEntities)
-
-      self:doCommand(InsertEntityCommand.new(self, parentEntity))
-    end
-
-    Slab.SetLayoutColumn(2)
-    local deleteDisabled = tableMod.count(self.selectedEntities) ~= 1
-
-    if Slab.Button("Delete", { Disabled = deleteDisabled }) then
-      local entity = next(self.selectedEntities)
-      self:doCommand(DeleteEntityCommand.new(self, entity))
-    end
-
-    Slab.EndLayout()
-  end
-
-  Slab.Separator()
-
-  for entity in self.database.getNextEntity, self.database do
-    local node = self.database:getCell(entity, "node")
-
-    if node and node.parent == 0 then
-      self:updateEntityNode(entity)
-    end
-  end
-end
-
-function M:updateEntityNode(entity)
-  local title = self.database:getCell(entity, "title")
-  local label = title and title ~= "" and title or "Entity " .. entity
-  local node = self.database:getCell(entity, "node")
-  local leaf = node.firstChild == 0
-  local selected = self.selectedEntities[entity] or false
-
-  local open = Slab.BeginTree("entity" .. entity, {
-    IsLeaf = leaf,
-    IsSelected = selected,
-    Label = label,
-    OpenWithHighlight = false,
-  })
-
-  if Slab.IsControlClicked() then
-    tableMod.clear(self.selectedEntities)
-    self.selectedEntities[entity] = true
-    selected = true
-  end
-
-  if open then
-    if not leaf then
-      local childEntity = node.firstChild
-
-      repeat
-        self:updateEntityNode(childEntity, selectedEntitites)
-
-        local childNode = self.database:getCell(childEntity, "node")
-        childEntity = childNode.nextSibling
-      until childEntity == node.firstChild
-    end
-
-    Slab.EndTree()
-  end
 end
 
 function M:updateEntityView()
