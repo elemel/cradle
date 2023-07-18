@@ -12,6 +12,8 @@ local Slab = require("Slab")
 local sparrow = require("sparrow")
 local StringComponentView =
   require("cradle.editor.views.components.StringComponentView")
+local TagComponentView =
+  require("cradle.editor.views.components.TagComponentView")
 local TransformComponentView =
   require("cradle.editor.views.components.TransformComponentView")
 local tableMod = require("cradle.table")
@@ -115,9 +117,15 @@ function M:init(application)
 
   self.selectedEntities = {}
 
-  self.shapeComponentView = ShapeComponentView.new(self, "shape")
-  self.titleComponentView = StringComponentView.new(self, "title")
-  self.transformComponentView = TransformComponentView.new(self, "transform")
+  self.componentViews = {
+    body = TagComponentView.new(self, "body"),
+    fixture = TagComponentView.new(self, "fixture"),
+    joint = TagComponentView.new(self, "joint"),
+    node = TagComponentView.new(self, "node"),
+    shape = ShapeComponentView.new(self, "shape"),
+    title = StringComponentView.new(self, "title"),
+    transform = TransformComponentView.new(self, "transform"),
+  }
 end
 
 function M:handleEvent(event, ...)
@@ -387,24 +395,8 @@ function M:updateCellsView()
 
   for _, component in ipairs(sortedComponents) do
     Slab.Separator()
-    self:updateCellView(entity, component)
-  end
-end
-
-function M:updateCellView(entity, component)
-  local label = self.componentTitles[component] or component
-  local selected = component == self.selectedComponent
-
-  if component == "title" then
-    self.titleComponentView:render()
-  elseif component == "transform" then
-    self.transformComponentView:render()
-  elseif component == "shape" then
-    self.shapeComponentView:render()
-  else
-    if Slab.Text(label, { IsSelectable = true, IsSelected = selected }) then
-      self.selectedComponent = component
-    end
+    local view = assert(self.componentViews[component])
+    view:render()
   end
 end
 
