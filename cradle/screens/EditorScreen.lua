@@ -133,6 +133,8 @@ function M:init(application)
     title = StringComponentView.new(self, "title"),
     transform = TransformComponentView.new(self, "transform"),
   }
+
+  self.dragStep = 1
 end
 
 function M:handleEvent(event, ...)

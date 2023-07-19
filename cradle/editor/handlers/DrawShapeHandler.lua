@@ -9,17 +9,21 @@ local M = {}
 
 local function getWorldTransform(database, entity, result)
   result = result or Transform()
-  transformMod.reset(result)
+  local node = database:getCell(entity, "node")
 
-  local transform = assert(database:getCell(entity, "transform"))
-  local node = assert(database:getCell(entity, "node"))
-
-  if node.parent == 0 then
-    return transformMod.copy(transform, result)
+  if node and node.parent ~= 0 then
+    getWorldTransform(database, node.parent, result)
+  else
+    transformMod.reset(result)
   end
 
-  getWorldTransform(database, node.parent, result)
-  return transformMod.multiply(result, transform, result)
+  local transform = database:getCell(entity, "transform")
+
+  if transform then
+    transformMod.multiply(result, transform, result)
+  end
+
+  return result
 end
 
 function M.new(engine)

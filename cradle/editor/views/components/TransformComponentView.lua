@@ -34,7 +34,9 @@ function M:render()
   if
     Slab.Input(self.xId, {
       Align = "left",
+      NumbersOnly = true,
       ReturnOnText = true,
+      Step = self.editorScreen.dragStep,
       Text = transform.translation.x,
     })
   then
@@ -49,7 +51,9 @@ function M:render()
   if
     Slab.Input(self.yId, {
       Align = "left",
+      NumbersOnly = true,
       ReturnOnText = true,
+      Step = self.editorScreen.dragStep,
       Text = transform.translation.y,
     })
   then
@@ -67,7 +71,9 @@ function M:render()
   if
     Slab.Input(self.angleId, {
       Align = "left",
+      NumbersOnly = true,
       ReturnOnText = true,
+      Step = self.editorScreen.dragStep,
       Text = angleDeg,
     })
   then
