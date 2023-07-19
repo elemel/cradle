@@ -9,3 +9,6 @@
 [submodule "Slab"]
 	path = Slab
 	url = git@github.com:flamendless/Slab.git
+[submodule "json.lua"]
+	path = json.lua
+	url = git@github.com:rxi/json.lua.git
