@@ -60,7 +60,9 @@ function M:render()
     if
       Slab.Input(self.radiusId, {
         Align = "left",
+        NumbersOnly = true,
         ReturnOnText = true,
+        Step = self.editorScreen.dragStep,
         Text = shape.radius or 0.5,
       })
     then
@@ -75,7 +77,9 @@ function M:render()
     if
       Slab.Input(self.widthId, {
         Align = "left",
+        NumbersOnly = true,
         ReturnOnText = true,
+        Step = self.editorScreen.dragStep,
         Text = shape.size and shape.size[1] or 1,
       })
     then
@@ -91,7 +95,9 @@ function M:render()
     if
       Slab.Input(self.heightId, {
         Align = "left",
+        NumbersOnly = true,
         ReturnOnText = true,
+        Step = self.editorScreen.dragStep,
         Text = shape.size and shape.size[2] or 1,
       })
     then

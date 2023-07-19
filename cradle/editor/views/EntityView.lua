@@ -88,6 +88,25 @@ function M:render()
       )
     end
 
+    Slab.SetLayoutColumn(1)
+    Slab.Text("Drag Step")
+
+    Slab.SetLayoutColumn(2)
+
+    if
+      Slab.Input("dragStep", {
+        Align = "left",
+        MaxNumber = 2,
+        MinNumber = 0,
+        NumbersOnly = true,
+        ReturnOnText = true,
+        Text = self.editorScreen.dragStep,
+        UseSlider = true,
+      })
+    then
+      self.editorScreen.dragStep = Slab.GetInputNumber()
+    end
+
     Slab.EndLayout()
   end
 
