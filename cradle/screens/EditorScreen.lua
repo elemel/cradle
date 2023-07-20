@@ -5,6 +5,7 @@ local DrawShapeHandler = require("cradle.editor.handlers.DrawShapeHandler")
 local EntityTreeView = require("cradle.editor.views.EntityTreeView")
 local EntityView = require("cradle.editor.views.EntityView")
 local heart = require("heart")
+local jsonMod = require("json")
 local nodeMod = require("cradle.node")
 local ShapeComponentView =
   require("cradle.editor.views.components.ShapeComponentView")
@@ -31,6 +32,13 @@ function M:init(application)
   self.database:createColumn("shape")
   self.database:createColumn("title")
   self.database:createColumn("transform", "transform")
+
+  local json = love.filesystem.read("database.json")
+  local rows = jsonMod.decode(json)
+
+  for entity, row in pairs(rows) do
+    self.database:insertRow(row, entity)
+  end
 
   self.engine = heart.newEngine()
   self.engine:setProperty("application", self.application)
@@ -104,21 +112,6 @@ function M:init(application)
     return self.componentTitles[a] < self.componentTitles[b]
   end)
 
-  local entity1 = self.database:insertRow({
-    node = {},
-    title = "A",
-    transform = { rotation = { 1, 0 } },
-  })
-
-  local entity2 = self.database:insertRow({
-    node = {},
-    shape = { type = "rectangle", size = { 1, 1 } },
-    title = "B",
-    transform = { rotation = { 1, 0 } },
-  })
-
-  nodeMod.setParent(self.database, entity2, entity1)
-
   self.selectedEntities = {}
 
   self.entityTreeView = EntityTreeView.new(self)
@@ -156,6 +149,9 @@ function M:keypressed(key, scancode, isrepeat)
 
   if key == "escape" then
     Slab.OnQuit()
+
+    local json = self:encodeDatabaseAsJson()
+    love.filesystem.write("database.json", json)
 
     self.application:popScreen()
     local screen = application:peekScreen()
@@ -292,6 +288,27 @@ function M:redoCommand()
 
   command:redo()
   table.insert(self.commandHistory, command)
+end
+
+function M:encodeDatabaseAsJson()
+  local rows = {}
+
+  for entity in self.database.getNextEntity, self.database do
+    local row = self.database:getRow(entity)
+
+    for component, value in pairs(row) do
+      local valueType = self.database:getValueType(component)
+
+      if valueType then
+        value = cdefMod.encode(valueType, value)
+      end
+
+      row[component] = value
+      rows[entity] = row
+    end
+  end
+
+  return jsonMod.encode(rows)
 end
 
 return M
