@@ -13,7 +13,7 @@ function M.new(engine, config)
   })
 
   return function()
-    query:forEach(function(transform)
+    query:forEach(function(entity, transform)
       love.graphics.push("all")
 
       local width, height = love.graphics.getDimensions()

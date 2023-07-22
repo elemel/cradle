@@ -12,7 +12,7 @@ function M.new(engine)
   })
 
   return function(dt)
-    query:forEach(function(body)
+    query:forEach(function(entity, body)
       body:destroy()
       return nil
     end)

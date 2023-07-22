@@ -12,7 +12,7 @@ function M.new(engine)
   })
 
   return function(dt)
-    query:forEach(function(joint)
+    query:forEach(function(entity, joint)
       joint:destroy()
       return nil
     end)
