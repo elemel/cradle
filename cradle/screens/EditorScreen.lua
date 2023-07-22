@@ -102,7 +102,7 @@ function M:init(application)
     end,
 
     transform = function()
-      return { rotation = { 1, 0 }, translation = { 0, 0 } }
+      return { orientation = { 1, 0 }, position = { 0, 0 } }
     end,
   }
 

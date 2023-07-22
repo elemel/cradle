@@ -16,8 +16,8 @@ function M.createMotorcycle(database, localTransform)
     },
 
     localTransform = localTransform or {
-      rotation = { 1, 0 },
-      translation = { 0, 0 },
+      orientation = { 1, 0 },
+      position = { 0, 0 },
     },
 
     motorcycle = {},
@@ -53,8 +53,8 @@ function M.createMotorcycle(database, localTransform)
     },
 
     localTransform = {
-      rotation = { 1, 0 },
-      translation = { -0.65, 0.15 },
+      orientation = { 1, 0 },
+      position = { -0.65, 0.15 },
     },
 
     node = {},
@@ -90,8 +90,8 @@ function M.createMotorcycle(database, localTransform)
     },
 
     localTransform = {
-      rotation = { 1, 0 },
-      translation = { 0.65, 0.15 },
+      orientation = { 1, 0 },
+      position = { 0.65, 0.15 },
     },
 
     node = {},

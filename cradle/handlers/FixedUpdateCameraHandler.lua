@@ -18,7 +18,7 @@ function M.new(engine)
   return function(dt)
     cameraQuery:forEach(function(cameraEntity, transform)
       riderQuery:forEach(function(riderEntity, body)
-        transform.translation.x, transform.translation.y = body:getPosition()
+        transform.position.x, transform.position.y = body:getPosition()
       end)
     end)
   end

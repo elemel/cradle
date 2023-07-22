@@ -173,8 +173,8 @@ function M:init(application)
     },
 
     localTransform = {
-      rotation = { 1, 0 },
-      translation = { 0, 0.5 },
+      orientation = { 1, 0 },
+      position = { 0, 0.5 },
     },
 
     node = {},
@@ -196,8 +196,8 @@ function M:init(application)
     },
 
     localTransform = {
-      rotation = { math.cos(-0.5), math.sin(-0.5) },
-      translation = { 4, -0.5 },
+      orientation = { math.cos(-0.5), math.sin(-0.5) },
+      position = { 4, -0.5 },
     },
 
     node = {},
@@ -219,8 +219,8 @@ function M:init(application)
     },
 
     localTransform = {
-      rotation = { math.cos(0.5), math.sin(0.5) },
-      translation = { 15, -0.5 },
+      orientation = { math.cos(0.5), math.sin(0.5) },
+      position = { 15, -0.5 },
     },
 
     node = {},
@@ -242,8 +242,8 @@ function M:init(application)
     },
 
     localTransform = {
-      rotation = { 1, 0 },
-      translation = { 19, 0.5 },
+      orientation = { 1, 0 },
+      position = { 19, 0.5 },
     },
 
     node = {},
@@ -257,21 +257,21 @@ function M:init(application)
   })
 
   local frameEntity = motorcycleMod.createMotorcycle(database, {
-    rotation = { 1, 0 },
-    translation = { 0, -0.45 },
+    orientation = { 1, 0 },
+    position = { 0, -0.45 },
   })
 
   local trunkEntity = riderMod.createRider(database, frameEntity, {
-    rotation = { 1, 0 },
-    translation = { 0, -0.6 },
+    orientation = { 1, 0 },
+    position = { 0, -0.6 },
   })
 
   database:insertRow({
     camera = {},
 
     localTransform = {
-      rotation = { 1, 0 },
-      translation = { 0.65, 0.3 },
+      orientation = { 1, 0 },
+      position = { 0.65, 0.3 },
     },
 
     transform = {},
