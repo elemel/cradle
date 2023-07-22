@@ -17,14 +17,14 @@ function M.new(engine)
     query:forEach(function(entity, bodyConfig, transform)
       local bodyType = bodyConfig.bodyType or "static"
 
-      local x = transform.translation.x
-      local y = transform.translation.y
+      local x = transform.position.x
+      local y = transform.position.y
 
       local body = love.physics.newBody(world, x, y, bodyType)
       body:setUserData(entity)
       database:setCell(entity, bodyType, {})
 
-      local angle = math.atan2(transform.rotation.y, transform.rotation.x)
+      local angle = math.atan2(transform.orientation.y, transform.orientation.x)
       body:setAngle(angle)
 
       if bodyConfig.angularVelocity then

@@ -49,11 +49,11 @@ function M.new(engine)
       getWorldTransform(database, entity, worldTransform)
       love.graphics.push()
       love.graphics.translate(
-        worldTransform.translation.x,
-        worldTransform.translation.y
+        worldTransform.position.x,
+        worldTransform.position.y
       )
       love.graphics.rotate(
-        math.atan2(worldTransform.rotation.y, worldTransform.rotation.x)
+        math.atan2(worldTransform.orientation.y, worldTransform.orientation.x)
       )
 
       if shape.type == "circle" then

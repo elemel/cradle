@@ -37,10 +37,10 @@ function M:render()
       NumbersOnly = true,
       ReturnOnText = true,
       Step = self.editorScreen.dragStep,
-      Text = transform.translation.x,
+      Text = transform.position.x,
     })
   then
-    transform.translation.x = Slab.GetInputNumber()
+    transform.position.x = Slab.GetInputNumber()
   end
 
   Slab.SetLayoutColumn(1)
@@ -54,10 +54,10 @@ function M:render()
       NumbersOnly = true,
       ReturnOnText = true,
       Step = self.editorScreen.dragStep,
-      Text = transform.translation.y,
+      Text = transform.position.y,
     })
   then
-    transform.translation.y = Slab.GetInputNumber()
+    transform.position.y = Slab.GetInputNumber()
   end
 
   Slab.SetLayoutColumn(1)
@@ -66,7 +66,7 @@ function M:render()
   Slab.SetLayoutColumn(2)
   local angleDeg = 180
     / math.pi
-    * math.atan2(transform.rotation.y, transform.rotation.x)
+    * math.atan2(transform.orientation.y, transform.orientation.x)
 
   if
     Slab.Input(self.angleId, {
@@ -79,8 +79,8 @@ function M:render()
   then
     local angleRad = Slab.GetInputNumber() * math.pi / 180
 
-    transform.rotation.x = math.cos(angleRad)
-    transform.rotation.y = math.sin(angleRad)
+    transform.orientation.x = math.cos(angleRad)
+    transform.orientation.y = math.sin(angleRad)
   end
 
   Slab.EndLayout()

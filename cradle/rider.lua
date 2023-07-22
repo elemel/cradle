@@ -31,8 +31,8 @@ local function createNeckAndHead(database, trunkEntity, localCollarPosition)
     },
 
     localTransform = {
-      rotation = { 1, 0 },
-      translation = { localNeckX, localNeckY },
+      orientation = { 1, 0 },
+      position = { localNeckX, localNeckY },
     },
 
     node = {},
@@ -68,8 +68,8 @@ local function createNeckAndHead(database, trunkEntity, localCollarPosition)
     },
 
     localTransform = {
-      rotation = { 1, 0 },
-      translation = { 0, -0.15 },
+      orientation = { 1, 0 },
+      position = { 0, -0.15 },
     },
 
     node = {},
@@ -114,8 +114,8 @@ local function createArm(database, trunkEntity, localShoulderPosition)
     },
 
     localTransform = {
-      rotation = { 1, 0 },
-      translation = { localUpperArmX, localUpperArmY },
+      orientation = { 1, 0 },
+      position = { localUpperArmX, localUpperArmY },
     },
 
     node = {},
@@ -151,8 +151,8 @@ local function createArm(database, trunkEntity, localShoulderPosition)
     },
 
     localTransform = {
-      rotation = { 1, 0 },
-      translation = { 0, 0.35 },
+      orientation = { 1, 0 },
+      position = { 0, 0.35 },
     },
 
     node = {},
@@ -188,8 +188,8 @@ local function createArm(database, trunkEntity, localShoulderPosition)
     },
 
     localTransform = {
-      rotation = { 1, 0 },
-      translation = { 0, 0.225 },
+      orientation = { 1, 0 },
+      position = { 0, 0.225 },
     },
 
     node = {},
@@ -235,8 +235,8 @@ local function createLeg(database, frameEntity, trunkEntity, localHipPosition)
     },
 
     localTransform = {
-      rotation = { 1, 0 },
-      translation = { localUpperLegX, localUpperLegY },
+      orientation = { 1, 0 },
+      position = { localUpperLegX, localUpperLegY },
     },
 
     node = {},
@@ -272,8 +272,8 @@ local function createLeg(database, frameEntity, trunkEntity, localHipPosition)
     },
 
     localTransform = {
-      rotation = { 1, 0 },
-      translation = { 0, 0.35 },
+      orientation = { 1, 0 },
+      position = { 0, 0.35 },
     },
 
     node = {},
@@ -309,8 +309,8 @@ local function createLeg(database, frameEntity, trunkEntity, localHipPosition)
     },
 
     localTransform = {
-      rotation = { 1, 0 },
-      translation = { 0.075, 0.25 },
+      orientation = { 1, 0 },
+      position = { 0.075, 0.25 },
     },
 
     node = {},
@@ -365,8 +365,8 @@ function M.createRider(database, frameEntity, localTransform)
     },
 
     localTransform = localTransform or {
-      rotation = { 1, 0 },
-      translation = { 0, 0 },
+      orientation = { 1, 0 },
+      position = { 0, 0 },
     },
 
     node = {},

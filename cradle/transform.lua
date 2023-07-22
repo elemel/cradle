@@ -6,25 +6,25 @@ local Transform = ffi.typeof("transform")
 local M = {}
 
 function M.multiply(left, right, result)
-  local x = left.translation.x
-    + left.rotation.x * right.translation.x
-    - left.rotation.y * right.translation.y
-  local y = left.translation.y
-    + left.rotation.x * right.translation.y
-    + left.rotation.y * right.translation.x
+  local x = left.position.x
+    + left.orientation.x * right.position.x
+    - left.orientation.y * right.position.y
+  local y = left.position.y
+    + left.orientation.x * right.position.y
+    + left.orientation.y * right.position.x
 
-  local re = left.rotation.x * right.rotation.x
-    - left.rotation.y * right.rotation.y
-  local im = left.rotation.x * right.rotation.y
-    + left.rotation.y * right.rotation.x
+  local re = left.orientation.x * right.orientation.x
+    - left.orientation.y * right.orientation.y
+  local im = left.orientation.x * right.orientation.y
+    + left.orientation.y * right.orientation.x
 
   result = result or Transform()
 
-  result.translation.x = x
-  result.translation.y = y
+  result.position.x = x
+  result.position.y = y
 
-  result.rotation.x = re
-  result.rotation.y = im
+  result.orientation.x = re
+  result.orientation.y = im
 
   return result
 end
@@ -32,11 +32,11 @@ end
 function M.reset(result)
   result = result or Transform()
 
-  result.translation.x = 0
-  result.translation.y = 0
+  result.position.x = 0
+  result.position.y = 0
 
-  result.rotation.x = 1
-  result.rotation.y = 0
+  result.orientation.x = 1
+  result.orientation.y = 0
 
   return result
 end
@@ -44,8 +44,8 @@ end
 function M.copy(source, target)
   target = target or Transform()
 
-  target.translation = source.translation
-  target.rotation = source.rotation
+  target.position = source.position
+  target.orientation = source.orientation
 
   return result
 end

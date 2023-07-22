@@ -23,13 +23,10 @@ function M.new(engine, config)
       love.graphics.scale(scale)
       love.graphics.setLineWidth(1 / scale)
 
-      local angle = math.atan2(transform.rotation.y, transform.rotation.x)
+      local angle = math.atan2(transform.orientation.y, transform.orientation.x)
       love.graphics.rotate(-angle)
 
-      love.graphics.translate(
-        -transform.translation.x,
-        -transform.translation.y
-      )
+      love.graphics.translate(-transform.position.x, -transform.position.y)
 
       for _, body in ipairs(world:getBodies()) do
         for _, fixture in ipairs(body:getFixtures()) do

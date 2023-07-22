@@ -16,8 +16,8 @@ ffi.cdef([[
   } vec2;
 
   typedef struct transform {
-    vec2 translation;
-    vec2 rotation;
+    vec2 position;
+    vec2 orientation;
   } transform;
 ]])
 
@@ -40,8 +40,8 @@ end
 
 M.encoders.transform = function(value)
   return {
-    rotation = M.encoders.vec2(value.rotation),
-    translation = M.encoders.vec2(value.translation),
+    orientation = M.encoders.vec2(value.orientation),
+    position = M.encoders.vec2(value.position),
   }
 end
 
