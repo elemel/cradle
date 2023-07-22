@@ -7,7 +7,7 @@ function M.new(engine)
 
   local query = sparrow.newQuery(database, {
     inclusions = { "destroying" },
-    arguments = { "entity" },
+    arguments = {},
   })
 
   return function(dt)

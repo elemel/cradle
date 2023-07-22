@@ -7,7 +7,7 @@ function M.new(engine)
   local world = assert(engine:getProperty("world"))
 
   local query = sparrow.newQuery(database, {
-    arguments = { "entity", "bodyConfig", "transform" },
+    arguments = { "bodyConfig", "transform" },
     exclusions = { "body" },
     inclusions = { "bodyConfig", "creating", "transform" },
     results = { "body" },

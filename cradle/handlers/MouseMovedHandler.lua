@@ -5,7 +5,7 @@ local M = {}
 function M.new(engine)
   local database = assert(engine:getProperty("database"))
 
-  local riderQuery = sparrow.newQuery(database, {
+  local query = sparrow.newQuery(database, {
     arguments = { "joint" },
     inclusions = { "joint", "rider" },
   })
@@ -18,7 +18,7 @@ function M.new(engine)
   local maxDistance = 0.25
 
   return function(x, y, dx, dy, istouch)
-    riderQuery:forEach(function(joint)
+    query:forEach(function(entity, joint)
       local linearOffsetX, linearOffsetY = joint:getLinearOffset()
 
       linearOffsetX = linearOffsetX + dx * sensitivity

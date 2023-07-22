@@ -9,7 +9,7 @@ function M.new(engine)
   local query = sparrow.newQuery(database, {
     inclusions = { "creating", "jointConfig" },
     exclusions = { "joint" },
-    arguments = { "entity", "jointConfig" },
+    arguments = { "jointConfig" },
     results = { "joint" },
   })
 

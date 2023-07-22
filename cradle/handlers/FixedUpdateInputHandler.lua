@@ -16,7 +16,7 @@ function M.new(engine)
 
     local inputX = (rightInput and 1 or 0) - (leftInput and 1 or 0)
 
-    query:forEach(function(joint)
+    query:forEach(function(entity, joint)
       joint:setMotorEnabled(inputX ~= 0)
       joint:setMotorSpeed(5 * 2 * math.pi * inputX)
     end)

@@ -11,7 +11,7 @@ function M.new(engine)
   })
 
   return function(dt)
-    riderQuery:forEach(function(joint) end)
+    riderQuery:forEach(function(entity, joint) end)
   end
 end
 

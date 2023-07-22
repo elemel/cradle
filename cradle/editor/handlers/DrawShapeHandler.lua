@@ -30,7 +30,6 @@ function M.new(engine)
   local database = assert(engine:getProperty("database"))
 
   local query = sparrow.newQuery(database, {
-    arguments = { "entity", "shape" },
     inclusions = { "shape" },
   })
 
@@ -57,7 +56,10 @@ function M.new(engine)
         math.atan2(worldTransform.rotation.y, worldTransform.rotation.x)
       )
 
-      if shape.type == "rectangle" then
+      if shape.type == "circle" then
+        local radius = shape.radius or 0.5
+        love.graphics.circle("line", 0, 0, radius)
+      elseif shape.type == "rectangle" then
         love.graphics.rectangle(
           "line",
           -0.5 * shape.size[1],
@@ -65,6 +67,8 @@ function M.new(engine)
           shape.size[1],
           shape.size[2]
         )
+      else
+        error("Invalid shape type: " .. shape.type)
       end
 
       love.graphics.pop()
