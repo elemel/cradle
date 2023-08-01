@@ -17,13 +17,22 @@ local function getWorldTransform(database, entity, result)
     transformMod.reset(result)
   end
 
-  local transform = database:getCell(entity, "transform")
+  local transform = Transform()
+  transformMod.reset(transform)
 
-  if transform then
-    transformMod.multiply(result, transform, result)
+  local position = database:getCell(entity, "position")
+
+  if position then
+    transform.position = position
   end
 
-  return result
+  local orientation = database:getCell(entity, "orientation")
+
+  if orientation then
+    transform.orientation = orientation
+  end
+
+  return transformMod.multiply(result, transform, result)
 end
 
 function M.new(engine)
