@@ -1,5 +1,7 @@
 local cdefMod = require("cradle.cdef")
 local Class = require("cradle.Class")
+local ColorComponentView =
+  require("cradle.editor.views.components.ColorComponentView")
 local DrawSlabHandler = require("cradle.editor.handlers.DrawSlabHandler")
 local DrawShapeHandler = require("cradle.editor.handlers.DrawShapeHandler")
 local EntityTreeView = require("cradle.editor.views.EntityTreeView")
@@ -28,6 +30,7 @@ function M:init(application)
   self.database = sparrow.newDatabase()
 
   self.database:createColumn("body")
+  self.database:createColumn("debugColor", "color4")
   self.database:createColumn("fixture")
   self.database:createColumn("joint")
   self.database:createColumn("node", "node")
@@ -68,6 +71,7 @@ function M:init(application)
 
   self.componentTitles = {
     body = "Body",
+    debugColor = "Debug Color",
     fixture = "Fixture",
     joint = "Joint",
     node = "Node",
@@ -80,6 +84,10 @@ function M:init(application)
   self.componentConstructors = {
     body = function()
       return {}
+    end,
+
+    debugColor = function()
+      return { 1, 1, 1, 1 }
     end,
 
     fixture = function()
@@ -127,6 +135,7 @@ function M:init(application)
 
   self.componentViews = {
     body = TagComponentView.new(self, "body"),
+    debugColor = ColorComponentView.new(self, "debugColor"),
     fixture = TagComponentView.new(self, "fixture"),
     joint = TagComponentView.new(self, "joint"),
     node = TagComponentView.new(self, "node"),

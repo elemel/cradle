@@ -39,6 +39,7 @@ function M.new(engine)
   local database = assert(engine:getProperty("database"))
 
   local query = sparrow.newQuery(database, {
+    arguments = { "debugColor", "shape" },
     inclusions = { "shape" },
   })
 
@@ -54,7 +55,18 @@ function M.new(engine)
     love.graphics.scale(scale)
     love.graphics.setLineWidth(1 / scale)
 
-    query:forEach(function(entity, shape)
+    query:forEach(function(entity, debugColor, shape)
+      if debugColor then
+        love.graphics.setColor(
+          debugColor.red,
+          debugColor.green,
+          debugColor.blue,
+          debugColor.alpha
+        )
+      else
+        love.graphics.setColor(1, 1, 1, 1)
+      end
+
       getWorldTransform(database, entity, worldTransform)
       love.graphics.push()
       love.graphics.translate(
