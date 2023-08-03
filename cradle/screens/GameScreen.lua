@@ -60,17 +60,17 @@ function M:init(application, config)
   local database = sparrow.newDatabase()
   self.engine:setProperty("database", database)
 
-  database:createColumn("bodyConfig")
+  database:createColumn("body")
   database:createColumn("bodyObject")
   database:createColumn("camera", "tag")
   database:createColumn("creating", "tag")
   database:createColumn("debugColor", "color4")
   database:createColumn("destroying", "tag")
   database:createColumn("dynamic", "tag")
-  database:createColumn("fixtureConfig")
+  database:createColumn("fixture")
   database:createColumn("fixtureObject")
   database:createColumn("globalTransform", "transform")
-  database:createColumn("jointConfig")
+  database:createColumn("joint")
   database:createColumn("jointObject")
   database:createColumn("kinematic", "tag")
   database:createColumn("motorcycle", "tag")
@@ -181,10 +181,10 @@ function M:init(application, config)
 
   if demo then
     database:insertRow({
-      bodyConfig = {},
+      body = {},
       creating = {},
 
-      fixtureConfig = {
+      fixture = {
         friction = 0.5,
       },
 
@@ -204,10 +204,10 @@ function M:init(application, config)
     })
 
     database:insertRow({
-      bodyConfig = {},
+      body = {},
       creating = {},
 
-      fixtureConfig = {
+      fixture = {
         friction = 0.5,
       },
 
@@ -226,10 +226,10 @@ function M:init(application, config)
     })
 
     database:insertRow({
-      bodyConfig = {},
+      body = {},
       creating = {},
 
-      fixtureConfig = {
+      fixture = {
         friction = 0.5,
       },
 
@@ -248,10 +248,10 @@ function M:init(application, config)
     })
 
     database:insertRow({
-      bodyConfig = {},
+      body = {},
       creating = {},
 
-      fixtureConfig = {
+      fixture = {
         friction = 0.5,
       },
 

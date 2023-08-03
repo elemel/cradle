@@ -7,14 +7,14 @@ function M.new(engine)
   local world = assert(engine:getProperty("world"))
 
   local query = sparrow.newQuery(database, {
-    inclusions = { "creating", "bodyObject", "fixtureConfig", "shape" },
+    inclusions = { "creating", "bodyObject", "fixture", "shape" },
     exclusions = { "fixtureObject" },
-    arguments = { "bodyObject", "fixtureConfig", "shape" },
+    arguments = { "bodyObject", "fixture", "shape" },
     results = { "fixtureObject" },
   })
 
   return function(dt)
-    query:forEach(function(entity, bodyObject, fixtureConfig, shape)
+    query:forEach(function(entity, bodyObject, fixture, shape)
       local shapeType = shape.shapeType or "rectangle"
       local shapeObject
 
@@ -34,20 +34,20 @@ function M.new(engine)
       local fixtureObject = love.physics.newFixture(bodyObject, shapeObject)
       fixtureObject:setUserData(entity)
 
-      if fixtureConfig.friction then
-        fixtureObject:setFriction(fixtureConfig.friction)
+      if fixture.friction then
+        fixtureObject:setFriction(fixture.friction)
       end
 
-      if fixtureConfig.groupIndex then
-        fixtureObject:setGroupIndex(fixtureConfig.groupIndex)
+      if fixture.groupIndex then
+        fixtureObject:setGroupIndex(fixture.groupIndex)
       end
 
-      if fixtureConfig.restitution then
-        fixtureObject:setRestitution(fixtureConfig.restitution)
+      if fixture.restitution then
+        fixtureObject:setRestitution(fixture.restitution)
       end
 
-      if fixtureConfig.sensor ~= nil then
-        fixtureObject:setSensor(fixtureConfig.sensor)
+      if fixture.sensor ~= nil then
+        fixtureObject:setSensor(fixture.sensor)
       end
 
       return fixtureObject
