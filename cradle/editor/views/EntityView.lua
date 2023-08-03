@@ -38,6 +38,12 @@ function M:render()
       or self.editorScreen.selectedComponent
 
     if Slab.BeginComboBox("component", { Selected = selectedLabel }) then
+      local selected = not self.editorScreen.selectedComponent
+
+      if Slab.TextSelectable("", { IsSelected = selected }) then
+        self.editorScreen.selectedComponent = nil
+      end
+
       for i, component in pairs(self.editorScreen.sortedComponents) do
         local label = self.editorScreen.componentTitles[component] or component
         local selected = label == selectedLabel
