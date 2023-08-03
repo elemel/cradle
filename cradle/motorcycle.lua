@@ -15,8 +15,6 @@ function M.createMotorcycle(database, transform)
       groupIndex = -1,
     },
 
-    globalTransform = {},
-
     motorcycle = {},
     node = {},
 
@@ -42,8 +40,6 @@ function M.createMotorcycle(database, transform)
       friction = 2,
       groupIndex = -1,
     },
-
-    globalTransform = {},
 
     joint = {
       bodyA = frameEntity,
@@ -80,8 +76,6 @@ function M.createMotorcycle(database, transform)
       friction = 2,
       groupIndex = -1,
     },
-
-    globalTransform = {},
 
     joint = {
       bodyA = frameEntity,

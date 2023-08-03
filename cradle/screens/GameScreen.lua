@@ -7,12 +7,12 @@ local FixedUpdateCreatingBodyHandler =
   require("cradle.handlers.FixedUpdateCreatingBodyHandler")
 local FixedUpdateCreatingFixtureHandler =
   require("cradle.handlers.FixedUpdateCreatingFixtureHandler")
-local FixedUpdateCreatingGlobalTransformHandler =
-  require("cradle.handlers.FixedUpdateCreatingGlobalTransformHandler")
 local FixedUpdateCreatingHandler =
   require("cradle.handlers.FixedUpdateCreatingHandler")
 local FixedUpdateCreatingJointHandler =
   require("cradle.handlers.FixedUpdateCreatingJointHandler")
+local FixedUpdateCreatingTransformHandler =
+  require("cradle.handlers.FixedUpdateCreatingTransformHandler")
 local FixedUpdateDestroyingBodyHandler =
   require("cradle.handlers.FixedUpdateDestroyingBodyHandler")
 local FixedUpdateDestroyingFixtureHandler =
@@ -112,7 +112,7 @@ function M:init(application, config)
 
   self.engine:addEventHandler(
     "fixedupdate",
-    FixedUpdateCreatingGlobalTransformHandler.new(self.engine)
+    FixedUpdateCreatingTransformHandler.new(self.engine)
   )
 
   self.engine:addEventHandler(
@@ -188,8 +188,6 @@ function M:init(application, config)
         friction = 0.5,
       },
 
-      globalTransform = {},
-
       node = {},
 
       shape = {
@@ -211,7 +209,6 @@ function M:init(application, config)
         friction = 0.5,
       },
 
-      globalTransform = {},
       node = {},
 
       shape = {
@@ -233,7 +230,6 @@ function M:init(application, config)
         friction = 0.5,
       },
 
-      globalTransform = {},
       node = {},
 
       shape = {
@@ -255,7 +251,6 @@ function M:init(application, config)
         friction = 0.5,
       },
 
-      globalTransform = {},
       node = {},
 
       shape = {
@@ -281,8 +276,8 @@ function M:init(application, config)
 
     database:insertRow({
       camera = {},
-
-      globalTransform = {},
+      creating = {},
+      node = {},
 
       transform = {
         orientation = { 1, 0 },

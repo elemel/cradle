@@ -20,8 +20,6 @@ local function createNeckAndHead(database, trunkEntity, localCollarPosition)
       groupIndex = -1,
     },
 
-    globalTransform = {},
-
     joint = {
       bodyA = trunkEntity,
       jointType = "revolute",
@@ -56,8 +54,6 @@ local function createNeckAndHead(database, trunkEntity, localCollarPosition)
       friction = 0.5,
       groupIndex = -1,
     },
-
-    globalTransform = {},
 
     joint = {
       bodyA = neckEntity,
@@ -106,8 +102,6 @@ local function createArm(database, trunkEntity, localShoulderPosition)
       groupIndex = -1,
     },
 
-    globalTransform = {},
-
     joint = {
       bodyA = trunkEntity,
       jointType = "revolute",
@@ -139,8 +133,6 @@ local function createArm(database, trunkEntity, localShoulderPosition)
       friction = 0.5,
       groupIndex = -1,
     },
-
-    globalTransform = {},
 
     joint = {
       bodyA = upperArmEntity,
@@ -176,8 +168,6 @@ local function createArm(database, trunkEntity, localShoulderPosition)
       friction = 0.5,
       groupIndex = -1,
     },
-
-    globalTransform = {},
 
     joint = {
       bodyA = lowerArmEntity,
@@ -227,8 +217,6 @@ local function createLeg(database, frameEntity, trunkEntity, localHipPosition)
       groupIndex = -1,
     },
 
-    globalTransform = {},
-
     joint = {
       bodyA = trunkEntity,
       jointType = "revolute",
@@ -260,8 +248,6 @@ local function createLeg(database, frameEntity, trunkEntity, localHipPosition)
       friction = 0.5,
       groupIndex = -1,
     },
-
-    globalTransform = {},
 
     joint = {
       bodyA = upperLegEntity,
@@ -297,8 +283,6 @@ local function createLeg(database, frameEntity, trunkEntity, localHipPosition)
       friction = 0.5,
       groupIndex = -1,
     },
-
-    globalTransform = {},
 
     joint = {
       bodyA = lowerLegEntity,
@@ -363,8 +347,6 @@ function M.createRider(database, frameEntity, transform)
       friction = 0.5,
       groupIndex = -1,
     },
-
-    globalTransform = {},
 
     node = {},
     rider = {},
