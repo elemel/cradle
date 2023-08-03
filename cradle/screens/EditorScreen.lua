@@ -6,6 +6,7 @@ local DrawSlabHandler = require("cradle.editor.handlers.DrawSlabHandler")
 local DrawShapeHandler = require("cradle.editor.handlers.DrawShapeHandler")
 local EntityTreeView = require("cradle.editor.views.EntityTreeView")
 local EntityView = require("cradle.editor.views.EntityView")
+local GameScreen = require("cradle.screens.GameScreen")
 local heart = require("heart")
 local jsonMod = require("json")
 local nodeMod = require("cradle.node")
@@ -242,6 +243,13 @@ function M:update(dt)
     Y = 0,
   })
 
+  if Slab.Button("Play") then
+    local json = self:encodeDatabaseAsJson()
+    love.filesystem.write("database.json", json)
+
+    application:pushScreen(GameScreen.new(application))
+  end
+
   Slab.EndWindow()
 
   Slab.BeginWindow("leftDock", {
@@ -250,7 +258,10 @@ function M:update(dt)
     AutoSizeContent = true,
     AutoSizeWindow = false,
     Border = layout.border,
-    H = layout.height - layout.topDockHeight - layout.bottomDockHeight - layout.border,
+    H = layout.height
+      - layout.topDockHeight
+      - layout.bottomDockHeight
+      - layout.border,
     ResetLayout = false,
     W = layout.leftDockWidth - layout.border,
     X = 0,
@@ -266,7 +277,10 @@ function M:update(dt)
     AutoSizeContent = true,
     AutoSizeWindow = false,
     Border = layout.border,
-    H = layout.height - layout.topDockHeight - layout.bottomDockHeight - layout.border,
+    H = layout.height
+      - layout.topDockHeight
+      - layout.bottomDockHeight
+      - layout.border,
     ResetLayout = false,
     W = layout.rightDockWidth - layout.border,
     X = layout.width - layout.rightDockWidth,

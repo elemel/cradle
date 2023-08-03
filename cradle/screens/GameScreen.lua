@@ -28,6 +28,7 @@ local FixedUpdateRiderHandler =
 local FixedUpdateWorldHandler =
   require("cradle.handlers.FixedUpdateWorldHandler")
 local heart = require("heart")
+local jsonMod = require("json")
 local motorcycleMod = require("cradle.motorcycle")
 local nodeMod = require("cradle.node")
 local KeyPressedHandler = require("cradle.handlers.KeyPressedHandler")
@@ -38,7 +39,10 @@ local UpdateClockHandler = require("cradle.handlers.UpdateClockHandler")
 
 local M = Class.new()
 
-function M:init(application)
+function M:init(application, config)
+  config = config or {}
+  local demo = config.demo or false
+
   love.mouse.setRelativeMode(true)
 
   self.application = assert(application)
@@ -77,6 +81,15 @@ function M:init(application)
   database:createColumn("static", "tag")
   database:createColumn("transform", "transform")
   database:createColumn("wheel", "tag")
+
+  if not demo then
+    local json = love.filesystem.read("database.json")
+    local rows = jsonMod.decode(json)
+
+    for entity, row in pairs(rows) do
+      database:insertRow(row, entity)
+    end
+  end
 
   self.engine:addEvent("draw")
   self.engine:addEvent("fixedupdate")
@@ -164,118 +177,120 @@ function M:init(application)
   self.engine:addEventHandler("mousemoved", MouseMovedHandler.new(self.engine))
   self.engine:addEventHandler("update", UpdateClockHandler.new(self.engine))
 
-  database:insertRow({
-    bodyConfig = {},
-    creating = {},
+  if demo then
+    database:insertRow({
+      bodyConfig = {},
+      creating = {},
 
-    fixtureConfig = {
-      friction = 0.5,
-    },
+      fixtureConfig = {
+        friction = 0.5,
+      },
 
-    localTransform = {
+      localTransform = {
+        orientation = { 1, 0 },
+        position = { 0, 0.5 },
+      },
+
+      node = {},
+
+      shapeConfig = {
+        shapeType = "rectangle",
+        size = { 5, 1 },
+      },
+
+      transform = {},
+    })
+
+    database:insertRow({
+      bodyConfig = {},
+      creating = {},
+
+      fixtureConfig = {
+        friction = 0.5,
+      },
+
+      localTransform = {
+        orientation = { math.cos(-0.5), math.sin(-0.5) },
+        position = { 4, -0.5 },
+      },
+
+      node = {},
+
+      shapeConfig = {
+        shapeType = "rectangle",
+        size = { 5, 1 },
+      },
+
+      transform = {},
+    })
+
+    database:insertRow({
+      bodyConfig = {},
+      creating = {},
+
+      fixtureConfig = {
+        friction = 0.5,
+      },
+
+      localTransform = {
+        orientation = { math.cos(0.5), math.sin(0.5) },
+        position = { 15, -0.5 },
+      },
+
+      node = {},
+
+      shapeConfig = {
+        shapeType = "rectangle",
+        size = { 5, 1 },
+      },
+
+      transform = {},
+    })
+
+    database:insertRow({
+      bodyConfig = {},
+      creating = {},
+
+      fixtureConfig = {
+        friction = 0.5,
+      },
+
+      localTransform = {
+        orientation = { 1, 0 },
+        position = { 19, 0.5 },
+      },
+
+      node = {},
+
+      shapeConfig = {
+        shapeType = "rectangle",
+        size = { 5, 1 },
+      },
+
+      transform = {},
+    })
+
+    local frameEntity = motorcycleMod.createMotorcycle(database, {
       orientation = { 1, 0 },
-      position = { 0, 0.5 },
-    },
+      position = { 0, -0.45 },
+    })
 
-    node = {},
-
-    shapeConfig = {
-      shapeType = "rectangle",
-      size = { 5, 1 },
-    },
-
-    transform = {},
-  })
-
-  database:insertRow({
-    bodyConfig = {},
-    creating = {},
-
-    fixtureConfig = {
-      friction = 0.5,
-    },
-
-    localTransform = {
-      orientation = { math.cos(-0.5), math.sin(-0.5) },
-      position = { 4, -0.5 },
-    },
-
-    node = {},
-
-    shapeConfig = {
-      shapeType = "rectangle",
-      size = { 5, 1 },
-    },
-
-    transform = {},
-  })
-
-  database:insertRow({
-    bodyConfig = {},
-    creating = {},
-
-    fixtureConfig = {
-      friction = 0.5,
-    },
-
-    localTransform = {
-      orientation = { math.cos(0.5), math.sin(0.5) },
-      position = { 15, -0.5 },
-    },
-
-    node = {},
-
-    shapeConfig = {
-      shapeType = "rectangle",
-      size = { 5, 1 },
-    },
-
-    transform = {},
-  })
-
-  database:insertRow({
-    bodyConfig = {},
-    creating = {},
-
-    fixtureConfig = {
-      friction = 0.5,
-    },
-
-    localTransform = {
+    local trunkEntity = riderMod.createRider(database, frameEntity, {
       orientation = { 1, 0 },
-      position = { 19, 0.5 },
-    },
+      position = { 0, -0.6 },
+    })
 
-    node = {},
+    database:insertRow({
+      camera = {},
 
-    shapeConfig = {
-      shapeType = "rectangle",
-      size = { 5, 1 },
-    },
+      localTransform = {
+        orientation = { 1, 0 },
+        position = { 0.65, 0.3 },
+      },
 
-    transform = {},
-  })
-
-  local frameEntity = motorcycleMod.createMotorcycle(database, {
-    orientation = { 1, 0 },
-    position = { 0, -0.45 },
-  })
-
-  local trunkEntity = riderMod.createRider(database, frameEntity, {
-    orientation = { 1, 0 },
-    position = { 0, -0.6 },
-  })
-
-  database:insertRow({
-    camera = {},
-
-    localTransform = {
-      orientation = { 1, 0 },
-      position = { 0.65, 0.3 },
-    },
-
-    transform = {},
-  })
+      transform = {},
+    })
+  end
 end
 
 function M:handleEvent(event, ...)

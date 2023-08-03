@@ -11,7 +11,7 @@ function M.new(application)
       {
         title = "Play",
         handler = function()
-          application:pushScreen(GameScreen.new(application))
+          application:pushScreen(GameScreen.new(application, { demo = true }))
         end,
       },
 
