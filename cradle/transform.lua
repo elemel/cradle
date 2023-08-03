@@ -60,22 +60,13 @@ function M.getGlobalTransform(database, entity, result)
     M.reset(result)
   end
 
-  local transform = Transform()
-  M.reset(transform)
+  local transform = database:getCell(entity, "transform")
 
-  local position = database:getCell(entity, "position")
-
-  if position then
-    transform.position = position
+  if transform then
+    M.multiply(result, transform, result)
   end
 
-  local orientation = database:getCell(entity, "orientation")
-
-  if orientation then
-    transform.orientation = orientation
-  end
-
-  return M.multiply(result, transform, result)
+  return result
 end
 
 return M

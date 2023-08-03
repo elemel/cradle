@@ -2,7 +2,7 @@ local nodeMod = require("cradle.node")
 
 local M = {}
 
-function M.createMotorcycle(database, localTransform)
+function M.createMotorcycle(database, transform)
   local frameEntity = database:insertRow({
     bodyConfig = {
       bodyType = "dynamic",
@@ -15,10 +15,7 @@ function M.createMotorcycle(database, localTransform)
       groupIndex = -1,
     },
 
-    localTransform = localTransform or {
-      orientation = { 1, 0 },
-      position = { 0, 0 },
-    },
+    globalTransform = {},
 
     motorcycle = {},
     node = {},
@@ -28,7 +25,10 @@ function M.createMotorcycle(database, localTransform)
       size = { 1.3, 0.3 },
     },
 
-    transform = {},
+    transform = transform or {
+      orientation = { 1, 0 },
+      position = { 0, 0 },
+    },
   })
 
   local rearWheelEntity = database:insertRow({
@@ -43,6 +43,8 @@ function M.createMotorcycle(database, localTransform)
       groupIndex = -1,
     },
 
+    globalTransform = {},
+
     jointConfig = {
       bodyA = frameEntity,
       damping = 20,
@@ -52,11 +54,6 @@ function M.createMotorcycle(database, localTransform)
       stiffness = 200,
     },
 
-    localTransform = {
-      orientation = { 1, 0 },
-      position = { -0.65, 0.15 },
-    },
-
     node = {},
 
     shapeConfig = {
@@ -64,8 +61,12 @@ function M.createMotorcycle(database, localTransform)
       radius = 0.3,
     },
 
-    transform = {},
     wheel = {},
+
+    transform = {
+      orientation = { 1, 0 },
+      position = { -0.65, 0.15 },
+    },
   })
 
   local frontWheelEntity = database:insertRow({
@@ -80,6 +81,8 @@ function M.createMotorcycle(database, localTransform)
       groupIndex = -1,
     },
 
+    globalTransform = {},
+
     jointConfig = {
       bodyA = frameEntity,
       damping = 20,
@@ -89,11 +92,6 @@ function M.createMotorcycle(database, localTransform)
       stiffness = 200,
     },
 
-    localTransform = {
-      orientation = { 1, 0 },
-      position = { 0.65, 0.15 },
-    },
-
     node = {},
 
     shapeConfig = {
@@ -101,8 +99,12 @@ function M.createMotorcycle(database, localTransform)
       radius = 0.3,
     },
 
-    transform = {},
     wheel = {},
+
+    transform = {
+      orientation = { 1, 0 },
+      position = { 0.65, 0.15 },
+    },
   })
 
   nodeMod.setParent(database, rearWheelEntity, frameEntity)

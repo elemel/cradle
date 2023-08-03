@@ -20,6 +20,8 @@ local function createNeckAndHead(database, trunkEntity, localCollarPosition)
       groupIndex = -1,
     },
 
+    globalTransform = {},
+
     jointConfig = {
       bodyA = trunkEntity,
       jointType = "revolute",
@@ -30,11 +32,6 @@ local function createNeckAndHead(database, trunkEntity, localCollarPosition)
       upperLimit = 0.125 * math.pi,
     },
 
-    localTransform = {
-      orientation = { 1, 0 },
-      position = { localNeckX, localNeckY },
-    },
-
     node = {},
 
     shapeConfig = {
@@ -42,7 +39,10 @@ local function createNeckAndHead(database, trunkEntity, localCollarPosition)
       size = { 0.1, 0.1 },
     },
 
-    transform = {},
+    transform = {
+      orientation = { 1, 0 },
+      position = { localNeckX, localNeckY },
+    },
   })
 
   local headEntity = database:insertRow({
@@ -57,6 +57,8 @@ local function createNeckAndHead(database, trunkEntity, localCollarPosition)
       groupIndex = -1,
     },
 
+    globalTransform = {},
+
     jointConfig = {
       bodyA = neckEntity,
       jointType = "revolute",
@@ -67,11 +69,6 @@ local function createNeckAndHead(database, trunkEntity, localCollarPosition)
       upperLimit = 0.125 * math.pi,
     },
 
-    localTransform = {
-      orientation = { 1, 0 },
-      position = { 0, -0.15 },
-    },
-
     node = {},
 
     shapeConfig = {
@@ -79,7 +76,10 @@ local function createNeckAndHead(database, trunkEntity, localCollarPosition)
       size = { 0.2, 0.2 },
     },
 
-    transform = {},
+    transform = {
+      orientation = { 1, 0 },
+      position = { 0, -0.15 },
+    },
   })
 
   nodeMod.setParent(database, neckEntity, trunkEntity)
@@ -106,16 +106,13 @@ local function createArm(database, trunkEntity, localShoulderPosition)
       groupIndex = -1,
     },
 
+    globalTransform = {},
+
     jointConfig = {
       bodyA = trunkEntity,
       jointType = "revolute",
       localAnchorA = localShoulderPosition,
       localAnchorB = { 0, -0.175 },
-    },
-
-    localTransform = {
-      orientation = { 1, 0 },
-      position = { localUpperArmX, localUpperArmY },
     },
 
     node = {},
@@ -125,7 +122,10 @@ local function createArm(database, trunkEntity, localShoulderPosition)
       size = { 0.1, 0.35 },
     },
 
-    transform = {},
+    transform = {
+      orientation = { 1, 0 },
+      position = { localUpperArmX, localUpperArmY },
+    },
   })
 
   local lowerArmEntity = database:insertRow({
@@ -140,6 +140,8 @@ local function createArm(database, trunkEntity, localShoulderPosition)
       groupIndex = -1,
     },
 
+    globalTransform = {},
+
     jointConfig = {
       bodyA = upperArmEntity,
       jointType = "revolute",
@@ -150,11 +152,6 @@ local function createArm(database, trunkEntity, localShoulderPosition)
       upperLimit = 0,
     },
 
-    localTransform = {
-      orientation = { 1, 0 },
-      position = { 0, 0.35 },
-    },
-
     node = {},
 
     shapeConfig = {
@@ -162,7 +159,10 @@ local function createArm(database, trunkEntity, localShoulderPosition)
       size = { 0.1, 0.35 },
     },
 
-    transform = {},
+    transform = {
+      orientation = { 1, 0 },
+      position = { 0, 0.35 },
+    },
   })
 
   local handEntity = database:insertRow({
@@ -177,6 +177,8 @@ local function createArm(database, trunkEntity, localShoulderPosition)
       groupIndex = -1,
     },
 
+    globalTransform = {},
+
     jointConfig = {
       bodyA = lowerArmEntity,
       jointType = "revolute",
@@ -187,11 +189,6 @@ local function createArm(database, trunkEntity, localShoulderPosition)
       upperLimit = 0.25 * math.pi,
     },
 
-    localTransform = {
-      orientation = { 1, 0 },
-      position = { 0, 0.225 },
-    },
-
     node = {},
 
     shapeConfig = {
@@ -199,7 +196,10 @@ local function createArm(database, trunkEntity, localShoulderPosition)
       size = { 0.1, 0.1 },
     },
 
-    transform = {},
+    transform = {
+      orientation = { 1, 0 },
+      position = { 0, 0.225 },
+    },
   })
 
   nodeMod.setParent(database, upperArmEntity, trunkEntity)
@@ -227,16 +227,13 @@ local function createLeg(database, frameEntity, trunkEntity, localHipPosition)
       groupIndex = -1,
     },
 
+    globalTransform = {},
+
     jointConfig = {
       bodyA = trunkEntity,
       jointType = "revolute",
       localAnchorA = localHipPosition,
       localAnchorB = { 0, -0.225 },
-    },
-
-    localTransform = {
-      orientation = { 1, 0 },
-      position = { localUpperLegX, localUpperLegY },
     },
 
     node = {},
@@ -246,7 +243,10 @@ local function createLeg(database, frameEntity, trunkEntity, localHipPosition)
       size = { 0.15, 0.45 },
     },
 
-    transform = {},
+    transform = {
+      orientation = { 1, 0 },
+      position = { localUpperLegX, localUpperLegY },
+    },
   })
 
   local lowerLegEntity = database:insertRow({
@@ -261,6 +261,8 @@ local function createLeg(database, frameEntity, trunkEntity, localHipPosition)
       groupIndex = -1,
     },
 
+    globalTransform = {},
+
     jointConfig = {
       bodyA = upperLegEntity,
       jointType = "revolute",
@@ -271,11 +273,6 @@ local function createLeg(database, frameEntity, trunkEntity, localHipPosition)
       upperLimit = math.pi,
     },
 
-    localTransform = {
-      orientation = { 1, 0 },
-      position = { 0, 0.35 },
-    },
-
     node = {},
 
     shapeConfig = {
@@ -283,7 +280,10 @@ local function createLeg(database, frameEntity, trunkEntity, localHipPosition)
       size = { 0.1, 0.45 },
     },
 
-    transform = {},
+    transform = {
+      orientation = { 1, 0 },
+      position = { 0, 0.35 },
+    },
   })
 
   local footEntity = database:insertRow({
@@ -298,6 +298,8 @@ local function createLeg(database, frameEntity, trunkEntity, localHipPosition)
       groupIndex = -1,
     },
 
+    globalTransform = {},
+
     jointConfig = {
       bodyA = lowerLegEntity,
       jointType = "revolute",
@@ -308,11 +310,6 @@ local function createLeg(database, frameEntity, trunkEntity, localHipPosition)
       upperLimit = 0.25 * math.pi,
     },
 
-    localTransform = {
-      orientation = { 1, 0 },
-      position = { 0.075, 0.25 },
-    },
-
     node = {},
 
     shapeConfig = {
@@ -320,7 +317,10 @@ local function createLeg(database, frameEntity, trunkEntity, localHipPosition)
       size = { 0.25, 0.05 },
     },
 
-    transform = {},
+    transform = {
+      orientation = { 1, 0 },
+      position = { 0.075, 0.25 },
+    },
   })
 
   local localFootBarX = localHipX - 0.3
@@ -351,7 +351,7 @@ local function createLeg(database, frameEntity, trunkEntity, localHipPosition)
   return upperLegEntity
 end
 
-function M.createRider(database, frameEntity, localTransform)
+function M.createRider(database, frameEntity, transform)
   local trunkEntity = database:insertRow({
     bodyConfig = {
       bodyType = "dynamic",
@@ -364,10 +364,7 @@ function M.createRider(database, frameEntity, localTransform)
       groupIndex = -1,
     },
 
-    localTransform = localTransform or {
-      orientation = { 1, 0 },
-      position = { 0, 0 },
-    },
+    globalTransform = {},
 
     node = {},
     rider = {},
@@ -386,7 +383,10 @@ function M.createRider(database, frameEntity, localTransform)
       maxTorque = 10,
     },
 
-    transform = {},
+    transform = transform or {
+      orientation = { 1, 0 },
+      position = { 0, 0 },
+    },
   })
 
   nodeMod.setParent(database, trunkEntity, frameEntity)

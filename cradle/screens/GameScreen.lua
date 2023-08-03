@@ -7,12 +7,12 @@ local FixedUpdateCreatingBodyHandler =
   require("cradle.handlers.FixedUpdateCreatingBodyHandler")
 local FixedUpdateCreatingFixtureHandler =
   require("cradle.handlers.FixedUpdateCreatingFixtureHandler")
+local FixedUpdateCreatingGlobalTransformHandler =
+  require("cradle.handlers.FixedUpdateCreatingGlobalTransformHandler")
 local FixedUpdateCreatingHandler =
   require("cradle.handlers.FixedUpdateCreatingHandler")
 local FixedUpdateCreatingJointHandler =
   require("cradle.handlers.FixedUpdateCreatingJointHandler")
-local FixedUpdateCreatingTransformHandler =
-  require("cradle.handlers.FixedUpdateCreatingTransformHandler")
 local FixedUpdateDestroyingBodyHandler =
   require("cradle.handlers.FixedUpdateDestroyingBodyHandler")
 local FixedUpdateDestroyingFixtureHandler =
@@ -68,14 +68,12 @@ function M:init(application, config)
   database:createColumn("dynamic", "tag")
   database:createColumn("fixture")
   database:createColumn("fixtureConfig")
+  database:createColumn("globalTransform", "transform")
   database:createColumn("joint")
   database:createColumn("jointConfig")
   database:createColumn("kinematic", "tag")
-  database:createColumn("localTransform", "transform")
   database:createColumn("motorcycle", "tag")
   database:createColumn("node", "node")
-  database:createColumn("orientation", "vec2")
-  database:createColumn("position", "vec2")
   database:createColumn("rider", "tag")
   database:createColumn("shapeConfig")
   database:createColumn("spring")
@@ -112,7 +110,7 @@ function M:init(application, config)
 
   self.engine:addEventHandler(
     "fixedupdate",
-    FixedUpdateCreatingTransformHandler.new(self.engine)
+    FixedUpdateCreatingGlobalTransformHandler.new(self.engine)
   )
 
   self.engine:addEventHandler(
@@ -188,19 +186,19 @@ function M:init(application, config)
         friction = 0.5,
       },
 
-      localTransform = {
+      globalTransform = {},
+
+      node = {},
+
+      shapeConfig = {
+        shapeType = "rectangle",
+        size = { 5, 1 },
+      },
+
+      transform = {
         orientation = { 1, 0 },
         position = { 0, 0.5 },
       },
-
-      node = {},
-
-      shapeConfig = {
-        shapeType = "rectangle",
-        size = { 5, 1 },
-      },
-
-      transform = {},
     })
 
     database:insertRow({
@@ -211,19 +209,18 @@ function M:init(application, config)
         friction = 0.5,
       },
 
-      localTransform = {
+      globalTransform = {},
+      node = {},
+
+      shapeConfig = {
+        shapeType = "rectangle",
+        size = { 5, 1 },
+      },
+
+      transform = {
         orientation = { math.cos(-0.5), math.sin(-0.5) },
         position = { 4, -0.5 },
       },
-
-      node = {},
-
-      shapeConfig = {
-        shapeType = "rectangle",
-        size = { 5, 1 },
-      },
-
-      transform = {},
     })
 
     database:insertRow({
@@ -234,19 +231,18 @@ function M:init(application, config)
         friction = 0.5,
       },
 
-      localTransform = {
+      globalTransform = {},
+      node = {},
+
+      shapeConfig = {
+        shapeType = "rectangle",
+        size = { 5, 1 },
+      },
+
+      transform = {
         orientation = { math.cos(0.5), math.sin(0.5) },
         position = { 15, -0.5 },
       },
-
-      node = {},
-
-      shapeConfig = {
-        shapeType = "rectangle",
-        size = { 5, 1 },
-      },
-
-      transform = {},
     })
 
     database:insertRow({
@@ -257,11 +253,7 @@ function M:init(application, config)
         friction = 0.5,
       },
 
-      localTransform = {
-        orientation = { 1, 0 },
-        position = { 19, 0.5 },
-      },
-
+      globalTransform = {},
       node = {},
 
       shapeConfig = {
@@ -269,7 +261,10 @@ function M:init(application, config)
         size = { 5, 1 },
       },
 
-      transform = {},
+      transform = {
+        orientation = { 1, 0 },
+        position = { 19, 0.5 },
+      },
     })
 
     local frameEntity = motorcycleMod.createMotorcycle(database, {
@@ -285,12 +280,12 @@ function M:init(application, config)
     database:insertRow({
       camera = {},
 
-      localTransform = {
+      globalTransform = {},
+
+      transform = {
         orientation = { 1, 0 },
         position = { 0.65, 0.3 },
       },
-
-      transform = {},
     })
   end
 end
