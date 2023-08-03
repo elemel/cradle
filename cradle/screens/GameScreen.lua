@@ -89,6 +89,7 @@ function M:init(application, config)
 
     for entity, row in pairs(rows) do
       database:insertRow(row, entity)
+      database:setCell(entity, "creating", {})
     end
   end
 
