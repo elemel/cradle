@@ -10,6 +10,7 @@ function M:init(editorScreen, component)
   self.id = self.component .. "Component"
   self.xId = self.component .. "ComponentX"
   self.yId = self.component .. "ComponentY"
+  self.angleId = self.component .. "ComponentAngle"
 end
 
 function M:render()
@@ -21,7 +22,7 @@ function M:render()
     self.editorScreen.selectedComponent = self.component
   end
 
-  local position = self.editorScreen.database:getCell(entity, self.component)
+  local transform = self.editorScreen.database:getCell(entity, self.component)
 
   Slab.BeginLayout(self.id, { Columns = 2, ExpandW = true })
 
@@ -36,10 +37,10 @@ function M:render()
       NumbersOnly = true,
       ReturnOnText = true,
       Step = self.editorScreen.dragStep,
-      Text = position.x,
+      Text = transform.position.x,
     })
   then
-    position.x = Slab.GetInputNumber()
+    transform.position.x = Slab.GetInputNumber()
   end
 
   Slab.SetLayoutColumn(1)
@@ -53,10 +54,33 @@ function M:render()
       NumbersOnly = true,
       ReturnOnText = true,
       Step = self.editorScreen.dragStep,
-      Text = position.y,
+      Text = transform.position.y,
     })
   then
-    position.y = Slab.GetInputNumber()
+    transform.position.y = Slab.GetInputNumber()
+  end
+
+  Slab.SetLayoutColumn(1)
+  Slab.Text("Angle", { Color = self.editorScreen.colors.blue })
+
+  Slab.SetLayoutColumn(2)
+  local angleDeg = 180
+    / math.pi
+    * math.atan2(transform.orientation.y, transform.orientation.x)
+
+  if
+    Slab.Input(self.angleId, {
+      Align = "left",
+      NumbersOnly = true,
+      ReturnOnText = true,
+      Step = self.editorScreen.dragStep,
+      Text = angleDeg,
+    })
+  then
+    local angleRad = Slab.GetInputNumber() * math.pi / 180
+
+    transform.orientation.x = math.cos(angleRad)
+    transform.orientation.y = math.sin(angleRad)
   end
 
   Slab.EndLayout()

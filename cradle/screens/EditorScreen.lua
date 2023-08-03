@@ -10,10 +10,6 @@ local GameScreen = require("cradle.screens.GameScreen")
 local heart = require("heart")
 local jsonMod = require("json")
 local nodeMod = require("cradle.node")
-local OrientationComponentView =
-  require("cradle.editor.views.components.OrientationComponentView")
-local PositionComponentView =
-  require("cradle.editor.views.components.PositionComponentView")
 local ShapeComponentView =
   require("cradle.editor.views.components.ShapeComponentView")
 local Slab = require("Slab")
@@ -22,6 +18,8 @@ local StringComponentView =
   require("cradle.editor.views.components.StringComponentView")
 local TagComponentView =
   require("cradle.editor.views.components.TagComponentView")
+local TransformComponentView =
+  require("cradle.editor.views.components.TransformComponentView")
 local tableMod = require("cradle.table")
 
 local M = Class.new()
@@ -35,10 +33,9 @@ function M:init(application)
   self.database:createColumn("fixture")
   self.database:createColumn("joint")
   self.database:createColumn("node", "node")
-  self.database:createColumn("position", "vec2")
-  self.database:createColumn("orientation", "vec2")
   self.database:createColumn("shape")
   self.database:createColumn("title")
+  self.database:createColumn("transform", "transform")
 
   local json = love.filesystem.read("database.json")
   local rows = jsonMod.decode(json)
@@ -76,10 +73,9 @@ function M:init(application)
     fixture = "Fixture",
     joint = "Joint",
     node = "Node",
-    orientation = "Orientation",
-    position = "Position",
     shape = "Shape",
     title = "Title",
+    transform = "Transform",
   }
 
   self.componentConstructors = {
@@ -103,14 +99,6 @@ function M:init(application)
       return {}
     end,
 
-    orientation = function()
-      return { 1, 0 }
-    end,
-
-    position = function()
-      return { 0, 0 }
-    end,
-
     shape = function()
       return {
         size = { 1, 1 },
@@ -120,6 +108,10 @@ function M:init(application)
 
     title = function()
       return ""
+    end,
+
+    transform = function()
+      return { orientation = { 1, 0 }, position = { 0, 0 } }
     end,
   }
 
@@ -140,10 +132,9 @@ function M:init(application)
     fixture = TagComponentView.new(self, "fixture"),
     joint = TagComponentView.new(self, "joint"),
     node = TagComponentView.new(self, "node"),
-    orientation = OrientationComponentView.new(self, "orientation"),
-    position = PositionComponentView.new(self, "position"),
     shape = ShapeComponentView.new(self, "shape"),
     title = StringComponentView.new(self, "title"),
+    transform = TransformComponentView.new(self, "transform"),
   }
 
   self.dragStep = 1
