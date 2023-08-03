@@ -226,8 +226,23 @@ function M:update(dt)
     height = height,
     leftDockWidth = 200,
     rightDockWidth = 200,
+    topDockHeight = 100,
     width = width,
   }
+
+  Slab.BeginWindow("topDock", {
+    AllowMove = false,
+    AllowResize = true,
+    AutoSizeContent = true,
+    AutoSizeWindow = false,
+    H = layout.topDockHeight - layout.border,
+    ResetLayout = false,
+    W = layout.width - layout.border,
+    X = 0,
+    Y = 0,
+  })
+
+  Slab.EndWindow()
 
   Slab.BeginWindow("leftDock", {
     AllowMove = false,
@@ -235,11 +250,11 @@ function M:update(dt)
     AutoSizeContent = true,
     AutoSizeWindow = false,
     Border = layout.border,
-    H = layout.height - layout.bottomDockHeight - layout.border,
+    H = layout.height - layout.topDockHeight - layout.bottomDockHeight - layout.border,
     ResetLayout = false,
     W = layout.leftDockWidth - layout.border,
     X = 0,
-    Y = 0,
+    Y = layout.topDockHeight,
   })
 
   self.entityTreeView:render()
@@ -251,11 +266,11 @@ function M:update(dt)
     AutoSizeContent = true,
     AutoSizeWindow = false,
     Border = layout.border,
-    H = layout.height - layout.bottomDockHeight - layout.border,
+    H = layout.height - layout.topDockHeight - layout.bottomDockHeight - layout.border,
     ResetLayout = false,
     W = layout.rightDockWidth - layout.border,
     X = layout.width - layout.rightDockWidth,
-    Y = 0,
+    Y = layout.topDockHeight,
   })
 
   self.entityView:render()
