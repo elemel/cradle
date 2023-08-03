@@ -7,14 +7,14 @@ function M.new(engine)
   local world = assert(engine:getProperty("world"))
 
   local query = sparrow.newQuery(database, {
-    inclusions = { "creating", "body", "fixtureConfig", "shape" },
-    exclusions = { "fixture" },
-    arguments = { "body", "fixtureConfig", "shape" },
-    results = { "fixture" },
+    inclusions = { "creating", "bodyObject", "fixtureConfig", "shape" },
+    exclusions = { "fixtureObject" },
+    arguments = { "bodyObject", "fixtureConfig", "shape" },
+    results = { "fixtureObject" },
   })
 
   return function(dt)
-    query:forEach(function(entity, body, fixtureConfig, shape)
+    query:forEach(function(entity, bodyObject, fixtureConfig, shape)
       local shapeType = shape.shapeType or "rectangle"
       local shapeObject
 
@@ -31,26 +31,26 @@ function M.new(engine)
         error("Invalid shape type: " .. shapeType)
       end
 
-      local fixture = love.physics.newFixture(body, shapeObject)
-      fixture:setUserData(entity)
+      local fixtureObject = love.physics.newFixture(bodyObject, shapeObject)
+      fixtureObject:setUserData(entity)
 
       if fixtureConfig.friction then
-        fixture:setFriction(fixtureConfig.friction)
+        fixtureObject:setFriction(fixtureConfig.friction)
       end
 
       if fixtureConfig.groupIndex then
-        fixture:setGroupIndex(fixtureConfig.groupIndex)
+        fixtureObject:setGroupIndex(fixtureConfig.groupIndex)
       end
 
       if fixtureConfig.restitution then
-        fixture:setRestitution(fixtureConfig.restitution)
+        fixtureObject:setRestitution(fixtureConfig.restitution)
       end
 
       if fixtureConfig.sensor ~= nil then
-        fixture:setSensor(fixtureConfig.sensor)
+        fixtureObject:setSensor(fixtureConfig.sensor)
       end
 
-      return fixture
+      return fixtureObject
     end)
   end
 end
