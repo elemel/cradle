@@ -7,31 +7,31 @@ function M.new(engine)
   local world = assert(engine:getProperty("world"))
 
   local query = sparrow.newQuery(database, {
-    inclusions = { "creating", "body", "fixtureConfig", "shapeConfig" },
+    inclusions = { "creating", "body", "fixtureConfig", "shape" },
     exclusions = { "fixture" },
-    arguments = { "body", "fixtureConfig", "shapeConfig" },
+    arguments = { "body", "fixtureConfig", "shape" },
     results = { "fixture" },
   })
 
   return function(dt)
-    query:forEach(function(entity, body, fixtureConfig, shapeConfig)
-      local shapeType = shapeConfig.shapeType or "rectangle"
-      local shape
+    query:forEach(function(entity, body, fixtureConfig, shape)
+      local shapeType = shape.shapeType or "rectangle"
+      local shapeObject
 
       if shapeType == "circle" then
-        local x, y = unpack(shapeConfig.position or { 0, 0 })
-        local radius = shapeConfig.radius or 0.5
-        shape = love.physics.newCircleShape(x, y, radius)
+        local x, y = unpack(shape.position or { 0, 0 })
+        local radius = shape.radius or 0.5
+        shapeObject = love.physics.newCircleShape(x, y, radius)
       elseif shapeType == "rectangle" then
-        local x, y = unpack(shapeConfig.position or { 0, 0 })
-        local width, height = unpack(shapeConfig.size or { 1, 1 })
-        local angle = shapeConfig.angle or 0
-        shape = love.physics.newRectangleShape(x, y, width, height, angle)
+        local x, y = unpack(shape.position or { 0, 0 })
+        local width, height = unpack(shape.size or { 1, 1 })
+        local angle = shape.angle or 0
+        shapeObject = love.physics.newRectangleShape(x, y, width, height, angle)
       else
         error("Invalid shape type: " .. shapeType)
       end
 
-      local fixture = love.physics.newFixture(body, shape)
+      local fixture = love.physics.newFixture(body, shapeObject)
       fixture:setUserData(entity)
 
       if fixtureConfig.friction then
