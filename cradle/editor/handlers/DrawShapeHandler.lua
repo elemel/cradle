@@ -7,34 +7,6 @@ local Transform = ffi.typeof("transform")
 
 local M = {}
 
-local function getWorldTransform(database, entity, result)
-  result = result or Transform()
-  local node = database:getCell(entity, "node")
-
-  if node and node.parent ~= 0 then
-    getWorldTransform(database, node.parent, result)
-  else
-    transformMod.reset(result)
-  end
-
-  local transform = Transform()
-  transformMod.reset(transform)
-
-  local position = database:getCell(entity, "position")
-
-  if position then
-    transform.position = position
-  end
-
-  local orientation = database:getCell(entity, "orientation")
-
-  if orientation then
-    transform.orientation = orientation
-  end
-
-  return transformMod.multiply(result, transform, result)
-end
-
 function M.new(engine)
   local database = assert(engine:getProperty("database"))
 
@@ -43,7 +15,7 @@ function M.new(engine)
     inclusions = { "shape" },
   })
 
-  local worldTransform = Transform()
+  local globalTransform = Transform()
 
   return function()
     love.graphics.push("all")
@@ -67,14 +39,14 @@ function M.new(engine)
         love.graphics.setColor(1, 1, 1, 1)
       end
 
-      getWorldTransform(database, entity, worldTransform)
+      transformMod.getGlobalTransform(database, entity, globalTransform)
       love.graphics.push()
       love.graphics.translate(
-        worldTransform.position.x,
-        worldTransform.position.y
+        globalTransform.position.x,
+        globalTransform.position.y
       )
       love.graphics.rotate(
-        math.atan2(worldTransform.orientation.y, worldTransform.orientation.x)
+        math.atan2(globalTransform.orientation.y, globalTransform.orientation.x)
       )
 
       if shape.type == "circle" then
