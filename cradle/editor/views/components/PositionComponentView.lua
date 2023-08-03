@@ -26,7 +26,7 @@ function M:render()
   Slab.BeginLayout(self.id, { Columns = 2, ExpandW = true })
 
   Slab.SetLayoutColumn(1)
-  Slab.Text("X")
+  Slab.Text("X", { Color = self.editorScreen.colors.red })
 
   Slab.SetLayoutColumn(2)
 
@@ -43,7 +43,7 @@ function M:render()
   end
 
   Slab.SetLayoutColumn(1)
-  Slab.Text("Y")
+  Slab.Text("Y", { Color = self.editorScreen.colors.green })
 
   Slab.SetLayoutColumn(2)
 

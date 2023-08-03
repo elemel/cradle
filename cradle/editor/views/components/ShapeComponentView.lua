@@ -70,7 +70,7 @@ function M:render()
     end
   elseif shape.type == "rectangle" then
     Slab.SetLayoutColumn(1)
-    Slab.Text("Width")
+    Slab.Text("Width", { Color = self.editorScreen.colors.red })
 
     Slab.SetLayoutColumn(2)
 
@@ -88,7 +88,7 @@ function M:render()
     end
 
     Slab.SetLayoutColumn(1)
-    Slab.Text("Height")
+    Slab.Text("Height", { Color = self.editorScreen.colors.green })
 
     Slab.SetLayoutColumn(2)
 
