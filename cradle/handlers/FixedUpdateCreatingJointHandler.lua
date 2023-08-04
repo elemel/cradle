@@ -15,7 +15,7 @@ function M.new(engine)
 
   return function(dt)
     query:forEach(function(entity, joint)
-      local jointType = assert(joint.jointType)
+      local jointType = assert(joint.type)
 
       if jointType == "motor" then
         return M.createMotorJoint(database, world, entity, joint)

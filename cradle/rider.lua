@@ -10,7 +10,7 @@ local function createNeckAndHead(database, trunkEntity, localCollarPosition)
 
   local neckEntity = database:insertRow({
     body = {
-      bodyType = "dynamic",
+      type = "dynamic",
     },
 
     creating = {},
@@ -22,19 +22,19 @@ local function createNeckAndHead(database, trunkEntity, localCollarPosition)
 
     joint = {
       bodyA = trunkEntity,
-      jointType = "revolute",
       limitsEnabled = true,
       localAnchorA = localCollarPosition,
       localAnchorB = { 0, 0.05 },
       lowerLimit = -0.125 * math.pi,
+      type = "revolute",
       upperLimit = 0.125 * math.pi,
     },
 
     node = {},
 
     shape = {
-      shapeType = "rectangle",
       size = { 0.1, 0.1 },
+      type = "rectangle",
     },
 
     transform = {
@@ -45,7 +45,7 @@ local function createNeckAndHead(database, trunkEntity, localCollarPosition)
 
   local headEntity = database:insertRow({
     body = {
-      bodyType = "dynamic",
+      type = "dynamic",
     },
 
     creating = {},
@@ -57,19 +57,19 @@ local function createNeckAndHead(database, trunkEntity, localCollarPosition)
 
     joint = {
       bodyA = neckEntity,
-      jointType = "revolute",
       limitsEnabled = true,
       localAnchorA = { 0, -0.05 },
       localAnchorB = { 0, 0.1 },
       lowerLimit = -0.125 * math.pi,
+      type = "revolute",
       upperLimit = 0.125 * math.pi,
     },
 
     node = {},
 
     shape = {
-      shapeType = "rectangle",
       size = { 0.2, 0.2 },
+      type = "rectangle",
     },
 
     transform = {
@@ -92,7 +92,7 @@ local function createArm(database, trunkEntity, localShoulderPosition)
 
   local upperArmEntity = database:insertRow({
     body = {
-      bodyType = "dynamic",
+      type = "dynamic",
     },
 
     creating = {},
@@ -104,16 +104,16 @@ local function createArm(database, trunkEntity, localShoulderPosition)
 
     joint = {
       bodyA = trunkEntity,
-      jointType = "revolute",
       localAnchorA = localShoulderPosition,
       localAnchorB = { 0, -0.175 },
+      type = "revolute",
     },
 
     node = {},
 
     shape = {
-      shapeType = "rectangle",
       size = { 0.1, 0.35 },
+      type = "rectangle",
     },
 
     transform = {
@@ -124,7 +124,7 @@ local function createArm(database, trunkEntity, localShoulderPosition)
 
   local lowerArmEntity = database:insertRow({
     body = {
-      bodyType = "dynamic",
+      type = "dynamic",
     },
 
     creating = {},
@@ -136,19 +136,19 @@ local function createArm(database, trunkEntity, localShoulderPosition)
 
     joint = {
       bodyA = upperArmEntity,
-      jointType = "revolute",
       limitsEnabled = true,
       localAnchorA = { 0, 0.175 },
       localAnchorB = { 0, -0.175 },
       lowerLimit = -math.pi,
+      type = "revolute",
       upperLimit = 0,
     },
 
     node = {},
 
     shape = {
-      shapeType = "rectangle",
       size = { 0.1, 0.35 },
+      type = "rectangle",
     },
 
     transform = {
@@ -159,7 +159,7 @@ local function createArm(database, trunkEntity, localShoulderPosition)
 
   local handEntity = database:insertRow({
     body = {
-      bodyType = "dynamic",
+      type = "dynamic",
     },
 
     creating = {},
@@ -171,19 +171,19 @@ local function createArm(database, trunkEntity, localShoulderPosition)
 
     joint = {
       bodyA = lowerArmEntity,
-      jointType = "revolute",
       limitsEnabled = true,
       localAnchorA = { 0, 0.175 },
       localAnchorB = { 0, -0.05 },
       lowerLimit = -0.25 * math.pi,
+      type = "revolute",
       upperLimit = 0.25 * math.pi,
     },
 
     node = {},
 
     shape = {
-      shapeType = "rectangle",
       size = { 0.1, 0.1 },
+      type = "rectangle",
     },
 
     transform = {
@@ -207,7 +207,7 @@ local function createLeg(database, frameEntity, trunkEntity, localHipPosition)
 
   local upperLegEntity = database:insertRow({
     body = {
-      bodyType = "dynamic",
+      type = "dynamic",
     },
 
     creating = {},
@@ -219,16 +219,16 @@ local function createLeg(database, frameEntity, trunkEntity, localHipPosition)
 
     joint = {
       bodyA = trunkEntity,
-      jointType = "revolute",
       localAnchorA = localHipPosition,
       localAnchorB = { 0, -0.225 },
+      type = "revolute",
     },
 
     node = {},
 
     shape = {
-      shapeType = "rectangle",
       size = { 0.15, 0.45 },
+      type = "rectangle",
     },
 
     transform = {
@@ -239,7 +239,7 @@ local function createLeg(database, frameEntity, trunkEntity, localHipPosition)
 
   local lowerLegEntity = database:insertRow({
     body = {
-      bodyType = "dynamic",
+      type = "dynamic",
     },
 
     creating = {},
@@ -251,19 +251,19 @@ local function createLeg(database, frameEntity, trunkEntity, localHipPosition)
 
     joint = {
       bodyA = upperLegEntity,
-      jointType = "revolute",
       limitsEnabled = true,
       localAnchorA = { 0, 0.225 },
       localAnchorB = { 0, -0.225 },
       lowerLimit = 0,
+      type = "revolute",
       upperLimit = math.pi,
     },
 
     node = {},
 
     shape = {
-      shapeType = "rectangle",
       size = { 0.1, 0.45 },
+      type = "rectangle",
     },
 
     transform = {
@@ -274,7 +274,7 @@ local function createLeg(database, frameEntity, trunkEntity, localHipPosition)
 
   local footEntity = database:insertRow({
     body = {
-      bodyType = "dynamic",
+      type = "dynamic",
     },
 
     creating = {},
@@ -286,19 +286,19 @@ local function createLeg(database, frameEntity, trunkEntity, localHipPosition)
 
     joint = {
       bodyA = lowerLegEntity,
-      jointType = "revolute",
       limitsEnabled = true,
       localAnchorA = { 0, 0.225 },
       localAnchorB = { -0.075, -0.05 },
       lowerLimit = -0.25 * math.pi,
+      type = "revolute",
       upperLimit = 0.25 * math.pi,
     },
 
     node = {},
 
     shape = {
-      shapeType = "rectangle",
       size = { 0.25, 0.05 },
+      type = "rectangle",
     },
 
     transform = {
@@ -316,11 +316,11 @@ local function createLeg(database, frameEntity, trunkEntity, localHipPosition)
     joint = {
       bodyA = frameEntity,
       bodyB = footEntity,
-      jointType = "revolute",
       limitsEnabled = true,
       localAnchorA = { localFootBarX, localFootBarY },
       localAnchorB = { 0, 0.025 },
       lowerLimit = -0.25 * math.pi,
+      type = "revolute",
       upperLimit = 0.25 * math.pi,
     },
 
@@ -338,7 +338,7 @@ end
 function M.createRider(database, frameEntity, transform)
   local trunkEntity = database:insertRow({
     body = {
-      bodyType = "dynamic",
+      type = "dynamic",
     },
 
     creating = {},
@@ -352,17 +352,17 @@ function M.createRider(database, frameEntity, transform)
     rider = {},
 
     shape = {
-      shapeType = "rectangle",
       size = { 0.3, 0.7 },
+      type = "rectangle",
     },
 
     joint = {
       angularOffset = 0.125 * math.pi,
       bodyA = frameEntity,
       linearOffset = { 0, -0.75 },
-      jointType = "motor",
       maxForce = 100,
       maxTorque = 10,
+      type = "motor",
     },
 
     transform = transform or {

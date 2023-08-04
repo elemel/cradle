@@ -15,7 +15,7 @@ function M.new(engine)
 
   return function(dt)
     query:forEach(function(entity, bodyObject, fixture, shape)
-      local shapeType = shape.shapeType or "rectangle"
+      local shapeType = shape.type or "rectangle"
       local shapeObject
 
       if shapeType == "circle" then

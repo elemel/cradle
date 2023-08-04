@@ -191,8 +191,8 @@ function M:init(application, config)
       node = {},
 
       shape = {
-        shapeType = "rectangle",
         size = { 5, 1 },
+        type = "rectangle",
       },
 
       transform = {
@@ -212,8 +212,8 @@ function M:init(application, config)
       node = {},
 
       shape = {
-        shapeType = "rectangle",
         size = { 5, 1 },
+        type = "rectangle",
       },
 
       transform = {
@@ -233,8 +233,8 @@ function M:init(application, config)
       node = {},
 
       shape = {
-        shapeType = "rectangle",
         size = { 5, 1 },
+        type = "rectangle",
       },
 
       transform = {
@@ -254,8 +254,8 @@ function M:init(application, config)
       node = {},
 
       shape = {
-        shapeType = "rectangle",
         size = { 5, 1 },
+        type = "rectangle",
       },
 
       transform = {

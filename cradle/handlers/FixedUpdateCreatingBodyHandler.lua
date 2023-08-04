@@ -15,7 +15,7 @@ function M.new(engine)
 
   return function(dt)
     query:forEach(function(entity, body, globalTransform)
-      local bodyType = body.bodyType or "static"
+      local bodyType = body.type or "static"
 
       local x = globalTransform.position.x
       local y = globalTransform.position.y

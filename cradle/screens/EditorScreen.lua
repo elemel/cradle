@@ -29,6 +29,7 @@ function M:init(application)
   self.database = sparrow.newDatabase()
 
   self.database:createColumn("body")
+  self.database:createColumn("camera", "tag")
   self.database:createColumn("debugColor", "color4")
   self.database:createColumn("fixture")
   self.database:createColumn("joint")
@@ -68,6 +69,7 @@ function M:init(application)
   self.commandFuture = {}
 
   self.componentTitles = {
+    camera = "Camera",
     body = "Body",
     debugColor = "Debug Color",
     fixture = "Fixture",
@@ -79,6 +81,10 @@ function M:init(application)
   }
 
   self.componentConstructors = {
+    camera = function()
+      return {}
+    end,
+
     body = function()
       return {}
     end,
@@ -127,6 +133,7 @@ function M:init(application)
   self.entityView = EntityView.new(self)
 
   self.componentViews = {
+    camera = TagComponentView.new(self, "camera"),
     body = TagComponentView.new(self, "body"),
     debugColor = ColorComponentView.new(self, "debugColor"),
     fixture = TagComponentView.new(self, "fixture"),

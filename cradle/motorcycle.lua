@@ -5,7 +5,7 @@ local M = {}
 function M.createMotorcycle(database, transform)
   local frameEntity = database:insertRow({
     body = {
-      bodyType = "dynamic",
+      type = "dynamic",
     },
 
     creating = {},
@@ -19,8 +19,8 @@ function M.createMotorcycle(database, transform)
     node = {},
 
     shape = {
-      shapeType = "rectangle",
       size = { 1.3, 0.3 },
+      type = "rectangle",
     },
 
     transform = transform or {
@@ -31,7 +31,7 @@ function M.createMotorcycle(database, transform)
 
   local rearWheelEntity = database:insertRow({
     body = {
-      bodyType = "dynamic",
+      type = "dynamic",
     },
 
     creating = {},
@@ -44,17 +44,17 @@ function M.createMotorcycle(database, transform)
     joint = {
       bodyA = frameEntity,
       damping = 20,
-      jointType = "wheel",
       localAnchorA = { -0.65, 0.15 },
       maxMotorTorque = 10,
       stiffness = 200,
+      type = "wheel",
     },
 
     node = {},
 
     shape = {
-      shapeType = "circle",
       radius = 0.3,
+      type = "circle",
     },
 
     wheel = {},
@@ -67,7 +67,7 @@ function M.createMotorcycle(database, transform)
 
   local frontWheelEntity = database:insertRow({
     body = {
-      bodyType = "dynamic",
+      type = "dynamic",
     },
 
     creating = {},
@@ -80,17 +80,17 @@ function M.createMotorcycle(database, transform)
     joint = {
       bodyA = frameEntity,
       damping = 20,
-      jointType = "wheel",
       localAnchorA = { 0.65, 0.15 },
       maxMotorTorque = 10,
       stiffness = 200,
+      type = "wheel",
     },
 
     node = {},
 
     shape = {
-      shapeType = "circle",
       radius = 0.3,
+      type = "circle",
     },
 
     wheel = {},
