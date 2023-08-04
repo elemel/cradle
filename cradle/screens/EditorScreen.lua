@@ -1,3 +1,5 @@
+local BodyComponentView =
+  require("cradle.editor.views.components.BodyComponentView")
 local cdefMod = require("cradle.cdef")
 local Class = require("cradle.Class")
 local ColorComponentView =
@@ -86,7 +88,9 @@ function M:init(application)
     end,
 
     body = function()
-      return {}
+      return {
+        type = "static",
+      }
     end,
 
     debugColor = function()
@@ -134,7 +138,7 @@ function M:init(application)
 
   self.componentViews = {
     camera = TagComponentView.new(self, "camera"),
-    body = TagComponentView.new(self, "body"),
+    body = BodyComponentView.new(self, "body"),
     debugColor = ColorComponentView.new(self, "debugColor"),
     fixture = TagComponentView.new(self, "fixture"),
     joint = TagComponentView.new(self, "joint"),
