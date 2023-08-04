@@ -19,11 +19,32 @@ ffi.cdef([[
     vec2 position;
     vec2 orientation;
   } transform;
+
+  typedef struct color3 {
+    double red;
+    double green;
+    double blue;
+  } color3;
+
+  typedef struct color4 {
+    double red;
+    double green;
+    double blue;
+    double alpha;
+  } color4;
 ]])
 
 local M = {}
 
 M.encoders = {}
+
+M.encoders.color3 = function(value)
+  return { value.red, value.green, value.blue }
+end
+
+M.encoders.color4 = function(value)
+  return { value.red, value.green, value.blue, value.alpha }
+end
 
 M.encoders.node = function(value)
   return {

@@ -1,16 +1,15 @@
 local cdefMod = require("cradle.cdef")
 local Class = require("cradle.Class")
+local ColorComponentView =
+  require("cradle.editor.views.components.ColorComponentView")
 local DrawSlabHandler = require("cradle.editor.handlers.DrawSlabHandler")
 local DrawShapeHandler = require("cradle.editor.handlers.DrawShapeHandler")
 local EntityTreeView = require("cradle.editor.views.EntityTreeView")
 local EntityView = require("cradle.editor.views.EntityView")
+local GameScreen = require("cradle.screens.GameScreen")
 local heart = require("heart")
 local jsonMod = require("json")
 local nodeMod = require("cradle.node")
-local OrientationComponentView =
-  require("cradle.editor.views.components.OrientationComponentView")
-local PositionComponentView =
-  require("cradle.editor.views.components.PositionComponentView")
 local ShapeComponentView =
   require("cradle.editor.views.components.ShapeComponentView")
 local Slab = require("Slab")
@@ -19,6 +18,8 @@ local StringComponentView =
   require("cradle.editor.views.components.StringComponentView")
 local TagComponentView =
   require("cradle.editor.views.components.TagComponentView")
+local TransformComponentView =
+  require("cradle.editor.views.components.TransformComponentView")
 local tableMod = require("cradle.table")
 
 local M = Class.new()
@@ -28,13 +29,14 @@ function M:init(application)
   self.database = sparrow.newDatabase()
 
   self.database:createColumn("body")
+  self.database:createColumn("camera", "tag")
+  self.database:createColumn("debugColor", "color4")
   self.database:createColumn("fixture")
   self.database:createColumn("joint")
   self.database:createColumn("node", "node")
-  self.database:createColumn("position", "vec2")
-  self.database:createColumn("orientation", "vec2")
   self.database:createColumn("shape")
   self.database:createColumn("title")
+  self.database:createColumn("transform", "transform")
 
   local json = love.filesystem.read("database.json")
   local rows = jsonMod.decode(json)
@@ -67,19 +69,28 @@ function M:init(application)
   self.commandFuture = {}
 
   self.componentTitles = {
+    camera = "Camera",
     body = "Body",
+    debugColor = "Debug Color",
     fixture = "Fixture",
     joint = "Joint",
     node = "Node",
-    orientation = "Orientation",
-    position = "Position",
     shape = "Shape",
     title = "Title",
+    transform = "Transform",
   }
 
   self.componentConstructors = {
+    camera = function()
+      return {}
+    end,
+
     body = function()
       return {}
+    end,
+
+    debugColor = function()
+      return { 1, 1, 1, 1 }
     end,
 
     fixture = function()
@@ -94,14 +105,6 @@ function M:init(application)
       return {}
     end,
 
-    orientation = function()
-      return { 1, 0 }
-    end,
-
-    position = function()
-      return { 0, 0 }
-    end,
-
     shape = function()
       return {
         size = { 1, 1 },
@@ -111,6 +114,10 @@ function M:init(application)
 
     title = function()
       return ""
+    end,
+
+    transform = function()
+      return { orientation = { 1, 0 }, position = { 0, 0 } }
     end,
   }
 
@@ -126,17 +133,26 @@ function M:init(application)
   self.entityView = EntityView.new(self)
 
   self.componentViews = {
+    camera = TagComponentView.new(self, "camera"),
     body = TagComponentView.new(self, "body"),
+    debugColor = ColorComponentView.new(self, "debugColor"),
     fixture = TagComponentView.new(self, "fixture"),
     joint = TagComponentView.new(self, "joint"),
     node = TagComponentView.new(self, "node"),
-    orientation = OrientationComponentView.new(self, "orientation"),
-    position = PositionComponentView.new(self, "position"),
     shape = ShapeComponentView.new(self, "shape"),
     title = StringComponentView.new(self, "title"),
+    transform = TransformComponentView.new(self, "transform"),
   }
 
   self.dragStep = 1
+
+  self.colors = {
+    blue = { 0.1, 0.5, 1, 1 },
+    green = { 0.2, 1, 0.1, 1 },
+    red = { 1, 0.4, 0.1, 1 },
+    white = { 1, 1, 1, 1 },
+    yellow = { 1, 0.8, 0.1, 1 },
+  }
 end
 
 function M:handleEvent(event, ...)
@@ -217,8 +233,30 @@ function M:update(dt)
     height = height,
     leftDockWidth = 200,
     rightDockWidth = 200,
+    topDockHeight = 100,
     width = width,
   }
+
+  Slab.BeginWindow("topDock", {
+    AllowMove = false,
+    AllowResize = true,
+    AutoSizeContent = true,
+    AutoSizeWindow = false,
+    H = layout.topDockHeight - layout.border,
+    ResetLayout = false,
+    W = layout.width - layout.border,
+    X = 0,
+    Y = 0,
+  })
+
+  if Slab.Button("Play") then
+    local json = self:encodeDatabaseAsJson()
+    love.filesystem.write("database.json", json)
+
+    application:pushScreen(GameScreen.new(application))
+  end
+
+  Slab.EndWindow()
 
   Slab.BeginWindow("leftDock", {
     AllowMove = false,
@@ -226,11 +264,14 @@ function M:update(dt)
     AutoSizeContent = true,
     AutoSizeWindow = false,
     Border = layout.border,
-    H = layout.height - layout.bottomDockHeight - layout.border,
+    H = layout.height
+      - layout.topDockHeight
+      - layout.bottomDockHeight
+      - layout.border,
     ResetLayout = false,
     W = layout.leftDockWidth - layout.border,
     X = 0,
-    Y = 0,
+    Y = layout.topDockHeight,
   })
 
   self.entityTreeView:render()
@@ -242,11 +283,14 @@ function M:update(dt)
     AutoSizeContent = true,
     AutoSizeWindow = false,
     Border = layout.border,
-    H = layout.height - layout.bottomDockHeight - layout.border,
+    H = layout.height
+      - layout.topDockHeight
+      - layout.bottomDockHeight
+      - layout.border,
     ResetLayout = false,
     W = layout.rightDockWidth - layout.border,
     X = layout.width - layout.rightDockWidth,
-    Y = 0,
+    Y = layout.topDockHeight,
   })
 
   self.entityView:render()

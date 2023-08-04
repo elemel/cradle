@@ -8,12 +8,12 @@ function M.new(engine, config)
   local drawMode = config.drawMode or "line"
 
   local query = sparrow.newQuery(database, {
-    arguments = { "transform" },
-    inclusions = { "camera", "transform" },
+    arguments = { "globalTransform" },
+    inclusions = { "camera", "globalTransform" },
   })
 
   return function()
-    query:forEach(function(entity, transform)
+    query:forEach(function(entity, globalTransform)
       love.graphics.push("all")
 
       local width, height = love.graphics.getDimensions()
@@ -23,10 +23,14 @@ function M.new(engine, config)
       love.graphics.scale(scale)
       love.graphics.setLineWidth(1 / scale)
 
-      local angle = math.atan2(transform.orientation.y, transform.orientation.x)
+      local angle =
+        math.atan2(globalTransform.orientation.y, globalTransform.orientation.x)
       love.graphics.rotate(-angle)
 
-      love.graphics.translate(-transform.position.x, -transform.position.y)
+      love.graphics.translate(
+        -globalTransform.position.x,
+        -globalTransform.position.y
+      )
 
       for _, body in ipairs(world:getBodies()) do
         for _, fixture in ipairs(body:getFixtures()) do

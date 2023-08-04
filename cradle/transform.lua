@@ -50,4 +50,23 @@ function M.copy(source, target)
   return result
 end
 
+function M.getGlobalTransform(database, entity, result)
+  result = result or Transform()
+  local node = database:getCell(entity, "node")
+
+  if node and node.parent ~= 0 then
+    M.getGlobalTransform(database, node.parent, result)
+  else
+    M.reset(result)
+  end
+
+  local transform = database:getCell(entity, "transform")
+
+  if transform then
+    M.multiply(result, transform, result)
+  end
+
+  return result
+end
+
 return M

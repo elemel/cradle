@@ -28,6 +28,7 @@ local FixedUpdateRiderHandler =
 local FixedUpdateWorldHandler =
   require("cradle.handlers.FixedUpdateWorldHandler")
 local heart = require("heart")
+local jsonMod = require("json")
 local motorcycleMod = require("cradle.motorcycle")
 local nodeMod = require("cradle.node")
 local KeyPressedHandler = require("cradle.handlers.KeyPressedHandler")
@@ -38,7 +39,10 @@ local UpdateClockHandler = require("cradle.handlers.UpdateClockHandler")
 
 local M = Class.new()
 
-function M:init(application)
+function M:init(application, config)
+  config = config or {}
+  local demo = config.demo or false
+
   love.mouse.setRelativeMode(true)
 
   self.application = assert(application)
@@ -57,26 +61,37 @@ function M:init(application)
   self.engine:setProperty("database", database)
 
   database:createColumn("body")
-  database:createColumn("bodyConfig")
+  database:createColumn("bodyObject")
   database:createColumn("camera", "tag")
   database:createColumn("creating", "tag")
+  database:createColumn("debugColor", "color4")
   database:createColumn("destroying", "tag")
   database:createColumn("dynamic", "tag")
   database:createColumn("fixture")
-  database:createColumn("fixtureConfig")
+  database:createColumn("fixtureObject")
+  database:createColumn("globalTransform", "transform")
   database:createColumn("joint")
-  database:createColumn("jointConfig")
+  database:createColumn("jointObject")
   database:createColumn("kinematic", "tag")
-  database:createColumn("localTransform", "transform")
   database:createColumn("motorcycle", "tag")
   database:createColumn("node", "node")
-  database:createColumn("position", "vec2")
   database:createColumn("rider", "tag")
-  database:createColumn("shapeConfig")
+  database:createColumn("shape")
   database:createColumn("spring")
   database:createColumn("static", "tag")
+  database:createColumn("title")
   database:createColumn("transform", "transform")
   database:createColumn("wheel", "tag")
+
+  if not demo then
+    local json = love.filesystem.read("database.json")
+    local rows = jsonMod.decode(json)
+
+    for entity, row in pairs(rows) do
+      database:insertRow(row, entity)
+      database:setCell(entity, "creating", {})
+    end
+  end
 
   self.engine:addEvent("draw")
   self.engine:addEvent("fixedupdate")
@@ -164,118 +179,112 @@ function M:init(application)
   self.engine:addEventHandler("mousemoved", MouseMovedHandler.new(self.engine))
   self.engine:addEventHandler("update", UpdateClockHandler.new(self.engine))
 
-  database:insertRow({
-    bodyConfig = {},
-    creating = {},
+  if demo then
+    database:insertRow({
+      body = {},
+      creating = {},
 
-    fixtureConfig = {
-      friction = 0.5,
-    },
+      fixture = {
+        friction = 0.5,
+      },
 
-    localTransform = {
+      node = {},
+
+      shape = {
+        size = { 5, 1 },
+        type = "rectangle",
+      },
+
+      transform = {
+        orientation = { 1, 0 },
+        position = { 0, 0.5 },
+      },
+    })
+
+    database:insertRow({
+      body = {},
+      creating = {},
+
+      fixture = {
+        friction = 0.5,
+      },
+
+      node = {},
+
+      shape = {
+        size = { 5, 1 },
+        type = "rectangle",
+      },
+
+      transform = {
+        orientation = { math.cos(-0.5), math.sin(-0.5) },
+        position = { 4, -0.5 },
+      },
+    })
+
+    database:insertRow({
+      body = {},
+      creating = {},
+
+      fixture = {
+        friction = 0.5,
+      },
+
+      node = {},
+
+      shape = {
+        size = { 5, 1 },
+        type = "rectangle",
+      },
+
+      transform = {
+        orientation = { math.cos(0.5), math.sin(0.5) },
+        position = { 15, -0.5 },
+      },
+    })
+
+    database:insertRow({
+      body = {},
+      creating = {},
+
+      fixture = {
+        friction = 0.5,
+      },
+
+      node = {},
+
+      shape = {
+        size = { 5, 1 },
+        type = "rectangle",
+      },
+
+      transform = {
+        orientation = { 1, 0 },
+        position = { 19, 0.5 },
+      },
+    })
+
+    local frameEntity = motorcycleMod.createMotorcycle(database, {
       orientation = { 1, 0 },
-      position = { 0, 0.5 },
-    },
+      position = { 0, -0.45 },
+    })
 
-    node = {},
-
-    shapeConfig = {
-      shapeType = "rectangle",
-      size = { 5, 1 },
-    },
-
-    transform = {},
-  })
-
-  database:insertRow({
-    bodyConfig = {},
-    creating = {},
-
-    fixtureConfig = {
-      friction = 0.5,
-    },
-
-    localTransform = {
-      orientation = { math.cos(-0.5), math.sin(-0.5) },
-      position = { 4, -0.5 },
-    },
-
-    node = {},
-
-    shapeConfig = {
-      shapeType = "rectangle",
-      size = { 5, 1 },
-    },
-
-    transform = {},
-  })
-
-  database:insertRow({
-    bodyConfig = {},
-    creating = {},
-
-    fixtureConfig = {
-      friction = 0.5,
-    },
-
-    localTransform = {
-      orientation = { math.cos(0.5), math.sin(0.5) },
-      position = { 15, -0.5 },
-    },
-
-    node = {},
-
-    shapeConfig = {
-      shapeType = "rectangle",
-      size = { 5, 1 },
-    },
-
-    transform = {},
-  })
-
-  database:insertRow({
-    bodyConfig = {},
-    creating = {},
-
-    fixtureConfig = {
-      friction = 0.5,
-    },
-
-    localTransform = {
+    local trunkEntity = riderMod.createRider(database, frameEntity, {
       orientation = { 1, 0 },
-      position = { 19, 0.5 },
-    },
+      position = { 0, -0.6 },
+    })
 
-    node = {},
+    database:insertRow({
+      camera = {},
+      creating = {},
+      node = {},
 
-    shapeConfig = {
-      shapeType = "rectangle",
-      size = { 5, 1 },
-    },
-
-    transform = {},
-  })
-
-  local frameEntity = motorcycleMod.createMotorcycle(database, {
-    orientation = { 1, 0 },
-    position = { 0, -0.45 },
-  })
-
-  local trunkEntity = riderMod.createRider(database, frameEntity, {
-    orientation = { 1, 0 },
-    position = { 0, -0.6 },
-  })
-
-  database:insertRow({
-    camera = {},
-
-    localTransform = {
-      orientation = { 1, 0 },
-      position = { 0.65, 0.3 },
-    },
-
-    transform = {},
-  })
+      transform = {
+        orientation = { 1, 0 },
+        position = { 0.65, 0.3 },
+      },
+    })
+  end
 end
 
 function M:handleEvent(event, ...)

@@ -6,14 +6,14 @@ function M.new(engine)
   local database = assert(engine:getProperty("database"))
 
   local query = sparrow.newQuery(database, {
-    inclusions = { "joint", "destroying" },
-    arguments = { "joint" },
-    results = { "joint" },
+    inclusions = { "jointObject", "destroying" },
+    arguments = { "jointObject" },
+    results = { "jointObject" },
   })
 
   return function(dt)
-    query:forEach(function(entity, joint)
-      joint:destroy()
+    query:forEach(function(entity, jointObject)
+      jointObject:destroy()
       return nil
     end)
   end

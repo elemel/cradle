@@ -2,107 +2,103 @@ local nodeMod = require("cradle.node")
 
 local M = {}
 
-function M.createMotorcycle(database, localTransform)
+function M.createMotorcycle(database, transform)
   local frameEntity = database:insertRow({
-    bodyConfig = {
-      bodyType = "dynamic",
+    body = {
+      type = "dynamic",
     },
 
     creating = {},
 
-    fixtureConfig = {
+    fixture = {
       friction = 0.5,
       groupIndex = -1,
-    },
-
-    localTransform = localTransform or {
-      orientation = { 1, 0 },
-      position = { 0, 0 },
     },
 
     motorcycle = {},
     node = {},
 
-    shapeConfig = {
-      shapeType = "rectangle",
+    shape = {
       size = { 1.3, 0.3 },
+      type = "rectangle",
     },
 
-    transform = {},
+    transform = transform or {
+      orientation = { 1, 0 },
+      position = { 0, 0 },
+    },
   })
 
   local rearWheelEntity = database:insertRow({
-    bodyConfig = {
-      bodyType = "dynamic",
+    body = {
+      type = "dynamic",
     },
 
     creating = {},
 
-    fixtureConfig = {
+    fixture = {
       friction = 2,
       groupIndex = -1,
     },
 
-    jointConfig = {
+    joint = {
       bodyA = frameEntity,
       damping = 20,
-      jointType = "wheel",
       localAnchorA = { -0.65, 0.15 },
       maxMotorTorque = 10,
       stiffness = 200,
-    },
-
-    localTransform = {
-      orientation = { 1, 0 },
-      position = { -0.65, 0.15 },
+      type = "wheel",
     },
 
     node = {},
 
-    shapeConfig = {
-      shapeType = "circle",
+    shape = {
       radius = 0.3,
+      type = "circle",
     },
 
-    transform = {},
     wheel = {},
+
+    transform = {
+      orientation = { 1, 0 },
+      position = { -0.65, 0.15 },
+    },
   })
 
   local frontWheelEntity = database:insertRow({
-    bodyConfig = {
-      bodyType = "dynamic",
+    body = {
+      type = "dynamic",
     },
 
     creating = {},
 
-    fixtureConfig = {
+    fixture = {
       friction = 2,
       groupIndex = -1,
     },
 
-    jointConfig = {
+    joint = {
       bodyA = frameEntity,
       damping = 20,
-      jointType = "wheel",
       localAnchorA = { 0.65, 0.15 },
       maxMotorTorque = 10,
       stiffness = 200,
-    },
-
-    localTransform = {
-      orientation = { 1, 0 },
-      position = { 0.65, 0.15 },
+      type = "wheel",
     },
 
     node = {},
 
-    shapeConfig = {
-      shapeType = "circle",
+    shape = {
       radius = 0.3,
+      type = "circle",
     },
 
-    transform = {},
     wheel = {},
+
+    transform = {
+      orientation = { 1, 0 },
+      position = { 0.65, 0.15 },
+    },
   })
 
   nodeMod.setParent(database, rearWheelEntity, frameEntity)
