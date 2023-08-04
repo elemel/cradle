@@ -7,13 +7,18 @@ function M.new(engine, config)
   local world = engine:getProperty("world")
   local drawMode = config.drawMode or "line"
 
-  local query = sparrow.newQuery(database, {
+  local cameraQuery = sparrow.newQuery(database, {
     arguments = { "globalTransform" },
     inclusions = { "camera", "globalTransform" },
   })
 
+  local fixtureQuery = sparrow.newQuery(database, {
+    arguments = { "debugColor", "fixtureObject" },
+    inclusions = { "fixtureObject" },
+  })
+
   return function()
-    query:forEach(function(entity, globalTransform)
+    cameraQuery:forEach(function(cameraEntity, globalTransform)
       love.graphics.push("all")
 
       local width, height = love.graphics.getDimensions()
@@ -32,28 +37,40 @@ function M.new(engine, config)
         -globalTransform.position.y
       )
 
-      for _, body in ipairs(world:getBodies()) do
-        for _, fixture in ipairs(body:getFixtures()) do
-          local shape = fixture:getShape()
-          local shapeType = shape:getType()
-
-          if shapeType == "circle" then
-            local localX, localY = shape:getPoint()
-            local radius = shape:getRadius()
-
-            local x1, y1 = body:getWorldPoint(localX, localY)
-            local x2, y2 = body:getWorldPoint(localX + radius, localY)
-
-            love.graphics.circle(drawMode, x1, y1, radius)
-            love.graphics.line(x1, y1, x2, y2)
-          elseif shapeType == "polygon" then
-            love.graphics.polygon(
-              drawMode,
-              body:getWorldPoints(shape:getPoints())
-            )
-          end
+      fixtureQuery:forEach(function(fixtureEntity, debugColor, fixtureObject)
+        if debugColor then
+          love.graphics.setColor(
+            debugColor.red,
+            debugColor.green,
+            debugColor.blue,
+            debugColor.alpha
+          )
+        else
+          love.graphics.setColor(1, 1, 1, 1)
         end
-      end
+
+        local bodyObject = fixtureObject:getBody()
+        local shapeObject = fixtureObject:getShape()
+        local shapeType = shapeObject:getType()
+
+        if shapeType == "circle" then
+          local localX, localY = shapeObject:getPoint()
+          local radius = shapeObject:getRadius()
+
+          local x1, y1 = bodyObject:getWorldPoint(localX, localY)
+          local x2, y2 = bodyObject:getWorldPoint(localX + radius, localY)
+
+          love.graphics.circle(drawMode, x1, y1, radius)
+          love.graphics.line(x1, y1, x2, y2)
+        elseif shapeType == "polygon" then
+          love.graphics.polygon(
+            drawMode,
+            bodyObject:getWorldPoints(shapeObject:getPoints())
+          )
+        else
+          error("Invalid shape type: " .. shapeType)
+        end
+      end)
 
       love.graphics.pop()
     end)

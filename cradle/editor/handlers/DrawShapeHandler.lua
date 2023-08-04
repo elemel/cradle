@@ -52,6 +52,7 @@ function M.new(engine)
       if shape.type == "circle" then
         local radius = shape.radius or 0.5
         love.graphics.circle("line", 0, 0, radius)
+        love.graphics.line(0, 0, radius, 0)
       elseif shape.type == "rectangle" then
         love.graphics.rectangle(
           "line",
