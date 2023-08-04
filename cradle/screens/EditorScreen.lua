@@ -8,6 +8,8 @@ local DrawSlabHandler = require("cradle.editor.handlers.DrawSlabHandler")
 local DrawShapeHandler = require("cradle.editor.handlers.DrawShapeHandler")
 local EntityTreeView = require("cradle.editor.views.EntityTreeView")
 local EntityView = require("cradle.editor.views.EntityView")
+local FixtureComponentView =
+  require("cradle.editor.views.components.FixtureComponentView")
 local GameScreen = require("cradle.screens.GameScreen")
 local heart = require("heart")
 local jsonMod = require("json")
@@ -140,7 +142,7 @@ function M:init(application)
     camera = TagComponentView.new(self, "camera"),
     body = BodyComponentView.new(self, "body"),
     debugColor = ColorComponentView.new(self, "debugColor"),
-    fixture = TagComponentView.new(self, "fixture"),
+    fixture = FixtureComponentView.new(self, "fixture"),
     joint = TagComponentView.new(self, "joint"),
     node = TagComponentView.new(self, "node"),
     shape = ShapeComponentView.new(self, "shape"),

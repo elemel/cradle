@@ -31,7 +31,9 @@ function M.new(engine)
         error("Invalid shape type: " .. shapeType)
       end
 
-      local fixtureObject = love.physics.newFixture(bodyObject, shapeObject)
+      local density = fixture.density or 1
+      local fixtureObject =
+        love.physics.newFixture(bodyObject, shapeObject, density)
       fixtureObject:setUserData(entity)
 
       if fixture.friction then
