@@ -12,6 +12,8 @@ local FixtureComponentView =
   require("cradle.editor.views.components.FixtureComponentView")
 local GameScreen = require("cradle.screens.GameScreen")
 local heart = require("heart")
+local JointComponentView =
+  require("cradle.editor.views.components.JointComponentView")
 local jsonMod = require("json")
 local nodeMod = require("cradle.node")
 local ShapeComponentView =
@@ -143,7 +145,7 @@ function M:init(application)
     body = BodyComponentView.new(self, "body"),
     debugColor = ColorComponentView.new(self, "debugColor"),
     fixture = FixtureComponentView.new(self, "fixture"),
-    joint = TagComponentView.new(self, "joint"),
+    joint = JointComponentView.new(self, "joint"),
     node = TagComponentView.new(self, "node"),
     shape = ShapeComponentView.new(self, "shape"),
     title = StringComponentView.new(self, "title"),
