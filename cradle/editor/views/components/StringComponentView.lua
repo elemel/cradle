@@ -19,7 +19,13 @@ function M:render()
   Slab.BeginLayout(self.id, { Columns = 2, ExpandW = true })
   Slab.SetLayoutColumn(1)
 
-  if Slab.Text(title, { IsSelectable = true, IsSelected = selected }) then
+  if
+    Slab.Text(title, {
+      Color = self.editorScreen.colors.yellow,
+      IsSelectable = true,
+      IsSelected = selected,
+    })
+  then
     self.editorScreen.selectedComponent = self.component
   end
 

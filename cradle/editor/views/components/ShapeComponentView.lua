@@ -23,7 +23,13 @@ function M:render()
   local title = assert(self.editorScreen.componentTitles[self.component])
   local selected = self.editorScreen.selectedComponent == self.component
 
-  if Slab.Text(title, { IsSelectable = true, IsSelected = selected }) then
+  if
+    Slab.Text(title, {
+      Color = self.editorScreen.colors.yellow,
+      IsSelectable = true,
+      IsSelected = selected,
+    })
+  then
     self.editorScreen.selectedComponent = self.component
   end
 
@@ -70,7 +76,7 @@ function M:render()
     end
   elseif shape.type == "rectangle" then
     Slab.SetLayoutColumn(1)
-    Slab.Text("Width", { Color = self.editorScreen.colors.red })
+    Slab.Text("Width")
 
     Slab.SetLayoutColumn(2)
 
@@ -88,7 +94,7 @@ function M:render()
     end
 
     Slab.SetLayoutColumn(1)
-    Slab.Text("Height", { Color = self.editorScreen.colors.green })
+    Slab.Text("Height")
 
     Slab.SetLayoutColumn(2)
 

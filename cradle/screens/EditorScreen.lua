@@ -155,11 +155,11 @@ function M:init(application)
   self.dragStep = 1
 
   self.colors = {
-    blue = { 0.1, 0.5, 1, 1 },
+    blue = { 0.1, 0.6, 1, 1 },
     green = { 0.2, 1, 0.1, 1 },
     red = { 1, 0.4, 0.1, 1 },
     white = { 1, 1, 1, 1 },
-    yellow = { 1, 0.8, 0.1, 1 },
+    yellow = { 1, 0.9, 0.1, 1 },
   }
 end
 

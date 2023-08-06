@@ -18,7 +18,13 @@ function M:render()
   local title = assert(self.editorScreen.componentTitles[self.component])
   local selected = self.component == self.editorScreen.selectedComponent
 
-  if Slab.Text(title, { IsSelectable = true, IsSelected = selected }) then
+  if
+    Slab.Text(title, {
+      Color = self.editorScreen.colors.yellow,
+      IsSelectable = true,
+      IsSelected = selected,
+    })
+  then
     self.editorScreen.selectedComponent = self.component
   end
 
@@ -27,7 +33,7 @@ function M:render()
   Slab.BeginLayout(self.id, { Columns = 2, ExpandW = true })
 
   Slab.SetLayoutColumn(1)
-  Slab.Text("X", { Color = self.editorScreen.colors.red })
+  Slab.Text("X")
 
   Slab.SetLayoutColumn(2)
 
@@ -44,7 +50,7 @@ function M:render()
   end
 
   Slab.SetLayoutColumn(1)
-  Slab.Text("Y", { Color = self.editorScreen.colors.green })
+  Slab.Text("Y")
 
   Slab.SetLayoutColumn(2)
 
@@ -61,7 +67,7 @@ function M:render()
   end
 
   Slab.SetLayoutColumn(1)
-  Slab.Text("Angle", { Color = self.editorScreen.colors.blue })
+  Slab.Text("Angle")
 
   Slab.SetLayoutColumn(2)
   local angleDeg = 180

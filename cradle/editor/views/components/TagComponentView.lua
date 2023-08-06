@@ -12,7 +12,13 @@ function M:render()
   local title = assert(self.editorScreen.componentTitles[self.component])
   local selected = self.editorScreen.selectedComponent == self.component
 
-  if Slab.Text(title, { IsSelectable = true, IsSelected = selected }) then
+  if
+    Slab.Text(title, {
+      Color = self.editorScreen.colors.yellow,
+      IsSelectable = true,
+      IsSelected = selected,
+    })
+  then
     self.editorScreen.selectedComponent = self.component
   end
 end
