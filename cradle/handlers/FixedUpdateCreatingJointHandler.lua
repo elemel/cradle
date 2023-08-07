@@ -8,9 +8,9 @@ function M.new(engine)
 
   local query = sparrow.newQuery(database, {
     inclusions = { "creating", "jointConfig" },
-    exclusions = { "jointObject" },
+    exclusions = { "joint" },
     arguments = { "jointConfig" },
-    results = { "jointObject" },
+    results = { "joint" },
   })
 
   return function(dt)
@@ -44,27 +44,27 @@ function M.createMotorJoint(database, world, entity, jointConfig)
     collideConnected = jointConfig.collideConnected
   end
 
-  local jointObject =
+  local joint =
     love.physics.newMotorJoint(bodyA, bodyB, correctionFactor, collideConnected)
 
   if jointConfig.linearOffset then
-    jointObject:setLinearOffset(unpack(jointConfig.linearOffset))
+    joint:setLinearOffset(unpack(jointConfig.linearOffset))
   end
 
   if jointConfig.angularOffset then
-    jointObject:setAngularOffset(jointConfig.angularOffset)
+    joint:setAngularOffset(jointConfig.angularOffset)
   end
 
   if jointConfig.maxForce then
-    jointObject:setMaxForce(jointConfig.maxForce)
+    joint:setMaxForce(jointConfig.maxForce)
   end
 
   if jointConfig.maxTorque then
-    jointObject:setMaxTorque(jointConfig.maxTorque)
+    joint:setMaxTorque(jointConfig.maxTorque)
   end
 
-  jointObject:setUserData(entity)
-  return jointObject
+  joint:setUserData(entity)
+  return joint
 end
 
 function M.createRevoluteJoint(database, world, entity, jointConfig)
@@ -87,7 +87,7 @@ function M.createRevoluteJoint(database, world, entity, jointConfig)
 
   local referenceAngle = jointConfig.referenceAngle or 0
 
-  local jointObject = love.physics.newRevoluteJoint(
+  local joint = love.physics.newRevoluteJoint(
     bodyA,
     bodyB,
     ax,
@@ -99,19 +99,19 @@ function M.createRevoluteJoint(database, world, entity, jointConfig)
   )
 
   if jointConfig.limitsEnabled ~= nil then
-    jointObject:setLimitsEnabled(jointConfig.limitsEnabled)
+    joint:setLimitsEnabled(jointConfig.limitsEnabled)
   end
 
   if jointConfig.lowerLimit then
-    jointObject:setLowerLimit(jointConfig.lowerLimit)
+    joint:setLowerLimit(jointConfig.lowerLimit)
   end
 
   if jointConfig.upperLimit then
-    jointObject:setUpperLimit(jointConfig.upperLimit)
+    joint:setUpperLimit(jointConfig.upperLimit)
   end
 
-  jointObject:setUserData(entity)
-  return jointObject
+  joint:setUserData(entity)
+  return joint
 end
 
 function M.createWheelJoint(database, world, entity, jointConfig)
@@ -134,7 +134,7 @@ function M.createWheelJoint(database, world, entity, jointConfig)
     collideConnected = jointConfig.collideConnected
   end
 
-  local jointObject = love.physics.newWheelJoint(
+  local joint = love.physics.newWheelJoint(
     bodyA,
     bodyB,
     ax,
@@ -146,21 +146,21 @@ function M.createWheelJoint(database, world, entity, jointConfig)
     collideConnected
   )
 
-  jointObject:setUserData(entity)
+  joint:setUserData(entity)
 
   if jointConfig.maxMotorTorque then
-    jointObject:setMaxMotorTorque(jointConfig.maxMotorTorque)
+    joint:setMaxMotorTorque(jointConfig.maxMotorTorque)
   end
 
   if jointConfig.damping then
-    jointObject:setDamping(jointConfig.damping)
+    joint:setDamping(jointConfig.damping)
   end
 
   if jointConfig.stiffness then
-    jointObject:setStiffness(jointConfig.stiffness)
+    joint:setStiffness(jointConfig.stiffness)
   end
 
-  return jointObject
+  return joint
 end
 
 return M
