@@ -4,7 +4,7 @@ local M = {}
 
 function M.createMotorcycle(database, transform)
   local frameEntity = database:insertRow({
-    body = {
+    bodyConfig = {
       type = "dynamic",
     },
 
@@ -30,7 +30,7 @@ function M.createMotorcycle(database, transform)
   })
 
   local rearWheelEntity = database:insertRow({
-    body = {
+    bodyConfig = {
       type = "dynamic",
     },
 
@@ -66,7 +66,7 @@ function M.createMotorcycle(database, transform)
   })
 
   local frontWheelEntity = database:insertRow({
-    body = {
+    bodyConfig = {
       type = "dynamic",
     },
 

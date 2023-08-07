@@ -1,5 +1,5 @@
-local BodyComponentView =
-  require("cradle.editor.views.components.BodyComponentView")
+local BodyConfigComponentView =
+  require("cradle.editor.views.components.BodyConfigComponentView")
 local cdefMod = require("cradle.cdef")
 local Class = require("cradle.Class")
 local ColorComponentView =
@@ -34,7 +34,7 @@ function M:init(application)
   self.application = assert(application)
   self.database = sparrow.newDatabase()
 
-  self.database:createColumn("body")
+  self.database:createColumn("bodyConfig")
   self.database:createColumn("camera", "tag")
   self.database:createColumn("debugColor", "color4")
   self.database:createColumn("fixture")
@@ -48,7 +48,15 @@ function M:init(application)
   local rows = jsonMod.decode(json)
 
   for entity, row in pairs(rows) do
-    self.database:insertRow(row, entity)
+    self.database:insertRow({}, entity)
+
+    for component, value in pairs(row) do
+      if component == "body" then
+        self.database:setCell(entity, "bodyConfig", value)
+      else
+        self.database:setCell(entity, component, value)
+      end
+    end
   end
 
   self.engine = heart.newEngine()
@@ -76,7 +84,7 @@ function M:init(application)
 
   self.componentTitles = {
     camera = "Camera",
-    body = "Body",
+    bodyConfig = "Body Config",
     debugColor = "Debug Color",
     fixture = "Fixture",
     joint = "Joint",
@@ -91,7 +99,7 @@ function M:init(application)
       return {}
     end,
 
-    body = function()
+    bodyConfig = function()
       return {
         type = "static",
       }
@@ -142,7 +150,7 @@ function M:init(application)
 
   self.componentViews = {
     camera = TagComponentView.new(self, "camera"),
-    body = BodyComponentView.new(self, "body"),
+    bodyConfig = BodyConfigComponentView.new(self, "bodyConfig"),
     debugColor = ColorComponentView.new(self, "debugColor"),
     fixture = FixtureComponentView.new(self, "fixture"),
     joint = JointComponentView.new(self, "joint"),

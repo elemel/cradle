@@ -9,7 +9,7 @@ local function createNeckAndHead(database, trunkEntity, localCollarPosition)
   local localNeckY = localCollarY - 0.05
 
   local neckEntity = database:insertRow({
-    body = {
+    bodyConfig = {
       type = "dynamic",
     },
 
@@ -44,7 +44,7 @@ local function createNeckAndHead(database, trunkEntity, localCollarPosition)
   })
 
   local headEntity = database:insertRow({
-    body = {
+    bodyConfig = {
       type = "dynamic",
     },
 
@@ -91,7 +91,7 @@ local function createArm(database, trunkEntity, localShoulderPosition)
   local localUpperArmY = localShoulderY + 0.175
 
   local upperArmEntity = database:insertRow({
-    body = {
+    bodyConfig = {
       type = "dynamic",
     },
 
@@ -123,7 +123,7 @@ local function createArm(database, trunkEntity, localShoulderPosition)
   })
 
   local lowerArmEntity = database:insertRow({
-    body = {
+    bodyConfig = {
       type = "dynamic",
     },
 
@@ -158,7 +158,7 @@ local function createArm(database, trunkEntity, localShoulderPosition)
   })
 
   local handEntity = database:insertRow({
-    body = {
+    bodyConfig = {
       type = "dynamic",
     },
 
@@ -206,7 +206,7 @@ local function createLeg(database, frameEntity, trunkEntity, localHipPosition)
   local localUpperLegY = localHipY + 0.225
 
   local upperLegEntity = database:insertRow({
-    body = {
+    bodyConfig = {
       type = "dynamic",
     },
 
@@ -238,7 +238,7 @@ local function createLeg(database, frameEntity, trunkEntity, localHipPosition)
   })
 
   local lowerLegEntity = database:insertRow({
-    body = {
+    bodyConfig = {
       type = "dynamic",
     },
 
@@ -273,7 +273,7 @@ local function createLeg(database, frameEntity, trunkEntity, localHipPosition)
   })
 
   local footEntity = database:insertRow({
-    body = {
+    bodyConfig = {
       type = "dynamic",
     },
 
@@ -337,7 +337,7 @@ end
 
 function M.createRider(database, frameEntity, transform)
   local trunkEntity = database:insertRow({
-    body = {
+    bodyConfig = {
       type = "dynamic",
     },
 

@@ -60,7 +60,7 @@ function M:init(application, config)
   local database = sparrow.newDatabase()
   self.engine:setProperty("database", database)
 
-  database:createColumn("body")
+  database:createColumn("bodyConfig")
   database:createColumn("bodyObject")
   database:createColumn("camera", "tag")
   database:createColumn("creating", "tag")
@@ -181,7 +181,7 @@ function M:init(application, config)
 
   if demo then
     database:insertRow({
-      body = {},
+      bodyConfig = {},
       creating = {},
 
       fixture = {
@@ -202,7 +202,7 @@ function M:init(application, config)
     })
 
     database:insertRow({
-      body = {},
+      bodyConfig = {},
       creating = {},
 
       fixture = {
@@ -223,7 +223,7 @@ function M:init(application, config)
     })
 
     database:insertRow({
-      body = {},
+      bodyConfig = {},
       creating = {},
 
       fixture = {
@@ -244,7 +244,7 @@ function M:init(application, config)
     })
 
     database:insertRow({
-      body = {},
+      bodyConfig = {},
       creating = {},
 
       fixture = {
