@@ -32,7 +32,7 @@ local function createNeckAndHead(database, trunkEntity, localCollarPosition)
 
     node = {},
 
-    shape = {
+    shapeConfig = {
       size = { 0.1, 0.1 },
       type = "rectangle",
     },
@@ -67,7 +67,7 @@ local function createNeckAndHead(database, trunkEntity, localCollarPosition)
 
     node = {},
 
-    shape = {
+    shapeConfig = {
       size = { 0.2, 0.2 },
       type = "rectangle",
     },
@@ -111,7 +111,7 @@ local function createArm(database, trunkEntity, localShoulderPosition)
 
     node = {},
 
-    shape = {
+    shapeConfig = {
       size = { 0.1, 0.35 },
       type = "rectangle",
     },
@@ -146,7 +146,7 @@ local function createArm(database, trunkEntity, localShoulderPosition)
 
     node = {},
 
-    shape = {
+    shapeConfig = {
       size = { 0.1, 0.35 },
       type = "rectangle",
     },
@@ -181,7 +181,7 @@ local function createArm(database, trunkEntity, localShoulderPosition)
 
     node = {},
 
-    shape = {
+    shapeConfig = {
       size = { 0.1, 0.1 },
       type = "rectangle",
     },
@@ -226,7 +226,7 @@ local function createLeg(database, frameEntity, trunkEntity, localHipPosition)
 
     node = {},
 
-    shape = {
+    shapeConfig = {
       size = { 0.15, 0.45 },
       type = "rectangle",
     },
@@ -261,7 +261,7 @@ local function createLeg(database, frameEntity, trunkEntity, localHipPosition)
 
     node = {},
 
-    shape = {
+    shapeConfig = {
       size = { 0.1, 0.45 },
       type = "rectangle",
     },
@@ -296,7 +296,7 @@ local function createLeg(database, frameEntity, trunkEntity, localHipPosition)
 
     node = {},
 
-    shape = {
+    shapeConfig = {
       size = { 0.25, 0.05 },
       type = "rectangle",
     },
@@ -351,7 +351,7 @@ function M.createRider(database, frameEntity, transform)
     node = {},
     rider = {},
 
-    shape = {
+    shapeConfig = {
       size = { 0.3, 0.7 },
       type = "rectangle",
     },

@@ -5,7 +5,8 @@ local Class = require("cradle.Class")
 local ColorComponentView =
   require("cradle.editor.views.components.ColorComponentView")
 local DrawSlabHandler = require("cradle.editor.handlers.DrawSlabHandler")
-local DrawShapeHandler = require("cradle.editor.handlers.DrawShapeHandler")
+local DrawWorldConfigHandler =
+  require("cradle.editor.handlers.DrawWorldConfigHandler")
 local EntityTreeView = require("cradle.editor.views.EntityTreeView")
 local EntityView = require("cradle.editor.views.EntityView")
 local FixtureConfigComponentView =
@@ -16,8 +17,8 @@ local JointConfigComponentView =
   require("cradle.editor.views.components.JointConfigComponentView")
 local jsonMod = require("json")
 local nodeMod = require("cradle.node")
-local ShapeComponentView =
-  require("cradle.editor.views.components.ShapeComponentView")
+local ShapeConfigComponentView =
+  require("cradle.editor.views.components.ShapeConfigComponentView")
 local Slab = require("Slab")
 local sparrow = require("sparrow")
 local StringComponentView =
@@ -40,7 +41,7 @@ function M:init(application)
   self.database:createColumn("fixtureConfig")
   self.database:createColumn("jointConfig")
   self.database:createColumn("node", "node")
-  self.database:createColumn("shape")
+  self.database:createColumn("shapeConfig")
   self.database:createColumn("title")
   self.database:createColumn("transform", "transform")
 
@@ -51,11 +52,7 @@ function M:init(application)
     self.database:insertRow({}, entity)
 
     for component, value in pairs(row) do
-      if component == "joint" then
-        self.database:setCell(entity, "jointConfig", value)
-      else
-        self.database:setCell(entity, component, value)
-      end
+      self.database:setCell(entity, component, value)
     end
   end
 
@@ -74,7 +71,7 @@ function M:init(application)
   self.engine:addEvent("update")
   self.engine:addEvent("wheelmoved")
 
-  self.engine:addEventHandler("draw", DrawShapeHandler.new(self.engine))
+  self.engine:addEventHandler("draw", DrawWorldConfigHandler.new(self.engine))
   self.engine:addEventHandler("draw", DrawSlabHandler.new(self.engine))
 
   Slab.Initialize({}, true)
@@ -89,7 +86,7 @@ function M:init(application)
     fixtureConfig = "Fixture Config",
     jointConfig = "Joint Config",
     node = "Node",
-    shape = "Shape",
+    shapeConfig = "Shape Config",
     title = "Title",
     transform = "Transform",
   }
@@ -121,7 +118,7 @@ function M:init(application)
       return {}
     end,
 
-    shape = function()
+    shapeConfig = function()
       return {
         size = { 1, 1 },
         type = "rectangle",
@@ -155,7 +152,7 @@ function M:init(application)
     fixtureConfig = FixtureConfigComponentView.new(self, "fixtureConfig"),
     jointConfig = JointConfigComponentView.new(self, "jointConfig"),
     node = TagComponentView.new(self, "node"),
-    shape = ShapeComponentView.new(self, "shape"),
+    shapeConfig = ShapeConfigComponentView.new(self, "shapeConfig"),
     title = StringComponentView.new(self, "title"),
     transform = TransformComponentView.new(self, "transform"),
   }

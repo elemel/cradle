@@ -76,7 +76,7 @@ function M:init(application, config)
   database:createColumn("motorcycle", "tag")
   database:createColumn("node", "node")
   database:createColumn("rider", "tag")
-  database:createColumn("shape")
+  database:createColumn("shapeConfig")
   database:createColumn("spring")
   database:createColumn("static", "tag")
   database:createColumn("title")
@@ -190,7 +190,7 @@ function M:init(application, config)
 
       node = {},
 
-      shape = {
+      shapeConfig = {
         size = { 5, 1 },
         type = "rectangle",
       },
@@ -211,7 +211,7 @@ function M:init(application, config)
 
       node = {},
 
-      shape = {
+      shapeConfig = {
         size = { 5, 1 },
         type = "rectangle",
       },
@@ -232,7 +232,7 @@ function M:init(application, config)
 
       node = {},
 
-      shape = {
+      shapeConfig = {
         size = { 5, 1 },
         type = "rectangle",
       },
@@ -253,7 +253,7 @@ function M:init(application, config)
 
       node = {},
 
-      shape = {
+      shapeConfig = {
         size = { 5, 1 },
         type = "rectangle",
       },

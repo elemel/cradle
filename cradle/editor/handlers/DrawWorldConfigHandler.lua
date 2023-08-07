@@ -11,8 +11,8 @@ function M.new(engine)
   local database = assert(engine:getProperty("database"))
 
   local query = sparrow.newQuery(database, {
-    arguments = { "debugColor", "shape" },
-    inclusions = { "shape" },
+    arguments = { "debugColor", "shapeConfig" },
+    inclusions = { "shapeConfig" },
   })
 
   local globalTransform = Transform()
@@ -27,7 +27,7 @@ function M.new(engine)
     love.graphics.scale(scale)
     love.graphics.setLineWidth(1 / scale)
 
-    query:forEach(function(entity, debugColor, shape)
+    query:forEach(function(entity, debugColor, shapeConfig)
       if debugColor then
         love.graphics.setColor(
           debugColor.red,
@@ -49,20 +49,20 @@ function M.new(engine)
         math.atan2(globalTransform.orientation.y, globalTransform.orientation.x)
       )
 
-      if shape.type == "circle" then
-        local radius = shape.radius or 0.5
+      if shapeConfig.type == "circle" then
+        local radius = shapeConfig.radius or 0.5
         love.graphics.circle("line", 0, 0, radius)
         love.graphics.line(0, 0, radius, 0)
-      elseif shape.type == "rectangle" then
+      elseif shapeConfig.type == "rectangle" then
         love.graphics.rectangle(
           "line",
-          -0.5 * shape.size[1],
-          -0.5 * shape.size[2],
-          shape.size[1],
-          shape.size[2]
+          -0.5 * shapeConfig.size[1],
+          -0.5 * shapeConfig.size[2],
+          shapeConfig.size[1],
+          shapeConfig.size[2]
         )
       else
-        error("Invalid shape type: " .. shape.type)
+        error("Invalid shapeConfig type: " .. shapeConfig.type)
       end
 
       love.graphics.pop()
