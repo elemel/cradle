@@ -12,8 +12,8 @@ local FixtureConfigComponentView =
   require("cradle.editor.views.components.FixtureConfigComponentView")
 local GameScreen = require("cradle.screens.GameScreen")
 local heart = require("heart")
-local JointComponentView =
-  require("cradle.editor.views.components.JointComponentView")
+local JointConfigComponentView =
+  require("cradle.editor.views.components.JointConfigComponentView")
 local jsonMod = require("json")
 local nodeMod = require("cradle.node")
 local ShapeComponentView =
@@ -38,7 +38,7 @@ function M:init(application)
   self.database:createColumn("camera", "tag")
   self.database:createColumn("debugColor", "color4")
   self.database:createColumn("fixtureConfig")
-  self.database:createColumn("joint")
+  self.database:createColumn("jointConfig")
   self.database:createColumn("node", "node")
   self.database:createColumn("shape")
   self.database:createColumn("title")
@@ -51,8 +51,8 @@ function M:init(application)
     self.database:insertRow({}, entity)
 
     for component, value in pairs(row) do
-      if component == "fixture" then
-        self.database:setCell(entity, "fixtureConfig", value)
+      if component == "joint" then
+        self.database:setCell(entity, "jointConfig", value)
       else
         self.database:setCell(entity, component, value)
       end
@@ -87,7 +87,7 @@ function M:init(application)
     bodyConfig = "Body Config",
     debugColor = "Debug Color",
     fixtureConfig = "Fixture Config",
-    joint = "Joint",
+    jointConfig = "Joint Config",
     node = "Node",
     shape = "Shape",
     title = "Title",
@@ -113,7 +113,7 @@ function M:init(application)
       return {}
     end,
 
-    joint = function()
+    jointConfig = function()
       return {}
     end,
 
@@ -153,7 +153,7 @@ function M:init(application)
     bodyConfig = BodyConfigComponentView.new(self, "bodyConfig"),
     debugColor = ColorComponentView.new(self, "debugColor"),
     fixtureConfig = FixtureConfigComponentView.new(self, "fixtureConfig"),
-    joint = JointComponentView.new(self, "joint"),
+    jointConfig = JointConfigComponentView.new(self, "jointConfig"),
     node = TagComponentView.new(self, "node"),
     shape = ShapeComponentView.new(self, "shape"),
     title = StringComponentView.new(self, "title"),

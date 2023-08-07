@@ -20,7 +20,7 @@ local function createNeckAndHead(database, trunkEntity, localCollarPosition)
       groupIndex = -1,
     },
 
-    joint = {
+    jointConfig = {
       bodyA = trunkEntity,
       limitsEnabled = true,
       localAnchorA = localCollarPosition,
@@ -55,7 +55,7 @@ local function createNeckAndHead(database, trunkEntity, localCollarPosition)
       groupIndex = -1,
     },
 
-    joint = {
+    jointConfig = {
       bodyA = neckEntity,
       limitsEnabled = true,
       localAnchorA = { 0, -0.05 },
@@ -102,7 +102,7 @@ local function createArm(database, trunkEntity, localShoulderPosition)
       groupIndex = -1,
     },
 
-    joint = {
+    jointConfig = {
       bodyA = trunkEntity,
       localAnchorA = localShoulderPosition,
       localAnchorB = { 0, -0.175 },
@@ -134,7 +134,7 @@ local function createArm(database, trunkEntity, localShoulderPosition)
       groupIndex = -1,
     },
 
-    joint = {
+    jointConfig = {
       bodyA = upperArmEntity,
       limitsEnabled = true,
       localAnchorA = { 0, 0.175 },
@@ -169,7 +169,7 @@ local function createArm(database, trunkEntity, localShoulderPosition)
       groupIndex = -1,
     },
 
-    joint = {
+    jointConfig = {
       bodyA = lowerArmEntity,
       limitsEnabled = true,
       localAnchorA = { 0, 0.175 },
@@ -217,7 +217,7 @@ local function createLeg(database, frameEntity, trunkEntity, localHipPosition)
       groupIndex = -1,
     },
 
-    joint = {
+    jointConfig = {
       bodyA = trunkEntity,
       localAnchorA = localHipPosition,
       localAnchorB = { 0, -0.225 },
@@ -249,7 +249,7 @@ local function createLeg(database, frameEntity, trunkEntity, localHipPosition)
       groupIndex = -1,
     },
 
-    joint = {
+    jointConfig = {
       bodyA = upperLegEntity,
       limitsEnabled = true,
       localAnchorA = { 0, 0.225 },
@@ -284,7 +284,7 @@ local function createLeg(database, frameEntity, trunkEntity, localHipPosition)
       groupIndex = -1,
     },
 
-    joint = {
+    jointConfig = {
       bodyA = lowerLegEntity,
       limitsEnabled = true,
       localAnchorA = { 0, 0.225 },
@@ -313,7 +313,7 @@ local function createLeg(database, frameEntity, trunkEntity, localHipPosition)
   local footPegEntity = database:insertRow({
     creating = {},
 
-    joint = {
+    jointConfig = {
       bodyA = frameEntity,
       bodyB = footEntity,
       limitsEnabled = true,
@@ -356,7 +356,7 @@ function M.createRider(database, frameEntity, transform)
       type = "rectangle",
     },
 
-    joint = {
+    jointConfig = {
       angularOffset = 0.125 * math.pi,
       bodyA = frameEntity,
       linearOffset = { 0, -0.75 },

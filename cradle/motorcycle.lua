@@ -41,7 +41,7 @@ function M.createMotorcycle(database, transform)
       groupIndex = -1,
     },
 
-    joint = {
+    jointConfig = {
       bodyA = frameEntity,
       damping = 20,
       localAnchorA = { -0.65, 0.15 },
@@ -77,7 +77,7 @@ function M.createMotorcycle(database, transform)
       groupIndex = -1,
     },
 
-    joint = {
+    jointConfig = {
       bodyA = frameEntity,
       damping = 20,
       localAnchorA = { 0.65, 0.15 },
