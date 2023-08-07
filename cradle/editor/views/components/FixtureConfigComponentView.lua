@@ -28,7 +28,8 @@ function M:render()
     self.editorScreen.selectedComponent = self.component
   end
 
-  local fixture = self.editorScreen.database:getCell(entity, self.component)
+  local fixtureConfig =
+    self.editorScreen.database:getCell(entity, self.component)
 
   Slab.BeginLayout(self.id, { Columns = 2, ExpandW = true })
 
@@ -43,10 +44,10 @@ function M:render()
       NumbersOnly = true,
       ReturnOnText = true,
       Step = self.editorScreen.dragStep,
-      Text = fixture.friction or 0.2,
+      Text = fixtureConfig.friction or 0.2,
     })
   then
-    fixture.friction = Slab.GetInputNumber()
+    fixtureConfig.friction = Slab.GetInputNumber()
   end
 
   Slab.SetLayoutColumn(1)
@@ -60,10 +61,10 @@ function M:render()
       NumbersOnly = true,
       ReturnOnText = true,
       Step = self.editorScreen.dragStep,
-      Text = fixture.restitution or 0,
+      Text = fixtureConfig.restitution or 0,
     })
   then
-    fixture.restitution = Slab.GetInputNumber()
+    fixtureConfig.restitution = Slab.GetInputNumber()
   end
 
   Slab.SetLayoutColumn(1)
@@ -77,20 +78,20 @@ function M:render()
       NumbersOnly = true,
       ReturnOnText = true,
       Step = self.editorScreen.dragStep,
-      Text = fixture.density or 1,
+      Text = fixtureConfig.density or 1,
     })
   then
-    fixture.density = Slab.GetInputNumber()
+    fixtureConfig.density = Slab.GetInputNumber()
   end
 
   Slab.SetLayoutColumn(1)
   Slab.Text("Sensor")
 
   Slab.SetLayoutColumn(2)
-  local checked = fixture.sensor or false
+  local checked = fixtureConfig.sensor or false
 
   if Slab.CheckBox(checked) then
-    fixture.sensor = not checked
+    fixtureConfig.sensor = not checked
   end
 
   Slab.EndLayout()

@@ -15,7 +15,7 @@ local function createNeckAndHead(database, trunkEntity, localCollarPosition)
 
     creating = {},
 
-    fixture = {
+    fixtureConfig = {
       friction = 0.5,
       groupIndex = -1,
     },
@@ -50,7 +50,7 @@ local function createNeckAndHead(database, trunkEntity, localCollarPosition)
 
     creating = {},
 
-    fixture = {
+    fixtureConfig = {
       friction = 0.5,
       groupIndex = -1,
     },
@@ -97,7 +97,7 @@ local function createArm(database, trunkEntity, localShoulderPosition)
 
     creating = {},
 
-    fixture = {
+    fixtureConfig = {
       friction = 0.5,
       groupIndex = -1,
     },
@@ -129,7 +129,7 @@ local function createArm(database, trunkEntity, localShoulderPosition)
 
     creating = {},
 
-    fixture = {
+    fixtureConfig = {
       friction = 0.5,
       groupIndex = -1,
     },
@@ -164,7 +164,7 @@ local function createArm(database, trunkEntity, localShoulderPosition)
 
     creating = {},
 
-    fixture = {
+    fixtureConfig = {
       friction = 0.5,
       groupIndex = -1,
     },
@@ -212,7 +212,7 @@ local function createLeg(database, frameEntity, trunkEntity, localHipPosition)
 
     creating = {},
 
-    fixture = {
+    fixtureConfig = {
       friction = 0.5,
       groupIndex = -1,
     },
@@ -244,7 +244,7 @@ local function createLeg(database, frameEntity, trunkEntity, localHipPosition)
 
     creating = {},
 
-    fixture = {
+    fixtureConfig = {
       friction = 0.5,
       groupIndex = -1,
     },
@@ -279,7 +279,7 @@ local function createLeg(database, frameEntity, trunkEntity, localHipPosition)
 
     creating = {},
 
-    fixture = {
+    fixtureConfig = {
       friction = 0.5,
       groupIndex = -1,
     },
@@ -343,7 +343,7 @@ function M.createRider(database, frameEntity, transform)
 
     creating = {},
 
-    fixture = {
+    fixtureConfig = {
       friction = 0.5,
       groupIndex = -1,
     },

@@ -10,7 +10,7 @@ function M.createMotorcycle(database, transform)
 
     creating = {},
 
-    fixture = {
+    fixtureConfig = {
       friction = 0.5,
       groupIndex = -1,
     },
@@ -36,7 +36,7 @@ function M.createMotorcycle(database, transform)
 
     creating = {},
 
-    fixture = {
+    fixtureConfig = {
       friction = 2,
       groupIndex = -1,
     },
@@ -72,7 +72,7 @@ function M.createMotorcycle(database, transform)
 
     creating = {},
 
-    fixture = {
+    fixtureConfig = {
       friction = 2,
       groupIndex = -1,
     },

@@ -8,8 +8,8 @@ local DrawSlabHandler = require("cradle.editor.handlers.DrawSlabHandler")
 local DrawShapeHandler = require("cradle.editor.handlers.DrawShapeHandler")
 local EntityTreeView = require("cradle.editor.views.EntityTreeView")
 local EntityView = require("cradle.editor.views.EntityView")
-local FixtureComponentView =
-  require("cradle.editor.views.components.FixtureComponentView")
+local FixtureConfigComponentView =
+  require("cradle.editor.views.components.FixtureConfigComponentView")
 local GameScreen = require("cradle.screens.GameScreen")
 local heart = require("heart")
 local JointComponentView =
@@ -37,7 +37,7 @@ function M:init(application)
   self.database:createColumn("bodyConfig")
   self.database:createColumn("camera", "tag")
   self.database:createColumn("debugColor", "color4")
-  self.database:createColumn("fixture")
+  self.database:createColumn("fixtureConfig")
   self.database:createColumn("joint")
   self.database:createColumn("node", "node")
   self.database:createColumn("shape")
@@ -51,8 +51,8 @@ function M:init(application)
     self.database:insertRow({}, entity)
 
     for component, value in pairs(row) do
-      if component == "body" then
-        self.database:setCell(entity, "bodyConfig", value)
+      if component == "fixture" then
+        self.database:setCell(entity, "fixtureConfig", value)
       else
         self.database:setCell(entity, component, value)
       end
@@ -86,7 +86,7 @@ function M:init(application)
     camera = "Camera",
     bodyConfig = "Body Config",
     debugColor = "Debug Color",
-    fixture = "Fixture",
+    fixtureConfig = "Fixture Config",
     joint = "Joint",
     node = "Node",
     shape = "Shape",
@@ -109,7 +109,7 @@ function M:init(application)
       return { 1, 1, 1, 1 }
     end,
 
-    fixture = function()
+    fixtureConfig = function()
       return {}
     end,
 
@@ -152,7 +152,7 @@ function M:init(application)
     camera = TagComponentView.new(self, "camera"),
     bodyConfig = BodyConfigComponentView.new(self, "bodyConfig"),
     debugColor = ColorComponentView.new(self, "debugColor"),
-    fixture = FixtureComponentView.new(self, "fixture"),
+    fixtureConfig = FixtureConfigComponentView.new(self, "fixtureConfig"),
     joint = JointComponentView.new(self, "joint"),
     node = TagComponentView.new(self, "node"),
     shape = ShapeComponentView.new(self, "shape"),

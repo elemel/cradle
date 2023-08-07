@@ -67,7 +67,7 @@ function M:init(application, config)
   database:createColumn("debugColor", "color4")
   database:createColumn("destroying", "tag")
   database:createColumn("dynamic", "tag")
-  database:createColumn("fixture")
+  database:createColumn("fixtureConfig")
   database:createColumn("fixtureObject")
   database:createColumn("globalTransform", "transform")
   database:createColumn("joint")
@@ -184,7 +184,7 @@ function M:init(application, config)
       bodyConfig = {},
       creating = {},
 
-      fixture = {
+      fixtureConfig = {
         friction = 0.5,
       },
 
@@ -205,7 +205,7 @@ function M:init(application, config)
       bodyConfig = {},
       creating = {},
 
-      fixture = {
+      fixtureConfig = {
         friction = 0.5,
       },
 
@@ -226,7 +226,7 @@ function M:init(application, config)
       bodyConfig = {},
       creating = {},
 
-      fixture = {
+      fixtureConfig = {
         friction = 0.5,
       },
 
@@ -247,7 +247,7 @@ function M:init(application, config)
       bodyConfig = {},
       creating = {},
 
-      fixture = {
+      fixtureConfig = {
         friction = 0.5,
       },
 
