@@ -8,9 +8,9 @@ function M.new(engine)
 
   local query = sparrow.newQuery(database, {
     inclusions = { "creating", "body", "fixtureConfig", "shape" },
-    exclusions = { "fixtureObject" },
+    exclusions = { "fixture" },
     arguments = { "body", "fixtureConfig", "shape" },
-    results = { "fixtureObject" },
+    results = { "fixture" },
   })
 
   return function(dt)
@@ -32,26 +32,26 @@ function M.new(engine)
       end
 
       local density = fixtureConfig.density or 1
-      local fixtureObject = love.physics.newFixture(body, shapeObject, density)
-      fixtureObject:setUserData(entity)
+      local fixture = love.physics.newFixture(body, shapeObject, density)
+      fixture:setUserData(entity)
 
       if fixtureConfig.friction then
-        fixtureObject:setFriction(fixtureConfig.friction)
+        fixture:setFriction(fixtureConfig.friction)
       end
 
       if fixtureConfig.groupIndex then
-        fixtureObject:setGroupIndex(fixtureConfig.groupIndex)
+        fixture:setGroupIndex(fixtureConfig.groupIndex)
       end
 
       if fixtureConfig.restitution then
-        fixtureObject:setRestitution(fixtureConfig.restitution)
+        fixture:setRestitution(fixtureConfig.restitution)
       end
 
       if fixtureConfig.sensor ~= nil then
-        fixtureObject:setSensor(fixtureConfig.sensor)
+        fixture:setSensor(fixtureConfig.sensor)
       end
 
-      return fixtureObject
+      return fixture
     end)
   end
 end

@@ -13,8 +13,8 @@ function M.new(engine, config)
   })
 
   local fixtureQuery = sparrow.newQuery(database, {
-    arguments = { "debugColor", "fixtureObject" },
-    inclusions = { "fixtureObject" },
+    arguments = { "debugColor", "fixture" },
+    inclusions = { "fixture" },
   })
 
   return function()
@@ -37,7 +37,7 @@ function M.new(engine, config)
         -globalTransform.position.y
       )
 
-      fixtureQuery:forEach(function(fixtureEntity, debugColor, fixtureObject)
+      fixtureQuery:forEach(function(fixtureEntity, debugColor, fixture)
         if debugColor then
           love.graphics.setColor(
             debugColor.red,
@@ -49,8 +49,8 @@ function M.new(engine, config)
           love.graphics.setColor(1, 1, 1, 1)
         end
 
-        local body = fixtureObject:getBody()
-        local shapeObject = fixtureObject:getShape()
+        local body = fixture:getBody()
+        local shapeObject = fixture:getShape()
         local shapeType = shapeObject:getType()
 
         if shapeType == "circle" then
