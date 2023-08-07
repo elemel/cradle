@@ -34,8 +34,8 @@ function M.createMotorJoint(database, world, entity, joint)
   local bodyEntityA = joint.bodyA or entity
   local bodyEntityB = joint.bodyB or entity
 
-  local bodyObjectA = assert(database:getCell(bodyEntityA, "bodyObject"))
-  local bodyObjectB = assert(database:getCell(bodyEntityB, "bodyObject"))
+  local bodyA = assert(database:getCell(bodyEntityA, "body"))
+  local bodyB = assert(database:getCell(bodyEntityB, "body"))
 
   local correctionFactor = joint.correctionFactor or 0.3
   local collideConnected = false
@@ -44,12 +44,8 @@ function M.createMotorJoint(database, world, entity, joint)
     collideConnected = joint.collideConnected
   end
 
-  local jointObject = love.physics.newMotorJoint(
-    bodyObjectA,
-    bodyObjectB,
-    correctionFactor,
-    collideConnected
-  )
+  local jointObject =
+    love.physics.newMotorJoint(bodyA, bodyB, correctionFactor, collideConnected)
 
   if joint.linearOffset then
     jointObject:setLinearOffset(unpack(joint.linearOffset))
@@ -75,13 +71,11 @@ function M.createRevoluteJoint(database, world, entity, joint)
   local bodyEntityA = joint.bodyA or entity
   local bodyEntityB = joint.bodyB or entity
 
-  local bodyObjectA = assert(database:getCell(bodyEntityA, "bodyObject"))
-  local bodyObjectB = assert(database:getCell(bodyEntityB, "bodyObject"))
+  local bodyA = assert(database:getCell(bodyEntityA, "body"))
+  local bodyB = assert(database:getCell(bodyEntityB, "body"))
 
-  local ax, ay =
-    bodyObjectA:getWorldPoint(unpack(joint.localAnchorA or { 0, 0 }))
-  local bx, by =
-    bodyObjectB:getWorldPoint(unpack(joint.localAnchorB or { 0, 0 }))
+  local ax, ay = bodyA:getWorldPoint(unpack(joint.localAnchorA or { 0, 0 }))
+  local bx, by = bodyB:getWorldPoint(unpack(joint.localAnchorB or { 0, 0 }))
 
   local collideConnected = false
 
@@ -92,8 +86,8 @@ function M.createRevoluteJoint(database, world, entity, joint)
   local referenceAngle = joint.referenceAngle or 0
 
   local jointObject = love.physics.newRevoluteJoint(
-    bodyObjectA,
-    bodyObjectB,
+    bodyA,
+    bodyB,
     ax,
     ay,
     bx,
@@ -122,15 +116,13 @@ function M.createWheelJoint(database, world, entity, joint)
   local bodyEntityA = joint.bodyA or entity
   local bodyEntityB = joint.bodyB or entity
 
-  local bodyObjectA = assert(database:getCell(bodyEntityA, "bodyObject"))
-  local bodyObjectB = assert(database:getCell(bodyEntityB, "bodyObject"))
+  local bodyA = assert(database:getCell(bodyEntityA, "body"))
+  local bodyB = assert(database:getCell(bodyEntityB, "body"))
 
-  local ax, ay =
-    bodyObjectA:getWorldPoint(unpack(joint.localAnchorA or { 0, 0 }))
-  local bx, by =
-    bodyObjectB:getWorldPoint(unpack(joint.localAnchorB or { 0, 0 }))
+  local ax, ay = bodyA:getWorldPoint(unpack(joint.localAnchorA or { 0, 0 }))
+  local bx, by = bodyB:getWorldPoint(unpack(joint.localAnchorB or { 0, 0 }))
   local axisX, axisY =
-    bodyObjectA:getWorldVector(unpack(joint.localAxisA or { 0, -1 }))
+    bodyA:getWorldVector(unpack(joint.localAxisA or { 0, -1 }))
 
   local collideConnected = false
 
@@ -139,8 +131,8 @@ function M.createWheelJoint(database, world, entity, joint)
   end
 
   local jointObject = love.physics.newWheelJoint(
-    bodyObjectA,
-    bodyObjectB,
+    bodyA,
+    bodyB,
     ax,
     ay,
     bx,

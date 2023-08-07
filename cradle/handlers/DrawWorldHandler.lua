@@ -49,7 +49,7 @@ function M.new(engine, config)
           love.graphics.setColor(1, 1, 1, 1)
         end
 
-        local bodyObject = fixtureObject:getBody()
+        local body = fixtureObject:getBody()
         local shapeObject = fixtureObject:getShape()
         local shapeType = shapeObject:getType()
 
@@ -57,15 +57,15 @@ function M.new(engine, config)
           local localX, localY = shapeObject:getPoint()
           local radius = shapeObject:getRadius()
 
-          local x1, y1 = bodyObject:getWorldPoint(localX, localY)
-          local x2, y2 = bodyObject:getWorldPoint(localX + radius, localY)
+          local x1, y1 = body:getWorldPoint(localX, localY)
+          local x2, y2 = body:getWorldPoint(localX + radius, localY)
 
           love.graphics.circle(drawMode, x1, y1, radius)
           love.graphics.line(x1, y1, x2, y2)
         elseif shapeType == "polygon" then
           love.graphics.polygon(
             drawMode,
-            bodyObject:getWorldPoints(shapeObject:getPoints())
+            body:getWorldPoints(shapeObject:getPoints())
           )
         else
           error("Invalid shape type: " .. shapeType)

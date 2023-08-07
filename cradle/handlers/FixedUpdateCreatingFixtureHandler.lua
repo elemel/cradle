@@ -7,14 +7,14 @@ function M.new(engine)
   local world = assert(engine:getProperty("world"))
 
   local query = sparrow.newQuery(database, {
-    inclusions = { "creating", "bodyObject", "fixture", "shape" },
+    inclusions = { "creating", "body", "fixture", "shape" },
     exclusions = { "fixtureObject" },
-    arguments = { "bodyObject", "fixture", "shape" },
+    arguments = { "body", "fixture", "shape" },
     results = { "fixtureObject" },
   })
 
   return function(dt)
-    query:forEach(function(entity, bodyObject, fixture, shape)
+    query:forEach(function(entity, body, fixture, shape)
       local shapeType = shape.type or "rectangle"
       local shapeObject
 
@@ -32,8 +32,7 @@ function M.new(engine)
       end
 
       local density = fixture.density or 1
-      local fixtureObject =
-        love.physics.newFixture(bodyObject, shapeObject, density)
+      local fixtureObject = love.physics.newFixture(body, shapeObject, density)
       fixtureObject:setUserData(entity)
 
       if fixture.friction then

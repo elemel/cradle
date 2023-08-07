@@ -11,15 +11,15 @@ function M.new(engine)
   })
 
   local riderQuery = sparrow.newQuery(database, {
-    arguments = { "bodyObject" },
-    inclusions = { "bodyObject", "rider" },
+    arguments = { "body" },
+    inclusions = { "body", "rider" },
   })
 
   return function(dt)
     cameraQuery:forEach(function(cameraEntity, globalTransform)
-      riderQuery:forEach(function(riderEntity, bodyObject)
+      riderQuery:forEach(function(riderEntity, body)
         globalTransform.position.x, globalTransform.position.y =
-          bodyObject:getPosition()
+          body:getPosition()
       end)
     end)
   end
