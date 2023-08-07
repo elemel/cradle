@@ -50,12 +50,12 @@ function M.new(engine, config)
         end
 
         local body = fixture:getBody()
-        local shapeObject = fixture:getShape()
-        local shapeType = shapeObject:getType()
+        local shape = fixture:getShape()
+        local shapeType = shape:getType()
 
         if shapeType == "circle" then
-          local localX, localY = shapeObject:getPoint()
-          local radius = shapeObject:getRadius()
+          local localX, localY = shape:getPoint()
+          local radius = shape:getRadius()
 
           local x1, y1 = body:getWorldPoint(localX, localY)
           local x2, y2 = body:getWorldPoint(localX + radius, localY)
@@ -65,7 +65,7 @@ function M.new(engine, config)
         elseif shapeType == "polygon" then
           love.graphics.polygon(
             drawMode,
-            body:getWorldPoints(shapeObject:getPoints())
+            body:getWorldPoints(shape:getPoints())
           )
         else
           error("Invalid shape type: " .. shapeType)

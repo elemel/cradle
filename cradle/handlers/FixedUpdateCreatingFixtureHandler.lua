@@ -16,23 +16,23 @@ function M.new(engine)
   return function(dt)
     query:forEach(function(entity, body, fixtureConfig, shapeConfig)
       local shapeType = shapeConfig.type or "rectangle"
-      local shapeObject
+      local shape
 
       if shapeType == "circle" then
         local x, y = unpack(shapeConfig.position or { 0, 0 })
         local radius = shapeConfig.radius or 0.5
-        shapeObject = love.physics.newCircleShape(x, y, radius)
+        shape = love.physics.newCircleShape(x, y, radius)
       elseif shapeType == "rectangle" then
         local x, y = unpack(shapeConfig.position or { 0, 0 })
         local width, height = unpack(shapeConfig.size or { 1, 1 })
         local angle = shapeConfig.angle or 0
-        shapeObject = love.physics.newRectangleShape(x, y, width, height, angle)
+        shape = love.physics.newRectangleShape(x, y, width, height, angle)
       else
         error("Invalid shapeConfig type: " .. shapeType)
       end
 
       local density = fixtureConfig.density or 1
-      local fixture = love.physics.newFixture(body, shapeObject, density)
+      local fixture = love.physics.newFixture(body, shape, density)
       fixture:setUserData(entity)
 
       if fixtureConfig.friction then
