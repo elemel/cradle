@@ -162,37 +162,6 @@ function M:render()
       )
     end
 
-    Slab.SetLayoutColumn(1)
-    Slab.Text("Drag Step")
-
-    Slab.SetLayoutColumn(2)
-    local selectedDragStepTitle = tostring(self.editorScreen.dragStep)
-
-    if
-      Slab.BeginComboBox(
-        self.id .. ".dragStep",
-        { Selected = selectedDragStepTitle }
-      )
-    then
-      for _, dragStepTitle in ipairs({
-        "0.001",
-        "0.01",
-        "0.1",
-        "1",
-        "10",
-        "100",
-        "1000",
-      }) do
-        local selected = selectedDragStepTitle == dragStepTitle
-
-        if Slab.TextSelectable(dragStepTitle, { IsSelected = selected }) then
-          self.editorScreen.dragStep = tonumber(dragStepTitle)
-        end
-      end
-
-      Slab.EndComboBox()
-    end
-
     Slab.EndLayout()
   end
 

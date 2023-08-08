@@ -1,6 +1,7 @@
 local Class = require("cradle.Class")
 local ComponentListView = require("cradle.editor.views.ComponentListView")
 local EntityTreeView = require("cradle.editor.views.EntityTreeView")
+local SettingsView = require("cradle.editor.views.SettingsView")
 local Slab = require("Slab")
 
 local M = Class.new()
@@ -10,14 +11,19 @@ function M:init(editorScreen, id, selectedViewType)
   self.id = assert(id)
   self.selectedViewType = assert(selectedViewType)
 
-  self.viewTypes = { "componentList", "entityTree" }
-  self.viewTypeTitles =
-    { componentList = "Component List", entityTree = "Entity Tree" }
+  self.viewTypes = { "componentList", "entityTree", "settings" }
+  self.viewTypeTitles = {
+    componentList = "Component List",
+    entityTree = "Entity Tree",
+    settings = "Settings",
+  }
 
   self.componentListView =
     ComponentListView.new(self.editorScreen, self.id .. ".componentList")
   self.entityTreeView =
     EntityTreeView.new(self.editorScreen, self.id .. ".entityTree")
+  self.settingsView =
+    SettingsView.new(self.editorScreen, self.id .. ".settings")
 end
 
 function M:render()
@@ -49,6 +55,8 @@ function M:render()
     self.componentListView:render()
   elseif self.selectedViewType == "entityTree" then
     self.entityTreeView:render()
+  elseif self.selectedViewType == "settings" then
+    self.settingsView:render()
   end
 end
 
