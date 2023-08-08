@@ -245,7 +245,7 @@ function M:update(dt)
     bottomDockHeight = 100,
     height = height,
     leftDockWidth = 200,
-    rightDockWidth = 200,
+    rightDockWidth = 300,
     topDockHeight = 100,
     width = width,
   }
