@@ -8,7 +8,8 @@
 	branch = elemel/cradle
 [submodule "Slab"]
 	path = Slab
-	url = git@github.com:flamendless/Slab.git
+	url = git@github.com:elemel/Slab.git
+	branch = elemel/cradle
 [submodule "json.lua"]
 	path = json.lua
 	url = git@github.com:rxi/json.lua.git
