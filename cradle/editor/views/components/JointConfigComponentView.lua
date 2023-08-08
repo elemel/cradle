@@ -4,23 +4,15 @@ local Slab = require("Slab")
 
 local M = Class.new()
 
-function M:init(editorScreen, component)
+function M:init(editorScreen, id, component)
   self.editorScreen = assert(editorScreen)
+  self.id = assert(id)
   self.component = assert(component)
 
   self.jointTypes = { "motor", "revolute", "wheel" }
 
   self.jointTypeTitles =
     { motor = "Motor", revolute = "Revolute", wheel = "Wheel" }
-
-  self.bodyAId = self.component .. "ComponentBodyA"
-  self.bodyBId = self.component .. "ComponentBodyB"
-  self.id = self.component .. "Component"
-  self.localAnchorAxId = self.component .. "ComponentLocalAnchorAx"
-  self.localAnchorAyId = self.component .. "ComponentLocalAnchorAy"
-  self.localAnchorBxId = self.component .. "ComponentLocalAnchorBx"
-  self.localAnchorById = self.component .. "ComponentLocalAnchorBy"
-  self.typeId = self.component .. "ComponentType"
 end
 
 function M:render()
@@ -40,7 +32,7 @@ function M:render()
 
   local jointConfig = self.editorScreen.database:getCell(entity, self.component)
 
-  Slab.BeginLayout(self.id, { Columns = 2, ExpandW = true })
+  Slab.BeginLayout(self.id .. ".layout", { Columns = 2, ExpandW = true })
 
   Slab.SetLayoutColumn(1)
   Slab.Text("Type")
@@ -50,7 +42,12 @@ function M:render()
   local selectedJointTypeTitle = jointConfig.type
     and self.jointTypeTitles[jointConfig.type]
 
-  if Slab.BeginComboBox(self.typeId, { Selected = selectedJointTypeTitle }) then
+  if
+    Slab.BeginComboBox(
+      self.id .. ".type",
+      { Selected = selectedJointTypeTitle }
+    )
+  then
     for i, jointType in pairs(self.jointTypes) do
       local jointTypeTitle = assert(self.jointTypeTitles[jointType])
       local selected = selectedJointTypeTitle == jointTypeTitle
@@ -69,7 +66,7 @@ function M:render()
   Slab.SetLayoutColumn(2)
 
   if
-    Slab.Input(self.bodyAId, {
+    Slab.Input(self.id .. ".bodyA", {
       Align = "left",
       ReturnOnText = true,
       Text = entityMod.format(
@@ -87,7 +84,7 @@ function M:render()
   Slab.SetLayoutColumn(2)
 
   if
-    Slab.Input(self.localAnchorAxId, {
+    Slab.Input(self.id .. ".localAnchorAx", {
       Align = "left",
       NumbersOnly = true,
       ReturnOnText = true,
@@ -104,7 +101,7 @@ function M:render()
   Slab.SetLayoutColumn(2)
 
   if
-    Slab.Input(self.localAnchorAyId, {
+    Slab.Input(self.id .. ".localAnchorAy", {
       Align = "left",
       NumbersOnly = true,
       ReturnOnText = true,
@@ -121,7 +118,7 @@ function M:render()
   Slab.SetLayoutColumn(2)
 
   if
-    Slab.Input(self.bodyBId, {
+    Slab.Input(self.id .. "bodyB", {
       Align = "left",
       ReturnOnText = true,
       Text = entityMod.format(
@@ -139,7 +136,7 @@ function M:render()
   Slab.SetLayoutColumn(2)
 
   if
-    Slab.Input(self.localAnchorBxId, {
+    Slab.Input(self.id .. ".localAnchorBx", {
       Align = "left",
       NumbersOnly = true,
       ReturnOnText = true,
@@ -156,7 +153,7 @@ function M:render()
   Slab.SetLayoutColumn(2)
 
   if
-    Slab.Input(self.localAnchorById, {
+    Slab.Input(self.id .. ".localAnchorBy", {
       Align = "left",
       NumbersOnly = true,
       ReturnOnText = true,

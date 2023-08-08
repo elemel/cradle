@@ -52,6 +52,7 @@ function M:init(editorScreen, id)
     ),
     jointConfig = JointConfigComponentView.new(
       self.editorScreen,
+      self.id .. ".components.jointConfig",
       "jointConfig"
     ),
     node = TagComponentView.new(
