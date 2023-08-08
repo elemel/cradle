@@ -61,10 +61,6 @@ function M:init(editorScreen, id)
     title = StringComponentView.new(self.editorScreen, "title"),
     transform = TransformComponentView.new(self.editorScreen, "transform"),
   }
-
-  self.componentId = self.id .. ".component"
-  self.dragStepId = self.id .. ".dragStep"
-  self.layoutId = self.id .. ".layout"
 end
 
 function M:render()
@@ -76,7 +72,7 @@ function M:render()
   end
 
   do
-    Slab.BeginLayout(self.layoutId, { Columns = 2, ExpandW = true })
+    Slab.BeginLayout(self.id .. ".layout", { Columns = 2, ExpandW = true })
 
     Slab.SetLayoutColumn(1)
     Slab.Text("Entity")
@@ -92,7 +88,9 @@ function M:render()
         and self.editorScreen.componentTitles[self.editorScreen.selectedComponent]
       or self.editorScreen.selectedComponent
 
-    if Slab.BeginComboBox(self.componentId, { Selected = selectedLabel }) then
+    if
+      Slab.BeginComboBox(self.id .. ".component", { Selected = selectedLabel })
+    then
       local selected = not self.editorScreen.selectedComponent
 
       if Slab.TextSelectable("", { IsSelected = selected }) then
@@ -156,7 +154,10 @@ function M:render()
     local selectedDragStepTitle = tostring(self.editorScreen.dragStep)
 
     if
-      Slab.BeginComboBox(self.dragStepId, { Selected = selectedDragStepTitle })
+      Slab.BeginComboBox(
+        self.id .. ".dragStep",
+        { Selected = selectedDragStepTitle }
+      )
     then
       for _, dragStepTitle in ipairs({
         "0.001",

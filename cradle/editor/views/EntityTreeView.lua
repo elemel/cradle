@@ -12,12 +12,11 @@ local M = Class.new()
 function M:init(editorScreen, id)
   self.editorScreen = assert(editorScreen)
   self.id = assert(id)
-  self.layoutId = self.id .. ".layout"
 end
 
 function M:render()
   do
-    Slab.BeginLayout(self.layoutId, { Columns = 2, ExpandW = true })
+    Slab.BeginLayout(self.id .. ".layout", { Columns = 2, ExpandW = true })
     Slab.SetLayoutColumn(1)
 
     if Slab.Button("Insert") then
