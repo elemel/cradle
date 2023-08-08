@@ -64,7 +64,11 @@ function M:init(editorScreen, id)
       "shapeConfig"
     ),
     title = StringComponentView.new(self.editorScreen, "title"),
-    transform = TransformComponentView.new(self.editorScreen, "transform"),
+    transform = TransformComponentView.new(
+      self.editorScreen,
+      self.id .. ".components.transform",
+      "transform"
+    ),
   }
 end
 
