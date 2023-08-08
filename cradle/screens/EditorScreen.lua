@@ -1,32 +1,15 @@
-local BodyConfigComponentView =
-  require("cradle.editor.views.components.BodyConfigComponentView")
 local cdefMod = require("cradle.cdef")
 local Class = require("cradle.Class")
-local ColorComponentView =
-  require("cradle.editor.views.components.ColorComponentView")
+local DockView = require("cradle.editor.views.DockView")
 local DrawSlabHandler = require("cradle.editor.handlers.DrawSlabHandler")
 local DrawWorldConfigHandler =
   require("cradle.editor.handlers.DrawWorldConfigHandler")
-local EntityTreeView = require("cradle.editor.views.EntityTreeView")
-local EntityView = require("cradle.editor.views.EntityView")
-local FixtureConfigComponentView =
-  require("cradle.editor.views.components.FixtureConfigComponentView")
 local GameScreen = require("cradle.screens.GameScreen")
 local heart = require("heart")
-local JointConfigComponentView =
-  require("cradle.editor.views.components.JointConfigComponentView")
 local jsonMod = require("json")
 local nodeMod = require("cradle.node")
-local ShapeConfigComponentView =
-  require("cradle.editor.views.components.ShapeConfigComponentView")
 local Slab = require("Slab")
 local sparrow = require("sparrow")
-local StringComponentView =
-  require("cradle.editor.views.components.StringComponentView")
-local TagComponentView =
-  require("cradle.editor.views.components.TagComponentView")
-local TransformComponentView =
-  require("cradle.editor.views.components.TransformComponentView")
 local tableMod = require("cradle.table")
 
 local M = Class.new()
@@ -142,20 +125,8 @@ function M:init(application)
 
   self.selectedEntities = {}
 
-  self.entityTreeView = EntityTreeView.new(self)
-  self.entityView = EntityView.new(self)
-
-  self.componentViews = {
-    camera = TagComponentView.new(self, "camera"),
-    bodyConfig = BodyConfigComponentView.new(self, "bodyConfig"),
-    debugColor = ColorComponentView.new(self, "debugColor"),
-    fixtureConfig = FixtureConfigComponentView.new(self, "fixtureConfig"),
-    jointConfig = JointConfigComponentView.new(self, "jointConfig"),
-    node = TagComponentView.new(self, "node"),
-    shapeConfig = ShapeConfigComponentView.new(self, "shapeConfig"),
-    title = StringComponentView.new(self, "title"),
-    transform = TransformComponentView.new(self, "transform"),
-  }
+  self.leftDockView = DockView.new(self, "leftDock", "entityTree")
+  self.rightDockView = DockView.new(self, "rightDock", "componentList")
 
   self.dragStep = 1
 
@@ -244,7 +215,7 @@ function M:update(dt)
     border = 4,
     bottomDockHeight = 100,
     height = height,
-    leftDockWidth = 200,
+    leftDockWidth = 300,
     rightDockWidth = 300,
     topDockHeight = 100,
     width = width,
@@ -287,7 +258,7 @@ function M:update(dt)
     Y = layout.topDockHeight,
   })
 
-  self.entityTreeView:render()
+  self.leftDockView:render()
   Slab.EndWindow()
 
   Slab.BeginWindow("rightDock", {
@@ -306,7 +277,7 @@ function M:update(dt)
     Y = layout.topDockHeight,
   })
 
-  self.entityView:render()
+  self.rightDockView:render()
   Slab.EndWindow()
 
   Slab.BeginWindow("bottomDock", {

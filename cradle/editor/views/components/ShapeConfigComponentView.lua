@@ -3,19 +3,14 @@ local Slab = require("Slab")
 
 local M = Class.new()
 
-function M:init(editorScreen, component)
+function M:init(editorScreen, id, component)
   self.editorScreen = assert(editorScreen)
+  self.id = assert(id)
   self.component = assert(component)
 
   self.shapeTypes = { "circle", "polygon", "rectangle" }
   self.shapeTypeTitles =
     { circle = "Circle", polygon = "Polygon", rectangle = "Rectangle" }
-
-  self.heightId = self.component .. "ComponentHeight"
-  self.id = self.component .. "Component"
-  self.radiusId = self.component .. "ComponentRadius"
-  self.typeId = self.component .. "ComponentType"
-  self.widthId = self.component .. "ComponentWidth"
 end
 
 function M:render()
@@ -35,7 +30,7 @@ function M:render()
 
   local shapeConfig = self.editorScreen.database:getCell(entity, self.component)
 
-  Slab.BeginLayout(self.id, { Columns = 2, ExpandW = true })
+  Slab.BeginLayout(self.id .. ".layout", { Columns = 2, ExpandW = true })
 
   Slab.SetLayoutColumn(1)
   Slab.Text("Type")
@@ -45,7 +40,12 @@ function M:render()
   local selectedShapeTypeTitle = shapeConfig.type
     and self.shapeTypeTitles[shapeConfig.type]
 
-  if Slab.BeginComboBox(self.typeId, { Selected = selectedShapeTypeTitle }) then
+  if
+    Slab.BeginComboBox(
+      self.id .. ".type",
+      { Selected = selectedShapeTypeTitle }
+    )
+  then
     for i, shapeType in pairs(self.shapeTypes) do
       local shapeTypeTitle = shapeType and self.shapeTypeTitles[shapeType]
       local selected = selectedShapeTypeTitle == shapeTypeTitle
@@ -65,7 +65,7 @@ function M:render()
     Slab.SetLayoutColumn(2)
 
     if
-      Slab.Input(self.radiusId, {
+      Slab.Input(self.id .. ".radius", {
         Align = "left",
         NumbersOnly = true,
         ReturnOnText = true,
@@ -82,7 +82,7 @@ function M:render()
     Slab.SetLayoutColumn(2)
 
     if
-      Slab.Input(self.widthId, {
+      Slab.Input(self.id .. ".width", {
         Align = "left",
         NumbersOnly = true,
         ReturnOnText = true,
@@ -100,7 +100,7 @@ function M:render()
     Slab.SetLayoutColumn(2)
 
     if
-      Slab.Input(self.heightId, {
+      Slab.Input(self.id .. ".height", {
         Align = "left",
         NumbersOnly = true,
         ReturnOnText = true,

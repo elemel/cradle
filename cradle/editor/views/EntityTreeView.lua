@@ -9,15 +9,14 @@ local tableMod = require("cradle.table")
 
 local M = Class.new()
 
-function M:init(editorScreen)
+function M:init(editorScreen, id)
   self.editorScreen = assert(editorScreen)
+  self.id = assert(id)
 end
 
 function M:render()
   do
-    Slab.Text("Entities")
-
-    Slab.BeginLayout("insertAndDeleteEntity", { Columns = 2, ExpandW = true })
+    Slab.BeginLayout(self.id .. ".layout", { Columns = 2, ExpandW = true })
     Slab.SetLayoutColumn(1)
 
     if Slab.Button("Insert") then
@@ -64,7 +63,7 @@ function M:renderEntityNode(entity)
   local leaf = node.firstChild == 0
   local selected = self.editorScreen.selectedEntities[entity] or false
 
-  local open = Slab.BeginTree("entity" .. entity, {
+  local open = Slab.BeginTree(self.id .. ".entity" .. entity, {
     IsLeaf = leaf,
     IsSelected = selected,
     Label = label,

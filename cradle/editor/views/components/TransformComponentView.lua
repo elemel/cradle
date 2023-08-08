@@ -3,14 +3,10 @@ local Slab = require("Slab")
 
 local M = Class.new()
 
-function M:init(editorScreen, component)
+function M:init(editorScreen, id, component)
   self.editorScreen = assert(editorScreen)
+  self.id = assert(id)
   self.component = assert(component)
-
-  self.id = self.component .. "Component"
-  self.xId = self.component .. "ComponentX"
-  self.yId = self.component .. "ComponentY"
-  self.angleId = self.component .. "ComponentAngle"
 end
 
 function M:render()
@@ -38,7 +34,7 @@ function M:render()
   Slab.SetLayoutColumn(2)
 
   if
-    Slab.Input(self.xId, {
+    Slab.Input(self.id .. ".x", {
       Align = "left",
       NumbersOnly = true,
       ReturnOnText = true,
@@ -55,7 +51,7 @@ function M:render()
   Slab.SetLayoutColumn(2)
 
   if
-    Slab.Input(self.yId, {
+    Slab.Input(self.id .. ".y", {
       Align = "left",
       NumbersOnly = true,
       ReturnOnText = true,
@@ -75,7 +71,7 @@ function M:render()
     * math.atan2(transform.orientation.y, transform.orientation.x)
 
   if
-    Slab.Input(self.angleId, {
+    Slab.Input(self.id .. ".angle", {
       Align = "left",
       NumbersOnly = true,
       ReturnOnText = true,

@@ -3,15 +3,10 @@ local Slab = require("Slab")
 
 local M = Class.new()
 
-function M:init(editorScreen, component)
+function M:init(editorScreen, id, component)
   self.editorScreen = assert(editorScreen)
+  self.id = assert(id)
   self.component = assert(component)
-
-  self.id = self.component .. "Component"
-  self.redId = self.component .. "ComponentRed"
-  self.greenId = self.component .. "ComponentGreen"
-  self.blueId = self.component .. "ComponentBlue"
-  self.alphaId = self.component .. "ComponentAlpha"
 end
 
 function M:render()
@@ -31,7 +26,7 @@ function M:render()
 
   local color = self.editorScreen.database:getCell(entity, self.component)
 
-  Slab.BeginLayout(self.id, { Columns = 2, ExpandW = true })
+  Slab.BeginLayout(self.id .. ".layout", { Columns = 2, ExpandW = true })
 
   Slab.SetLayoutColumn(1)
   Slab.Text("Red", { Color = self.editorScreen.colors.red })
@@ -39,7 +34,7 @@ function M:render()
   Slab.SetLayoutColumn(2)
 
   if
-    Slab.Input(self.redId, {
+    Slab.Input(self.id .. ".red", {
       Align = "left",
       MaxNumber = 1,
       MinNumber = 0,
@@ -58,7 +53,7 @@ function M:render()
   Slab.SetLayoutColumn(2)
 
   if
-    Slab.Input(self.greenId, {
+    Slab.Input(self.id .. ".green", {
       Align = "left",
       MaxNumber = 1,
       MinNumber = 0,
@@ -77,7 +72,7 @@ function M:render()
   Slab.SetLayoutColumn(2)
 
   if
-    Slab.Input(self.blueId, {
+    Slab.Input(self.id .. ".blue", {
       Align = "left",
       MaxNumber = 1,
       MinNumber = 0,
@@ -96,7 +91,7 @@ function M:render()
   Slab.SetLayoutColumn(2)
 
   if
-    Slab.Input(self.alphaId, {
+    Slab.Input(self.id .. ".alpha", {
       Align = "left",
       MaxNumber = 1,
       MinNumber = 0,

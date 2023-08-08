@@ -1,16 +1,81 @@
 local AddComponentCommand =
   require("cradle.editor.commands.AddComponentCommand")
+local BodyConfigComponentView =
+  require("cradle.editor.views.components.BodyConfigComponentView")
 local Class = require("cradle.Class")
+local ColorComponentView =
+  require("cradle.editor.views.components.ColorComponentView")
 local entityMod = require("cradle.entity")
+local FixtureConfigComponentView =
+  require("cradle.editor.views.components.FixtureConfigComponentView")
+local JointConfigComponentView =
+  require("cradle.editor.views.components.JointConfigComponentView")
 local RemoveComponentCommand =
   require("cradle.editor.commands.RemoveComponentCommand")
+local ShapeConfigComponentView =
+  require("cradle.editor.views.components.ShapeConfigComponentView")
 local Slab = require("Slab")
+local StringComponentView =
+  require("cradle.editor.views.components.StringComponentView")
 local tableMod = require("cradle.table")
+local TagComponentView =
+  require("cradle.editor.views.components.TagComponentView")
+local TransformComponentView =
+  require("cradle.editor.views.components.TransformComponentView")
 
 local M = Class.new()
 
-function M:init(editorScreen)
+function M:init(editorScreen, id)
   self.editorScreen = assert(editorScreen)
+  self.id = assert(id)
+
+  self.componentViews = {
+    camera = TagComponentView.new(
+      self.editorScreen,
+      self.id .. ".components.camera",
+      "camera"
+    ),
+    bodyConfig = BodyConfigComponentView.new(
+      self.editorScreen,
+      self.id .. ".components.bodyConfig",
+      "bodyConfig"
+    ),
+    debugColor = ColorComponentView.new(
+      self.editorScreen,
+      self.id .. ".components.debugColor",
+      "debugColor"
+    ),
+    fixtureConfig = FixtureConfigComponentView.new(
+      self.editorScreen,
+      self.id .. ".components.fixtureConfig",
+      "fixtureConfig"
+    ),
+    jointConfig = JointConfigComponentView.new(
+      self.editorScreen,
+      self.id .. ".components.jointConfig",
+      "jointConfig"
+    ),
+    node = TagComponentView.new(
+      self.editorScreen,
+      self.id .. ".components.node",
+      "node"
+    ),
+    shapeConfig = ShapeConfigComponentView.new(
+      self.editorScreen,
+      self.id .. ".components.shapeConfig",
+      "shapeConfig"
+    ),
+    title = StringComponentView.new(
+      self.editorScreen,
+      self.id .. ".components.title",
+      "title"
+    ),
+    transform = TransformComponentView.new(
+      self.editorScreen,
+      self.id .. ".components.transform",
+      "transform"
+    ),
+  }
 end
 
 function M:render()
@@ -22,7 +87,7 @@ function M:render()
   end
 
   do
-    Slab.BeginLayout("addAndRemoveComponent", { Columns = 2, ExpandW = true })
+    Slab.BeginLayout(self.id .. ".layout", { Columns = 2, ExpandW = true })
 
     Slab.SetLayoutColumn(1)
     Slab.Text("Entity")
@@ -38,7 +103,9 @@ function M:render()
         and self.editorScreen.componentTitles[self.editorScreen.selectedComponent]
       or self.editorScreen.selectedComponent
 
-    if Slab.BeginComboBox("component", { Selected = selectedLabel }) then
+    if
+      Slab.BeginComboBox(self.id .. ".component", { Selected = selectedLabel })
+    then
       local selected = not self.editorScreen.selectedComponent
 
       if Slab.TextSelectable("", { IsSelected = selected }) then
@@ -95,32 +162,6 @@ function M:render()
       )
     end
 
-    Slab.SetLayoutColumn(1)
-    Slab.Text("Drag Step")
-
-    Slab.SetLayoutColumn(2)
-    local selectedDragStepTitle = tostring(self.editorScreen.dragStep)
-
-    if Slab.BeginComboBox("dragStep", { Selected = selectedDragStepTitle }) then
-      for _, dragStepTitle in ipairs({
-        "0.001",
-        "0.01",
-        "0.1",
-        "1",
-        "10",
-        "100",
-        "1000",
-      }) do
-        local selected = selectedDragStepTitle == dragStepTitle
-
-        if Slab.TextSelectable(dragStepTitle, { IsSelected = selected }) then
-          self.editorScreen.dragStep = tonumber(dragStepTitle)
-        end
-      end
-
-      Slab.EndComboBox()
-    end
-
     Slab.EndLayout()
   end
 
@@ -134,7 +175,7 @@ function M:render()
 
   for _, component in ipairs(sortedComponents) do
     Slab.Separator()
-    local view = assert(self.editorScreen.componentViews[component])
+    local view = assert(self.componentViews[component])
     view:render()
   end
 end
