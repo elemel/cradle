@@ -47,6 +47,7 @@ function M:init(editorScreen, id)
     ),
     fixtureConfig = FixtureConfigComponentView.new(
       self.editorScreen,
+      self.id .. ".components.fixtureConfig",
       "fixtureConfig"
     ),
     jointConfig = JointConfigComponentView.new(

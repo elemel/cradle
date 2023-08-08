@@ -3,14 +3,10 @@ local Slab = require("Slab")
 
 local M = Class.new()
 
-function M:init(editorScreen, component)
+function M:init(editorScreen, id, component)
   self.editorScreen = assert(editorScreen)
+  self.id = assert(id)
   self.component = assert(component)
-
-  self.id = self.component .. "Component"
-  self.frictionId = self.component .. "ComponentFriction"
-  self.restitutionId = self.component .. "ComponentRestitution"
-  self.densityId = self.component .. "ComponentDensity"
 end
 
 function M:render()
@@ -39,7 +35,7 @@ function M:render()
   Slab.SetLayoutColumn(2)
 
   if
-    Slab.Input(self.frictionId, {
+    Slab.Input(self.id .. ".friction", {
       Align = "left",
       NumbersOnly = true,
       ReturnOnText = true,
@@ -56,7 +52,7 @@ function M:render()
   Slab.SetLayoutColumn(2)
 
   if
-    Slab.Input(self.restitutionId, {
+    Slab.Input(self.id .. ".restitution", {
       Align = "left",
       NumbersOnly = true,
       ReturnOnText = true,
@@ -73,7 +69,7 @@ function M:render()
   Slab.SetLayoutColumn(2)
 
   if
-    Slab.Input(self.densityId, {
+    Slab.Input(self.id .. ".density", {
       Align = "left",
       NumbersOnly = true,
       ReturnOnText = true,
