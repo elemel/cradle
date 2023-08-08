@@ -23,11 +23,17 @@ function M:render()
   local title = assert(self.editorScreen.componentTitles[self.component])
   local selected = self.editorScreen.selectedComponent == self.component
 
-  if Slab.Text(title, { IsSelectable = true, IsSelected = selected }) then
+  if
+    Slab.Text(title, {
+      Color = self.editorScreen.colors.yellow,
+      IsSelectable = true,
+      IsSelected = selected,
+    })
+  then
     self.editorScreen.selectedComponent = self.component
   end
 
-  local shape = self.editorScreen.database:getCell(entity, self.component)
+  local shapeConfig = self.editorScreen.database:getCell(entity, self.component)
 
   Slab.BeginLayout(self.id, { Columns = 2, ExpandW = true })
 
@@ -36,7 +42,8 @@ function M:render()
 
   Slab.SetLayoutColumn(2)
 
-  local selectedShapeTypeTitle = shape.type and self.shapeTypeTitles[shape.type]
+  local selectedShapeTypeTitle = shapeConfig.type
+    and self.shapeTypeTitles[shapeConfig.type]
 
   if Slab.BeginComboBox(self.typeId, { Selected = selectedShapeTypeTitle }) then
     for i, shapeType in pairs(self.shapeTypes) do
@@ -44,14 +51,14 @@ function M:render()
       local selected = selectedShapeTypeTitle == shapeTypeTitle
 
       if Slab.TextSelectable(shapeTypeTitle, { IsSelected = selected }) then
-        shape.type = shapeType
+        shapeConfig.type = shapeType
       end
     end
 
     Slab.EndComboBox()
   end
 
-  if shape.type == "circle" then
+  if shapeConfig.type == "circle" then
     Slab.SetLayoutColumn(1)
     Slab.Text("Radius")
 
@@ -63,14 +70,14 @@ function M:render()
         NumbersOnly = true,
         ReturnOnText = true,
         Step = self.editorScreen.dragStep,
-        Text = shape.radius or 0.5,
+        Text = shapeConfig.radius or 0.5,
       })
     then
-      shape.radius = Slab.GetInputNumber()
+      shapeConfig.radius = Slab.GetInputNumber()
     end
-  elseif shape.type == "rectangle" then
+  elseif shapeConfig.type == "rectangle" then
     Slab.SetLayoutColumn(1)
-    Slab.Text("Width", { Color = self.editorScreen.colors.red })
+    Slab.Text("Width")
 
     Slab.SetLayoutColumn(2)
 
@@ -80,15 +87,15 @@ function M:render()
         NumbersOnly = true,
         ReturnOnText = true,
         Step = self.editorScreen.dragStep,
-        Text = shape.size and shape.size[1] or 1,
+        Text = shapeConfig.size and shapeConfig.size[1] or 1,
       })
     then
-      shape.size = shape.size or { 1, 1 }
-      shape.size[1] = Slab.GetInputNumber()
+      shapeConfig.size = shapeConfig.size or { 1, 1 }
+      shapeConfig.size[1] = Slab.GetInputNumber()
     end
 
     Slab.SetLayoutColumn(1)
-    Slab.Text("Height", { Color = self.editorScreen.colors.green })
+    Slab.Text("Height")
 
     Slab.SetLayoutColumn(2)
 
@@ -98,11 +105,11 @@ function M:render()
         NumbersOnly = true,
         ReturnOnText = true,
         Step = self.editorScreen.dragStep,
-        Text = shape.size and shape.size[2] or 1,
+        Text = shapeConfig.size and shapeConfig.size[2] or 1,
       })
     then
-      shape.size = shape.size or { 1, 1 }
-      shape.size[2] = Slab.GetInputNumber()
+      shapeConfig.size = shapeConfig.size or { 1, 1 }
+      shapeConfig.size[2] = Slab.GetInputNumber()
     end
   end
 

@@ -61,22 +61,22 @@ function M:init(application, config)
   self.engine:setProperty("database", database)
 
   database:createColumn("body")
-  database:createColumn("bodyObject")
+  database:createColumn("bodyConfig")
   database:createColumn("camera", "tag")
   database:createColumn("creating", "tag")
   database:createColumn("debugColor", "color4")
   database:createColumn("destroying", "tag")
   database:createColumn("dynamic", "tag")
   database:createColumn("fixture")
-  database:createColumn("fixtureObject")
+  database:createColumn("fixtureConfig")
   database:createColumn("globalTransform", "transform")
   database:createColumn("joint")
-  database:createColumn("jointObject")
+  database:createColumn("jointConfig")
   database:createColumn("kinematic", "tag")
   database:createColumn("motorcycle", "tag")
   database:createColumn("node", "node")
   database:createColumn("rider", "tag")
-  database:createColumn("shape")
+  database:createColumn("shapeConfig")
   database:createColumn("spring")
   database:createColumn("static", "tag")
   database:createColumn("title")
@@ -181,16 +181,16 @@ function M:init(application, config)
 
   if demo then
     database:insertRow({
-      body = {},
+      bodyConfig = {},
       creating = {},
 
-      fixture = {
+      fixtureConfig = {
         friction = 0.5,
       },
 
       node = {},
 
-      shape = {
+      shapeConfig = {
         size = { 5, 1 },
         type = "rectangle",
       },
@@ -202,16 +202,16 @@ function M:init(application, config)
     })
 
     database:insertRow({
-      body = {},
+      bodyConfig = {},
       creating = {},
 
-      fixture = {
+      fixtureConfig = {
         friction = 0.5,
       },
 
       node = {},
 
-      shape = {
+      shapeConfig = {
         size = { 5, 1 },
         type = "rectangle",
       },
@@ -223,16 +223,16 @@ function M:init(application, config)
     })
 
     database:insertRow({
-      body = {},
+      bodyConfig = {},
       creating = {},
 
-      fixture = {
+      fixtureConfig = {
         friction = 0.5,
       },
 
       node = {},
 
-      shape = {
+      shapeConfig = {
         size = { 5, 1 },
         type = "rectangle",
       },
@@ -244,16 +244,16 @@ function M:init(application, config)
     })
 
     database:insertRow({
-      body = {},
+      bodyConfig = {},
       creating = {},
 
-      fixture = {
+      fixtureConfig = {
         friction = 0.5,
       },
 
       node = {},
 
-      shape = {
+      shapeConfig = {
         size = { 5, 1 },
         type = "rectangle",
       },

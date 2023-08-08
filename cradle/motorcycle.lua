@@ -4,13 +4,13 @@ local M = {}
 
 function M.createMotorcycle(database, transform)
   local frameEntity = database:insertRow({
-    body = {
+    bodyConfig = {
       type = "dynamic",
     },
 
     creating = {},
 
-    fixture = {
+    fixtureConfig = {
       friction = 0.5,
       groupIndex = -1,
     },
@@ -18,7 +18,7 @@ function M.createMotorcycle(database, transform)
     motorcycle = {},
     node = {},
 
-    shape = {
+    shapeConfig = {
       size = { 1.3, 0.3 },
       type = "rectangle",
     },
@@ -30,18 +30,18 @@ function M.createMotorcycle(database, transform)
   })
 
   local rearWheelEntity = database:insertRow({
-    body = {
+    bodyConfig = {
       type = "dynamic",
     },
 
     creating = {},
 
-    fixture = {
+    fixtureConfig = {
       friction = 2,
       groupIndex = -1,
     },
 
-    joint = {
+    jointConfig = {
       bodyA = frameEntity,
       damping = 20,
       localAnchorA = { -0.65, 0.15 },
@@ -52,7 +52,7 @@ function M.createMotorcycle(database, transform)
 
     node = {},
 
-    shape = {
+    shapeConfig = {
       radius = 0.3,
       type = "circle",
     },
@@ -66,18 +66,18 @@ function M.createMotorcycle(database, transform)
   })
 
   local frontWheelEntity = database:insertRow({
-    body = {
+    bodyConfig = {
       type = "dynamic",
     },
 
     creating = {},
 
-    fixture = {
+    fixtureConfig = {
       friction = 2,
       groupIndex = -1,
     },
 
-    joint = {
+    jointConfig = {
       bodyA = frameEntity,
       damping = 20,
       localAnchorA = { 0.65, 0.15 },
@@ -88,7 +88,7 @@ function M.createMotorcycle(database, transform)
 
     node = {},
 
-    shape = {
+    shapeConfig = {
       radius = 0.3,
       type = "circle",
     },

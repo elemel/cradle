@@ -13,8 +13,8 @@ function M.new(engine, config)
   })
 
   local fixtureQuery = sparrow.newQuery(database, {
-    arguments = { "debugColor", "fixtureObject" },
-    inclusions = { "fixtureObject" },
+    arguments = { "debugColor", "fixture" },
+    inclusions = { "fixture" },
   })
 
   return function()
@@ -37,7 +37,7 @@ function M.new(engine, config)
         -globalTransform.position.y
       )
 
-      fixtureQuery:forEach(function(fixtureEntity, debugColor, fixtureObject)
+      fixtureQuery:forEach(function(fixtureEntity, debugColor, fixture)
         if debugColor then
           love.graphics.setColor(
             debugColor.red,
@@ -49,23 +49,23 @@ function M.new(engine, config)
           love.graphics.setColor(1, 1, 1, 1)
         end
 
-        local bodyObject = fixtureObject:getBody()
-        local shapeObject = fixtureObject:getShape()
-        local shapeType = shapeObject:getType()
+        local body = fixture:getBody()
+        local shape = fixture:getShape()
+        local shapeType = shape:getType()
 
         if shapeType == "circle" then
-          local localX, localY = shapeObject:getPoint()
-          local radius = shapeObject:getRadius()
+          local localX, localY = shape:getPoint()
+          local radius = shape:getRadius()
 
-          local x1, y1 = bodyObject:getWorldPoint(localX, localY)
-          local x2, y2 = bodyObject:getWorldPoint(localX + radius, localY)
+          local x1, y1 = body:getWorldPoint(localX, localY)
+          local x2, y2 = body:getWorldPoint(localX + radius, localY)
 
           love.graphics.circle(drawMode, x1, y1, radius)
           love.graphics.line(x1, y1, x2, y2)
         elseif shapeType == "polygon" then
           love.graphics.polygon(
             drawMode,
-            bodyObject:getWorldPoints(shapeObject:getPoints())
+            body:getWorldPoints(shape:getPoints())
           )
         else
           error("Invalid shape type: " .. shapeType)

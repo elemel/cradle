@@ -7,36 +7,36 @@ function M.new(engine)
   local world = assert(engine:getProperty("world"))
 
   local query = sparrow.newQuery(database, {
-    arguments = { "body", "globalTransform" },
-    exclusions = { "bodyObject" },
-    inclusions = { "body", "creating", "globalTransform" },
-    results = { "bodyObject" },
+    arguments = { "bodyConfig", "globalTransform" },
+    exclusions = { "body" },
+    inclusions = { "bodyConfig", "creating", "globalTransform" },
+    results = { "body" },
   })
 
   return function(dt)
-    query:forEach(function(entity, body, globalTransform)
-      local bodyType = body.type or "static"
+    query:forEach(function(entity, bodyConfig, globalTransform)
+      local bodyType = bodyConfig.type or "static"
 
       local x = globalTransform.position.x
       local y = globalTransform.position.y
 
-      local bodyObject = love.physics.newBody(world, x, y, bodyType)
-      bodyObject:setUserData(entity)
+      local body = love.physics.newBody(world, x, y, bodyType)
+      body:setUserData(entity)
       database:setCell(entity, bodyType, {})
 
       local angle =
         math.atan2(globalTransform.orientation.y, globalTransform.orientation.x)
-      bodyObject:setAngle(angle)
+      body:setAngle(angle)
 
-      if body.angularVelocity then
-        bodyObject:setAngularVelocity(body.angularVelocity)
+      if bodyConfig.angularVelocity then
+        body:setAngularVelocity(bodyConfig.angularVelocity)
       end
 
-      if body.linearVelocity then
-        bodyObject:setLinearVelocity(unpack(body.linearVelocity))
+      if bodyConfig.linearVelocity then
+        body:setLinearVelocity(unpack(bodyConfig.linearVelocity))
       end
 
-      return bodyObject
+      return body
     end)
   end
 end

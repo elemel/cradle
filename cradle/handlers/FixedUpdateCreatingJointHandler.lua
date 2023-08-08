@@ -7,22 +7,22 @@ function M.new(engine)
   local world = assert(engine:getProperty("world"))
 
   local query = sparrow.newQuery(database, {
-    inclusions = { "creating", "joint" },
-    exclusions = { "jointObject" },
-    arguments = { "joint" },
-    results = { "jointObject" },
+    inclusions = { "creating", "jointConfig" },
+    exclusions = { "joint" },
+    arguments = { "jointConfig" },
+    results = { "joint" },
   })
 
   return function(dt)
-    query:forEach(function(entity, joint)
-      local jointType = assert(joint.type)
+    query:forEach(function(entity, jointConfig)
+      local jointType = assert(jointConfig.type)
 
       if jointType == "motor" then
-        return M.createMotorJoint(database, world, entity, joint)
+        return M.createMotorJoint(database, world, entity, jointConfig)
       elseif jointType == "revolute" then
-        return M.createRevoluteJoint(database, world, entity, joint)
+        return M.createRevoluteJoint(database, world, entity, jointConfig)
       elseif jointType == "wheel" then
-        return M.createWheelJoint(database, world, entity, joint)
+        return M.createWheelJoint(database, world, entity, jointConfig)
       else
         error("Invalid joint type: " .. jointType)
       end
@@ -30,70 +30,66 @@ function M.new(engine)
   end
 end
 
-function M.createMotorJoint(database, world, entity, joint)
-  local bodyEntityA = joint.bodyA or entity
-  local bodyEntityB = joint.bodyB or entity
+function M.createMotorJoint(database, world, entity, jointConfig)
+  local bodyEntityA = jointConfig.bodyA or entity
+  local bodyEntityB = jointConfig.bodyB or entity
 
-  local bodyObjectA = assert(database:getCell(bodyEntityA, "bodyObject"))
-  local bodyObjectB = assert(database:getCell(bodyEntityB, "bodyObject"))
+  local bodyA = assert(database:getCell(bodyEntityA, "body"))
+  local bodyB = assert(database:getCell(bodyEntityB, "body"))
 
-  local correctionFactor = joint.correctionFactor or 0.3
+  local correctionFactor = jointConfig.correctionFactor or 0.3
   local collideConnected = false
 
-  if joint.collideConnected ~= nil then
-    collideConnected = joint.collideConnected
+  if jointConfig.collideConnected ~= nil then
+    collideConnected = jointConfig.collideConnected
   end
 
-  local jointObject = love.physics.newMotorJoint(
-    bodyObjectA,
-    bodyObjectB,
-    correctionFactor,
-    collideConnected
-  )
+  local joint =
+    love.physics.newMotorJoint(bodyA, bodyB, correctionFactor, collideConnected)
 
-  if joint.linearOffset then
-    jointObject:setLinearOffset(unpack(joint.linearOffset))
+  if jointConfig.linearOffset then
+    joint:setLinearOffset(unpack(jointConfig.linearOffset))
   end
 
-  if joint.angularOffset then
-    jointObject:setAngularOffset(joint.angularOffset)
+  if jointConfig.angularOffset then
+    joint:setAngularOffset(jointConfig.angularOffset)
   end
 
-  if joint.maxForce then
-    jointObject:setMaxForce(joint.maxForce)
+  if jointConfig.maxForce then
+    joint:setMaxForce(jointConfig.maxForce)
   end
 
-  if joint.maxTorque then
-    jointObject:setMaxTorque(joint.maxTorque)
+  if jointConfig.maxTorque then
+    joint:setMaxTorque(jointConfig.maxTorque)
   end
 
-  jointObject:setUserData(entity)
-  return jointObject
+  joint:setUserData(entity)
+  return joint
 end
 
-function M.createRevoluteJoint(database, world, entity, joint)
-  local bodyEntityA = joint.bodyA or entity
-  local bodyEntityB = joint.bodyB or entity
+function M.createRevoluteJoint(database, world, entity, jointConfig)
+  local bodyEntityA = jointConfig.bodyA or entity
+  local bodyEntityB = jointConfig.bodyB or entity
 
-  local bodyObjectA = assert(database:getCell(bodyEntityA, "bodyObject"))
-  local bodyObjectB = assert(database:getCell(bodyEntityB, "bodyObject"))
+  local bodyA = assert(database:getCell(bodyEntityA, "body"))
+  local bodyB = assert(database:getCell(bodyEntityB, "body"))
 
   local ax, ay =
-    bodyObjectA:getWorldPoint(unpack(joint.localAnchorA or { 0, 0 }))
+    bodyA:getWorldPoint(unpack(jointConfig.localAnchorA or { 0, 0 }))
   local bx, by =
-    bodyObjectB:getWorldPoint(unpack(joint.localAnchorB or { 0, 0 }))
+    bodyB:getWorldPoint(unpack(jointConfig.localAnchorB or { 0, 0 }))
 
   local collideConnected = false
 
-  if joint.collideConnected ~= nil then
-    collideConnected = joint.collideConnected
+  if jointConfig.collideConnected ~= nil then
+    collideConnected = jointConfig.collideConnected
   end
 
-  local referenceAngle = joint.referenceAngle or 0
+  local referenceAngle = jointConfig.referenceAngle or 0
 
-  local jointObject = love.physics.newRevoluteJoint(
-    bodyObjectA,
-    bodyObjectB,
+  local joint = love.physics.newRevoluteJoint(
+    bodyA,
+    bodyB,
     ax,
     ay,
     bx,
@@ -102,45 +98,45 @@ function M.createRevoluteJoint(database, world, entity, joint)
     referenceAngle
   )
 
-  if joint.limitsEnabled ~= nil then
-    jointObject:setLimitsEnabled(joint.limitsEnabled)
+  if jointConfig.limitsEnabled ~= nil then
+    joint:setLimitsEnabled(jointConfig.limitsEnabled)
   end
 
-  if joint.lowerLimit then
-    jointObject:setLowerLimit(joint.lowerLimit)
+  if jointConfig.lowerLimit then
+    joint:setLowerLimit(jointConfig.lowerLimit)
   end
 
-  if joint.upperLimit then
-    jointObject:setUpperLimit(joint.upperLimit)
+  if jointConfig.upperLimit then
+    joint:setUpperLimit(jointConfig.upperLimit)
   end
 
-  jointObject:setUserData(entity)
-  return jointObject
+  joint:setUserData(entity)
+  return joint
 end
 
-function M.createWheelJoint(database, world, entity, joint)
-  local bodyEntityA = joint.bodyA or entity
-  local bodyEntityB = joint.bodyB or entity
+function M.createWheelJoint(database, world, entity, jointConfig)
+  local bodyEntityA = jointConfig.bodyA or entity
+  local bodyEntityB = jointConfig.bodyB or entity
 
-  local bodyObjectA = assert(database:getCell(bodyEntityA, "bodyObject"))
-  local bodyObjectB = assert(database:getCell(bodyEntityB, "bodyObject"))
+  local bodyA = assert(database:getCell(bodyEntityA, "body"))
+  local bodyB = assert(database:getCell(bodyEntityB, "body"))
 
   local ax, ay =
-    bodyObjectA:getWorldPoint(unpack(joint.localAnchorA or { 0, 0 }))
+    bodyA:getWorldPoint(unpack(jointConfig.localAnchorA or { 0, 0 }))
   local bx, by =
-    bodyObjectB:getWorldPoint(unpack(joint.localAnchorB or { 0, 0 }))
+    bodyB:getWorldPoint(unpack(jointConfig.localAnchorB or { 0, 0 }))
   local axisX, axisY =
-    bodyObjectA:getWorldVector(unpack(joint.localAxisA or { 0, -1 }))
+    bodyA:getWorldVector(unpack(jointConfig.localAxisA or { 0, -1 }))
 
   local collideConnected = false
 
-  if joint.collideConnected ~= nil then
-    collideConnected = joint.collideConnected
+  if jointConfig.collideConnected ~= nil then
+    collideConnected = jointConfig.collideConnected
   end
 
-  local jointObject = love.physics.newWheelJoint(
-    bodyObjectA,
-    bodyObjectB,
+  local joint = love.physics.newWheelJoint(
+    bodyA,
+    bodyB,
     ax,
     ay,
     bx,
@@ -150,21 +146,21 @@ function M.createWheelJoint(database, world, entity, joint)
     collideConnected
   )
 
-  jointObject:setUserData(entity)
+  joint:setUserData(entity)
 
-  if joint.maxMotorTorque then
-    jointObject:setMaxMotorTorque(joint.maxMotorTorque)
+  if jointConfig.maxMotorTorque then
+    joint:setMaxMotorTorque(jointConfig.maxMotorTorque)
   end
 
-  if joint.damping then
-    jointObject:setDamping(joint.damping)
+  if jointConfig.damping then
+    joint:setDamping(jointConfig.damping)
   end
 
-  if joint.stiffness then
-    jointObject:setStiffness(joint.stiffness)
+  if jointConfig.stiffness then
+    joint:setStiffness(jointConfig.stiffness)
   end
 
-  return jointObject
+  return joint
 end
 
 return M

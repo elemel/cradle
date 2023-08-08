@@ -1,23 +1,24 @@
-local BodyComponentView =
-  require("cradle.editor.views.components.BodyComponentView")
+local BodyConfigComponentView =
+  require("cradle.editor.views.components.BodyConfigComponentView")
 local cdefMod = require("cradle.cdef")
 local Class = require("cradle.Class")
 local ColorComponentView =
   require("cradle.editor.views.components.ColorComponentView")
 local DrawSlabHandler = require("cradle.editor.handlers.DrawSlabHandler")
-local DrawShapeHandler = require("cradle.editor.handlers.DrawShapeHandler")
+local DrawWorldConfigHandler =
+  require("cradle.editor.handlers.DrawWorldConfigHandler")
 local EntityTreeView = require("cradle.editor.views.EntityTreeView")
 local EntityView = require("cradle.editor.views.EntityView")
-local FixtureComponentView =
-  require("cradle.editor.views.components.FixtureComponentView")
+local FixtureConfigComponentView =
+  require("cradle.editor.views.components.FixtureConfigComponentView")
 local GameScreen = require("cradle.screens.GameScreen")
 local heart = require("heart")
-local JointComponentView =
-  require("cradle.editor.views.components.JointComponentView")
+local JointConfigComponentView =
+  require("cradle.editor.views.components.JointConfigComponentView")
 local jsonMod = require("json")
 local nodeMod = require("cradle.node")
-local ShapeComponentView =
-  require("cradle.editor.views.components.ShapeComponentView")
+local ShapeConfigComponentView =
+  require("cradle.editor.views.components.ShapeConfigComponentView")
 local Slab = require("Slab")
 local sparrow = require("sparrow")
 local StringComponentView =
@@ -34,13 +35,13 @@ function M:init(application)
   self.application = assert(application)
   self.database = sparrow.newDatabase()
 
-  self.database:createColumn("body")
+  self.database:createColumn("bodyConfig")
   self.database:createColumn("camera", "tag")
   self.database:createColumn("debugColor", "color4")
-  self.database:createColumn("fixture")
-  self.database:createColumn("joint")
+  self.database:createColumn("fixtureConfig")
+  self.database:createColumn("jointConfig")
   self.database:createColumn("node", "node")
-  self.database:createColumn("shape")
+  self.database:createColumn("shapeConfig")
   self.database:createColumn("title")
   self.database:createColumn("transform", "transform")
 
@@ -48,7 +49,11 @@ function M:init(application)
   local rows = jsonMod.decode(json)
 
   for entity, row in pairs(rows) do
-    self.database:insertRow(row, entity)
+    self.database:insertRow({}, entity)
+
+    for component, value in pairs(row) do
+      self.database:setCell(entity, component, value)
+    end
   end
 
   self.engine = heart.newEngine()
@@ -66,7 +71,7 @@ function M:init(application)
   self.engine:addEvent("update")
   self.engine:addEvent("wheelmoved")
 
-  self.engine:addEventHandler("draw", DrawShapeHandler.new(self.engine))
+  self.engine:addEventHandler("draw", DrawWorldConfigHandler.new(self.engine))
   self.engine:addEventHandler("draw", DrawSlabHandler.new(self.engine))
 
   Slab.Initialize({}, true)
@@ -76,12 +81,12 @@ function M:init(application)
 
   self.componentTitles = {
     camera = "Camera",
-    body = "Body",
+    bodyConfig = "Body Config",
     debugColor = "Debug Color",
-    fixture = "Fixture",
-    joint = "Joint",
+    fixtureConfig = "Fixture Config",
+    jointConfig = "Joint Config",
     node = "Node",
-    shape = "Shape",
+    shapeConfig = "Shape Config",
     title = "Title",
     transform = "Transform",
   }
@@ -91,7 +96,7 @@ function M:init(application)
       return {}
     end,
 
-    body = function()
+    bodyConfig = function()
       return {
         type = "static",
       }
@@ -101,11 +106,11 @@ function M:init(application)
       return { 1, 1, 1, 1 }
     end,
 
-    fixture = function()
+    fixtureConfig = function()
       return {}
     end,
 
-    joint = function()
+    jointConfig = function()
       return {}
     end,
 
@@ -113,7 +118,7 @@ function M:init(application)
       return {}
     end,
 
-    shape = function()
+    shapeConfig = function()
       return {
         size = { 1, 1 },
         type = "rectangle",
@@ -142,12 +147,12 @@ function M:init(application)
 
   self.componentViews = {
     camera = TagComponentView.new(self, "camera"),
-    body = BodyComponentView.new(self, "body"),
+    bodyConfig = BodyConfigComponentView.new(self, "bodyConfig"),
     debugColor = ColorComponentView.new(self, "debugColor"),
-    fixture = FixtureComponentView.new(self, "fixture"),
-    joint = JointComponentView.new(self, "joint"),
+    fixtureConfig = FixtureConfigComponentView.new(self, "fixtureConfig"),
+    jointConfig = JointConfigComponentView.new(self, "jointConfig"),
     node = TagComponentView.new(self, "node"),
-    shape = ShapeComponentView.new(self, "shape"),
+    shapeConfig = ShapeConfigComponentView.new(self, "shapeConfig"),
     title = StringComponentView.new(self, "title"),
     transform = TransformComponentView.new(self, "transform"),
   }
@@ -155,11 +160,11 @@ function M:init(application)
   self.dragStep = 1
 
   self.colors = {
-    blue = { 0.1, 0.5, 1, 1 },
+    blue = { 0.1, 0.6, 1, 1 },
     green = { 0.2, 1, 0.1, 1 },
     red = { 1, 0.4, 0.1, 1 },
     white = { 1, 1, 1, 1 },
-    yellow = { 1, 0.8, 0.1, 1 },
+    yellow = { 1, 0.9, 0.1, 1 },
   }
 end
 
@@ -240,7 +245,7 @@ function M:update(dt)
     bottomDockHeight = 100,
     height = height,
     leftDockWidth = 200,
-    rightDockWidth = 200,
+    rightDockWidth = 300,
     topDockHeight = 100,
     width = width,
   }

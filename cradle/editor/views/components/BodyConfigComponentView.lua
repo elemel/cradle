@@ -20,11 +20,17 @@ function M:render()
   local title = assert(self.editorScreen.componentTitles[self.component])
   local selected = self.editorScreen.selectedComponent == self.component
 
-  if Slab.Text(title, { IsSelectable = true, IsSelected = selected }) then
+  if
+    Slab.Text(title, {
+      Color = self.editorScreen.colors.yellow,
+      IsSelectable = true,
+      IsSelected = selected,
+    })
+  then
     self.editorScreen.selectedComponent = self.component
   end
 
-  local body = self.editorScreen.database:getCell(entity, self.component)
+  local bodyConfig = self.editorScreen.database:getCell(entity, self.component)
 
   Slab.BeginLayout(self.id, { Columns = 2, ExpandW = true })
 
@@ -33,7 +39,8 @@ function M:render()
 
   Slab.SetLayoutColumn(2)
 
-  local selectedBodyTypeTitle = body.type and self.bodyTypeTitles[body.type]
+  local selectedBodyTypeTitle = bodyConfig.type
+    and self.bodyTypeTitles[bodyConfig.type]
 
   if Slab.BeginComboBox(self.typeId, { Selected = selectedBodyTypeTitle }) then
     for i, bodyType in pairs(self.bodyTypes) do
@@ -41,7 +48,7 @@ function M:render()
       local selected = selectedBodyTypeTitle == bodyTypeTitle
 
       if Slab.TextSelectable(bodyTypeTitle, { IsSelected = selected }) then
-        body.type = bodyType
+        bodyConfig.type = bodyType
       end
     end
 

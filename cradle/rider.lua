@@ -9,18 +9,18 @@ local function createNeckAndHead(database, trunkEntity, localCollarPosition)
   local localNeckY = localCollarY - 0.05
 
   local neckEntity = database:insertRow({
-    body = {
+    bodyConfig = {
       type = "dynamic",
     },
 
     creating = {},
 
-    fixture = {
+    fixtureConfig = {
       friction = 0.5,
       groupIndex = -1,
     },
 
-    joint = {
+    jointConfig = {
       bodyA = trunkEntity,
       limitsEnabled = true,
       localAnchorA = localCollarPosition,
@@ -32,7 +32,7 @@ local function createNeckAndHead(database, trunkEntity, localCollarPosition)
 
     node = {},
 
-    shape = {
+    shapeConfig = {
       size = { 0.1, 0.1 },
       type = "rectangle",
     },
@@ -44,18 +44,18 @@ local function createNeckAndHead(database, trunkEntity, localCollarPosition)
   })
 
   local headEntity = database:insertRow({
-    body = {
+    bodyConfig = {
       type = "dynamic",
     },
 
     creating = {},
 
-    fixture = {
+    fixtureConfig = {
       friction = 0.5,
       groupIndex = -1,
     },
 
-    joint = {
+    jointConfig = {
       bodyA = neckEntity,
       limitsEnabled = true,
       localAnchorA = { 0, -0.05 },
@@ -67,7 +67,7 @@ local function createNeckAndHead(database, trunkEntity, localCollarPosition)
 
     node = {},
 
-    shape = {
+    shapeConfig = {
       size = { 0.2, 0.2 },
       type = "rectangle",
     },
@@ -91,18 +91,18 @@ local function createArm(database, trunkEntity, localShoulderPosition)
   local localUpperArmY = localShoulderY + 0.175
 
   local upperArmEntity = database:insertRow({
-    body = {
+    bodyConfig = {
       type = "dynamic",
     },
 
     creating = {},
 
-    fixture = {
+    fixtureConfig = {
       friction = 0.5,
       groupIndex = -1,
     },
 
-    joint = {
+    jointConfig = {
       bodyA = trunkEntity,
       localAnchorA = localShoulderPosition,
       localAnchorB = { 0, -0.175 },
@@ -111,7 +111,7 @@ local function createArm(database, trunkEntity, localShoulderPosition)
 
     node = {},
 
-    shape = {
+    shapeConfig = {
       size = { 0.1, 0.35 },
       type = "rectangle",
     },
@@ -123,18 +123,18 @@ local function createArm(database, trunkEntity, localShoulderPosition)
   })
 
   local lowerArmEntity = database:insertRow({
-    body = {
+    bodyConfig = {
       type = "dynamic",
     },
 
     creating = {},
 
-    fixture = {
+    fixtureConfig = {
       friction = 0.5,
       groupIndex = -1,
     },
 
-    joint = {
+    jointConfig = {
       bodyA = upperArmEntity,
       limitsEnabled = true,
       localAnchorA = { 0, 0.175 },
@@ -146,7 +146,7 @@ local function createArm(database, trunkEntity, localShoulderPosition)
 
     node = {},
 
-    shape = {
+    shapeConfig = {
       size = { 0.1, 0.35 },
       type = "rectangle",
     },
@@ -158,18 +158,18 @@ local function createArm(database, trunkEntity, localShoulderPosition)
   })
 
   local handEntity = database:insertRow({
-    body = {
+    bodyConfig = {
       type = "dynamic",
     },
 
     creating = {},
 
-    fixture = {
+    fixtureConfig = {
       friction = 0.5,
       groupIndex = -1,
     },
 
-    joint = {
+    jointConfig = {
       bodyA = lowerArmEntity,
       limitsEnabled = true,
       localAnchorA = { 0, 0.175 },
@@ -181,7 +181,7 @@ local function createArm(database, trunkEntity, localShoulderPosition)
 
     node = {},
 
-    shape = {
+    shapeConfig = {
       size = { 0.1, 0.1 },
       type = "rectangle",
     },
@@ -206,18 +206,18 @@ local function createLeg(database, frameEntity, trunkEntity, localHipPosition)
   local localUpperLegY = localHipY + 0.225
 
   local upperLegEntity = database:insertRow({
-    body = {
+    bodyConfig = {
       type = "dynamic",
     },
 
     creating = {},
 
-    fixture = {
+    fixtureConfig = {
       friction = 0.5,
       groupIndex = -1,
     },
 
-    joint = {
+    jointConfig = {
       bodyA = trunkEntity,
       localAnchorA = localHipPosition,
       localAnchorB = { 0, -0.225 },
@@ -226,7 +226,7 @@ local function createLeg(database, frameEntity, trunkEntity, localHipPosition)
 
     node = {},
 
-    shape = {
+    shapeConfig = {
       size = { 0.15, 0.45 },
       type = "rectangle",
     },
@@ -238,18 +238,18 @@ local function createLeg(database, frameEntity, trunkEntity, localHipPosition)
   })
 
   local lowerLegEntity = database:insertRow({
-    body = {
+    bodyConfig = {
       type = "dynamic",
     },
 
     creating = {},
 
-    fixture = {
+    fixtureConfig = {
       friction = 0.5,
       groupIndex = -1,
     },
 
-    joint = {
+    jointConfig = {
       bodyA = upperLegEntity,
       limitsEnabled = true,
       localAnchorA = { 0, 0.225 },
@@ -261,7 +261,7 @@ local function createLeg(database, frameEntity, trunkEntity, localHipPosition)
 
     node = {},
 
-    shape = {
+    shapeConfig = {
       size = { 0.1, 0.45 },
       type = "rectangle",
     },
@@ -273,18 +273,18 @@ local function createLeg(database, frameEntity, trunkEntity, localHipPosition)
   })
 
   local footEntity = database:insertRow({
-    body = {
+    bodyConfig = {
       type = "dynamic",
     },
 
     creating = {},
 
-    fixture = {
+    fixtureConfig = {
       friction = 0.5,
       groupIndex = -1,
     },
 
-    joint = {
+    jointConfig = {
       bodyA = lowerLegEntity,
       limitsEnabled = true,
       localAnchorA = { 0, 0.225 },
@@ -296,7 +296,7 @@ local function createLeg(database, frameEntity, trunkEntity, localHipPosition)
 
     node = {},
 
-    shape = {
+    shapeConfig = {
       size = { 0.25, 0.05 },
       type = "rectangle",
     },
@@ -313,7 +313,7 @@ local function createLeg(database, frameEntity, trunkEntity, localHipPosition)
   local footPegEntity = database:insertRow({
     creating = {},
 
-    joint = {
+    jointConfig = {
       bodyA = frameEntity,
       bodyB = footEntity,
       limitsEnabled = true,
@@ -337,13 +337,13 @@ end
 
 function M.createRider(database, frameEntity, transform)
   local trunkEntity = database:insertRow({
-    body = {
+    bodyConfig = {
       type = "dynamic",
     },
 
     creating = {},
 
-    fixture = {
+    fixtureConfig = {
       friction = 0.5,
       groupIndex = -1,
     },
@@ -351,12 +351,12 @@ function M.createRider(database, frameEntity, transform)
     node = {},
     rider = {},
 
-    shape = {
+    shapeConfig = {
       size = { 0.3, 0.7 },
       type = "rectangle",
     },
 
-    joint = {
+    jointConfig = {
       angularOffset = 0.125 * math.pi,
       bodyA = frameEntity,
       linearOffset = { 0, -0.75 },
