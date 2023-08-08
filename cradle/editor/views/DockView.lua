@@ -15,11 +15,11 @@ function M:init(editorScreen, id, selectedViewType)
     { componentList = "Component List", entityTree = "Entity Tree" }
 
   self.componentListView =
-    ComponentListView.new(self.editorScreen, self.id .. "ComponentList")
+    ComponentListView.new(self.editorScreen, self.id .. ".componentList")
   self.entityTreeView = EntityTreeView.new(self.editorScreen)
 
-  self.layoutId = self.id .. "Layout"
-  self.viewTypeId = self.id .. "ViewType"
+  self.layoutId = self.id .. ".layout"
+  self.viewTypeId = self.id .. ".viewType"
 end
 
 function M:render()
