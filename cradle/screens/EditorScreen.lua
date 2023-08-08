@@ -4,11 +4,10 @@ local cdefMod = require("cradle.cdef")
 local Class = require("cradle.Class")
 local ColorComponentView =
   require("cradle.editor.views.components.ColorComponentView")
+local DockView = require("cradle.editor.views.DockView")
 local DrawSlabHandler = require("cradle.editor.handlers.DrawSlabHandler")
 local DrawWorldConfigHandler =
   require("cradle.editor.handlers.DrawWorldConfigHandler")
-local EntityTreeView = require("cradle.editor.views.EntityTreeView")
-local EntityView = require("cradle.editor.views.EntityView")
 local FixtureConfigComponentView =
   require("cradle.editor.views.components.FixtureConfigComponentView")
 local GameScreen = require("cradle.screens.GameScreen")
@@ -142,8 +141,8 @@ function M:init(application)
 
   self.selectedEntities = {}
 
-  self.entityTreeView = EntityTreeView.new(self)
-  self.entityView = EntityView.new(self)
+  self.leftDockView = DockView.new(self, "leftDock", "entityTree")
+  self.rightDockView = DockView.new(self, "rightDock", "componentList")
 
   self.componentViews = {
     camera = TagComponentView.new(self, "camera"),
@@ -244,7 +243,7 @@ function M:update(dt)
     border = 4,
     bottomDockHeight = 100,
     height = height,
-    leftDockWidth = 200,
+    leftDockWidth = 300,
     rightDockWidth = 300,
     topDockHeight = 100,
     width = width,
@@ -287,7 +286,7 @@ function M:update(dt)
     Y = layout.topDockHeight,
   })
 
-  self.entityTreeView:render()
+  self.leftDockView:render()
   Slab.EndWindow()
 
   Slab.BeginWindow("rightDock", {
@@ -306,7 +305,7 @@ function M:update(dt)
     Y = layout.topDockHeight,
   })
 
-  self.entityView:render()
+  self.rightDockView:render()
   Slab.EndWindow()
 
   Slab.BeginWindow("bottomDock", {

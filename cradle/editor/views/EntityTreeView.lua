@@ -15,8 +15,6 @@ end
 
 function M:render()
   do
-    Slab.Text("Entities")
-
     Slab.BeginLayout("insertAndDeleteEntity", { Columns = 2, ExpandW = true })
     Slab.SetLayoutColumn(1)
 
