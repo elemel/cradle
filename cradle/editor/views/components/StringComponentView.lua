@@ -3,12 +3,10 @@ local Slab = require("Slab")
 
 local M = Class.new()
 
-function M:init(editorScreen, component)
+function M:init(editorScreen, id, component)
   self.editorScreen = assert(editorScreen)
+  self.id = assert(id)
   self.component = assert(component)
-
-  self.id = self.component .. "Component"
-  self.valueId = self.component .. "ComponentValue"
 end
 
 function M:render()
@@ -16,7 +14,7 @@ function M:render()
   local title = assert(self.editorScreen.componentTitles[self.component])
   local selected = self.editorScreen.selectedComponent == self.component
 
-  Slab.BeginLayout(self.id, { Columns = 2, ExpandW = true })
+  Slab.BeginLayout(self.id .. ".layout", { Columns = 2, ExpandW = true })
   Slab.SetLayoutColumn(1)
 
   if
@@ -32,7 +30,7 @@ function M:render()
   Slab.SetLayoutColumn(2)
   local value = self.editorScreen.database:getCell(entity, self.component)
 
-  local changed = Slab.Input(self.valueId, {
+  local changed = Slab.Input(self.id .. ".value", {
     Align = "left",
     Text = value,
   })
