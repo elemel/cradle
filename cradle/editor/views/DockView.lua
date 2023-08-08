@@ -16,7 +16,8 @@ function M:init(editorScreen, id, selectedViewType)
 
   self.componentListView =
     ComponentListView.new(self.editorScreen, self.id .. ".componentList")
-  self.entityTreeView = EntityTreeView.new(self.editorScreen)
+  self.entityTreeView =
+    EntityTreeView.new(self.editorScreen, self.id .. ".entityTree")
 
   self.layoutId = self.id .. ".layout"
   self.viewTypeId = self.id .. ".viewType"
