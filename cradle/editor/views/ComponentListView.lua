@@ -1,16 +1,53 @@
 local AddComponentCommand =
   require("cradle.editor.commands.AddComponentCommand")
+local BodyConfigComponentView =
+  require("cradle.editor.views.components.BodyConfigComponentView")
 local Class = require("cradle.Class")
+local ColorComponentView =
+  require("cradle.editor.views.components.ColorComponentView")
 local entityMod = require("cradle.entity")
+local FixtureConfigComponentView =
+  require("cradle.editor.views.components.FixtureConfigComponentView")
+local JointConfigComponentView =
+  require("cradle.editor.views.components.JointConfigComponentView")
 local RemoveComponentCommand =
   require("cradle.editor.commands.RemoveComponentCommand")
+local ShapeConfigComponentView =
+  require("cradle.editor.views.components.ShapeConfigComponentView")
 local Slab = require("Slab")
+local StringComponentView =
+  require("cradle.editor.views.components.StringComponentView")
 local tableMod = require("cradle.table")
+local TagComponentView =
+  require("cradle.editor.views.components.TagComponentView")
+local TransformComponentView =
+  require("cradle.editor.views.components.TransformComponentView")
 
 local M = Class.new()
 
 function M:init(editorScreen)
   self.editorScreen = assert(editorScreen)
+
+  self.componentViews = {
+    camera = TagComponentView.new(self.editorScreen, "camera"),
+    bodyConfig = BodyConfigComponentView.new(self.editorScreen, "bodyConfig"),
+    debugColor = ColorComponentView.new(self.editorScreen, "debugColor"),
+    fixtureConfig = FixtureConfigComponentView.new(
+      self.editorScreen,
+      "fixtureConfig"
+    ),
+    jointConfig = JointConfigComponentView.new(
+      self.editorScreen,
+      "jointConfig"
+    ),
+    node = TagComponentView.new(self.editorScreen, "node"),
+    shapeConfig = ShapeConfigComponentView.new(
+      self.editorScreen,
+      "shapeConfig"
+    ),
+    title = StringComponentView.new(self.editorScreen, "title"),
+    transform = TransformComponentView.new(self.editorScreen, "transform"),
+  }
 end
 
 function M:render()
@@ -134,7 +171,7 @@ function M:render()
 
   for _, component in ipairs(sortedComponents) do
     Slab.Separator()
-    local view = assert(self.editorScreen.componentViews[component])
+    local view = assert(self.componentViews[component])
     view:render()
   end
 end
