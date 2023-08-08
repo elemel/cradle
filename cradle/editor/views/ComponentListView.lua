@@ -30,7 +30,11 @@ function M:init(editorScreen, id)
   self.id = assert(id)
 
   self.componentViews = {
-    camera = TagComponentView.new(self.editorScreen, "camera"),
+    camera = TagComponentView.new(
+      self.editorScreen,
+      self.id .. ".components.camera",
+      "camera"
+    ),
     bodyConfig = BodyConfigComponentView.new(self.editorScreen, "bodyConfig"),
     debugColor = ColorComponentView.new(self.editorScreen, "debugColor"),
     fixtureConfig = FixtureConfigComponentView.new(
@@ -41,7 +45,11 @@ function M:init(editorScreen, id)
       self.editorScreen,
       "jointConfig"
     ),
-    node = TagComponentView.new(self.editorScreen, "node"),
+    node = TagComponentView.new(
+      self.editorScreen,
+      self.id .. ".components.node",
+      "node"
+    ),
     shapeConfig = ShapeConfigComponentView.new(
       self.editorScreen,
       "shapeConfig"

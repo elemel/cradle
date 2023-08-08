@@ -3,8 +3,9 @@ local Slab = require("Slab")
 
 local M = Class.new()
 
-function M:init(editorScreen, component)
+function M:init(editorScreen, id, component)
   self.editorScreen = assert(editorScreen)
+  self.id = assert(id)
   self.component = assert(component)
 end
 
