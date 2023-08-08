@@ -16,16 +16,19 @@ function M:init(editorScreen, id, selectedViewType)
 
   self.componentListView = ComponentListView.new(self.editorScreen)
   self.entityTreeView = EntityTreeView.new(self.editorScreen)
+
+  self.layoutId = self.id .. "Layout"
+  self.viewTypeId = self.id .. "ViewType"
 end
 
 function M:render()
-  Slab.BeginLayout(self.id .. "Layout", { ExpandW = true })
+  Slab.BeginLayout(self.layoutId, { ExpandW = true })
 
   local selectedViewTypeTitle = self.viewTypeTitles[self.selectedViewType]
 
   if
     Slab.BeginComboBox(
-      self.id .. "ViewType",
+      self.viewTypeId,
       { ExpandW = true, Selected = selectedViewTypeTitle }
     )
   then
