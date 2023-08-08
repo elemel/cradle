@@ -40,7 +40,11 @@ function M:init(editorScreen, id)
       self.id .. ".components.bodyConfig",
       "bodyConfig"
     ),
-    debugColor = ColorComponentView.new(self.editorScreen, "debugColor"),
+    debugColor = ColorComponentView.new(
+      self.editorScreen,
+      self.id .. ".components.debugColor",
+      "debugColor"
+    ),
     fixtureConfig = FixtureConfigComponentView.new(
       self.editorScreen,
       "fixtureConfig"
