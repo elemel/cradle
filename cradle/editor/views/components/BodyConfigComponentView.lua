@@ -3,16 +3,14 @@ local Slab = require("Slab")
 
 local M = Class.new()
 
-function M:init(editorScreen, component)
+function M:init(editorScreen, id, component)
   self.editorScreen = assert(editorScreen)
+  self.id = assert(id)
   self.component = assert(component)
 
   self.bodyTypes = { "dynamic", "kinematic", "static" }
   self.bodyTypeTitles =
     { dynamic = "Dynamic", kinematic = "Kinematic", static = "Static" }
-
-  self.id = self.component .. "Component"
-  self.typeId = self.component .. "ComponentType"
 end
 
 function M:render()
@@ -32,7 +30,7 @@ function M:render()
 
   local bodyConfig = self.editorScreen.database:getCell(entity, self.component)
 
-  Slab.BeginLayout(self.id, { Columns = 2, ExpandW = true })
+  Slab.BeginLayout(self.id .. ".layout", { Columns = 2, ExpandW = true })
 
   Slab.SetLayoutColumn(1)
   Slab.Text("Type")
@@ -42,7 +40,9 @@ function M:render()
   local selectedBodyTypeTitle = bodyConfig.type
     and self.bodyTypeTitles[bodyConfig.type]
 
-  if Slab.BeginComboBox(self.typeId, { Selected = selectedBodyTypeTitle }) then
+  if
+    Slab.BeginComboBox(self.id .. ".type", { Selected = selectedBodyTypeTitle })
+  then
     for i, bodyType in pairs(self.bodyTypes) do
       local bodyTypeTitle = bodyType and self.bodyTypeTitles[bodyType]
       local selected = selectedBodyTypeTitle == bodyTypeTitle

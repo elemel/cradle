@@ -35,7 +35,11 @@ function M:init(editorScreen, id)
       self.id .. ".components.camera",
       "camera"
     ),
-    bodyConfig = BodyConfigComponentView.new(self.editorScreen, "bodyConfig"),
+    bodyConfig = BodyConfigComponentView.new(
+      self.editorScreen,
+      self.id .. ".components.bodyConfig",
+      "bodyConfig"
+    ),
     debugColor = ColorComponentView.new(self.editorScreen, "debugColor"),
     fixtureConfig = FixtureConfigComponentView.new(
       self.editorScreen,
