@@ -1,6 +1,7 @@
 local AddComponentCommand =
   require("cradle.editor.commands.AddComponentCommand")
 local Class = require("cradle.Class")
+local entityMod = require("cradle.entity")
 local RemoveComponentCommand =
   require("cradle.editor.commands.RemoveComponentCommand")
 local Slab = require("Slab")
@@ -27,7 +28,7 @@ function M:render()
     Slab.Text("Entity")
 
     Slab.SetLayoutColumn(2)
-    Slab.Text(entity)
+    Slab.Text(entityMod.format(self.editorScreen.database, entity))
 
     Slab.SetLayoutColumn(1)
     Slab.Text("Component")

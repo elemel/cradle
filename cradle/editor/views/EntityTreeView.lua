@@ -1,6 +1,7 @@
 local Class = require("cradle.Class")
 local DeleteEntityCommand =
   require("cradle.editor.commands.DeleteEntityCommand")
+local entityMod = require("cradle.entity")
 local InsertEntityCommand =
   require("cradle.editor.commands.InsertEntityCommand")
 local Slab = require("Slab")
@@ -58,8 +59,7 @@ function M:render()
 end
 
 function M:renderEntityNode(entity)
-  local title = self.editorScreen.database:getCell(entity, "title")
-  local label = title and title ~= "" and title or "Entity " .. entity
+  local label = entityMod.format(self.editorScreen.database, entity)
   local node = self.editorScreen.database:getCell(entity, "node")
   local leaf = node.firstChild == 0
   local selected = self.editorScreen.selectedEntities[entity] or false
