@@ -25,8 +25,9 @@ local TransformComponentView =
 
 local M = Class.new()
 
-function M:init(editorScreen)
+function M:init(editorScreen, id)
   self.editorScreen = assert(editorScreen)
+  self.id = assert(id)
 
   self.componentViews = {
     camera = TagComponentView.new(self.editorScreen, "camera"),
