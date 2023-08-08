@@ -61,6 +61,7 @@ function M:init(editorScreen, id)
     ),
     shapeConfig = ShapeConfigComponentView.new(
       self.editorScreen,
+      self.id .. ".components.shapeConfig",
       "shapeConfig"
     ),
     title = StringComponentView.new(self.editorScreen, "title"),
