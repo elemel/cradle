@@ -1,4 +1,5 @@
 local Class = require("cradle.Class")
+local entityMod = require("cradle.entity")
 local Slab = require("Slab")
 
 local M = Class.new()
@@ -70,12 +71,14 @@ function M:render()
   if
     Slab.Input(self.bodyAId, {
       Align = "left",
-      NumbersOnly = true,
       ReturnOnText = true,
-      Text = jointConfig.bodyA or 0,
+      Text = entityMod.format(
+        self.editorScreen.database,
+        jointConfig.bodyA or 0
+      ),
     })
   then
-    jointConfig.bodyA = Slab.GetInputNumber()
+    jointConfig.bodyA = entityMod.parse(Slab.GetInputText())
   end
 
   Slab.SetLayoutColumn(1)
@@ -120,12 +123,14 @@ function M:render()
   if
     Slab.Input(self.bodyBId, {
       Align = "left",
-      NumbersOnly = true,
       ReturnOnText = true,
-      Text = jointConfig.bodyB or 0,
+      Text = entityMod.format(
+        self.editorScreen.database,
+        jointConfig.bodyB or 0
+      ),
     })
   then
-    jointConfig.bodyB = Slab.GetInputNumber()
+    jointConfig.bodyB = entityMod.parse(Slab.GetInputText())
   end
 
   Slab.SetLayoutColumn(1)
