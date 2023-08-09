@@ -32,6 +32,7 @@ function M:init(application)
   local rows = jsonMod.decode(json)
 
   for entity, row in pairs(rows) do
+    entity = tonumber(entity)
     self.database:insertRow({}, entity)
 
     for component, value in pairs(row) do
@@ -341,7 +342,7 @@ function M:encodeDatabaseAsJson()
       end
 
       row[component] = value
-      rows[entity] = row
+      rows[tostring(entity)] = row
     end
   end
 
