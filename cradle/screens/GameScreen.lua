@@ -88,6 +88,7 @@ function M:init(application, config)
     local rows = jsonMod.decode(json)
 
     for entity, row in pairs(rows) do
+      entity = tonumber(entity)
       database:insertRow(row, entity)
       database:setCell(entity, "creating", {})
     end
