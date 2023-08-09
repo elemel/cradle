@@ -1,5 +1,6 @@
 local Class = require("cradle.Class")
 local entityMod = require("cradle.entity")
+local nodeMod = require("cradle.node")
 local Slab = require("Slab")
 
 local M = Class.new()
@@ -37,10 +38,12 @@ function M:render()
   if
     Slab.Input(self.id .. ".parent", {
       Align = "left",
+      ReturnOnText = false,
       Text = entityMod.format(self.editorScreen.database, node.parent or 0),
     })
   then
-    node.parent = entityMod.parse(Slab.GetInputText())
+    local parent = entityMod.parse(Slab.GetInputText())
+    nodeMod.setParent(self.editorScreen.database, entity, parent)
   end
 
   Slab.SetLayoutColumn(1)
@@ -58,7 +61,7 @@ function M:render()
       ),
     })
   then
-    node.previousSibling = entityMod.parse(Slab.GetInputText())
+    -- node.previousSibling = entityMod.parse(Slab.GetInputText())
   end
 
   Slab.SetLayoutColumn(1)
@@ -76,7 +79,7 @@ function M:render()
       ),
     })
   then
-    node.nextSibling = entityMod.parse(Slab.GetInputText())
+    -- node.nextSibling = entityMod.parse(Slab.GetInputText())
   end
 
   Slab.SetLayoutColumn(1)
@@ -91,7 +94,7 @@ function M:render()
       Text = entityMod.format(self.editorScreen.database, node.firstChild or 0),
     })
   then
-    node.firstChild = entityMod.parse(Slab.GetInputText())
+    -- node.firstChild = entityMod.parse(Slab.GetInputText())
   end
 
   Slab.EndLayout()
