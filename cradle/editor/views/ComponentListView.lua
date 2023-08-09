@@ -10,6 +10,8 @@ local FixtureConfigComponentView =
   require("cradle.editor.views.components.FixtureConfigComponentView")
 local JointConfigComponentView =
   require("cradle.editor.views.components.JointConfigComponentView")
+local NodeComponentView =
+  require("cradle.editor.views.components.NodeComponentView")
 local RemoveComponentCommand =
   require("cradle.editor.commands.RemoveComponentCommand")
 local ShapeConfigComponentView =
@@ -55,7 +57,7 @@ function M:init(editorScreen, id)
       self.id .. ".components.jointConfig",
       "jointConfig"
     ),
-    node = TagComponentView.new(
+    node = NodeComponentView.new(
       self.editorScreen,
       self.id .. ".components.node",
       "node"
