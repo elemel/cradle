@@ -84,10 +84,6 @@ function M:render()
   local entity = tableMod.count(self.editorScreen.selectedEntities) == 1
     and next(self.editorScreen.selectedEntities)
 
-  if not entity then
-    return
-  end
-
   do
     Slab.BeginLayout(self.id .. ".layout", { Columns = 2, ExpandW = true })
 
@@ -95,7 +91,20 @@ function M:render()
     Slab.Text("Entity")
 
     Slab.SetLayoutColumn(2)
-    Slab.Text(entityMod.format(self.editorScreen.database, entity))
+
+    if
+      Slab.Input(self.id .. ".entity", {
+        Align = "left",
+        Text = entityMod.format(self.editorScreen.database, entity),
+      })
+    then
+      entity = entityMod.parse(Slab.GetInputText())
+      tableMod.clear(self.editorScreen.selectedEntities)
+
+      if entity then
+        self.editorScreen.selectedEntities[entity] = true
+      end
+    end
 
     Slab.SetLayoutColumn(1)
     Slab.Text("Component")
@@ -128,7 +137,8 @@ function M:render()
 
     Slab.SetLayoutColumn(1)
 
-    local addDisabled = not self.editorScreen.selectedComponent
+    local addDisabled = not entity
+      or not self.editorScreen.selectedComponent
       or self.editorScreen.database:getCell(
           entity,
           self.editorScreen.selectedComponent
@@ -147,7 +157,8 @@ function M:render()
 
     Slab.SetLayoutColumn(2)
 
-    local removeDisabled = not self.editorScreen.selectedComponent
+    local removeDisabled = not entity
+      or not self.editorScreen.selectedComponent
       or self.editorScreen.database:getCell(
           entity,
           self.editorScreen.selectedComponent
@@ -165,6 +176,10 @@ function M:render()
     end
 
     Slab.EndLayout()
+  end
+
+  if not entity then
+    return
   end
 
   local archetype = self.editorScreen.database:getArchetype(entity)
