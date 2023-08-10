@@ -50,8 +50,9 @@ function M:render()
     self.editorScreen.database
   do
     local node = self.editorScreen.database:getCell(entity, "node")
+    local root = not node or node.parent == 0
 
-    if node and node.parent == 0 then
+    if root then
       self:renderEntityNode(entity)
     end
   end
@@ -60,7 +61,7 @@ end
 function M:renderEntityNode(entity)
   local label = entityMod.format(self.editorScreen.database, entity)
   local node = self.editorScreen.database:getCell(entity, "node")
-  local leaf = node.firstChild == 0
+  local leaf = not node or node.firstChild == 0
   local selected = self.editorScreen.selectedEntities[entity] or false
 
   local open = Slab.BeginTree(self.id .. ".entity" .. entity, {
