@@ -126,7 +126,7 @@ function M:init(application)
 
   self.selectedEntities = {}
 
-  self.leftDockView = DockView.new(self, "leftDock", "entityTree")
+  self.leftDockView = DockView.new(self, "leftDock", "entityList")
   self.rightDockView = DockView.new(self, "rightDock", "componentList")
 
   self.dragStep = 1

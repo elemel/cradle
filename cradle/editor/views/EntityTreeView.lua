@@ -15,8 +15,44 @@ function M:init(editorScreen, id)
 end
 
 function M:render()
+  local entity = tableMod.count(self.editorScreen.selectedEntities) == 1
+    and next(self.editorScreen.selectedEntities)
+  local root = entity
+
+  if root then
+    while true do
+      local rootNode = self.editorScreen.database:getCell(root, "node")
+
+      if not rootNode or rootNode.parent == 0 then
+        break
+      end
+
+      root = rootNode.parent
+    end
+  end
+
   do
     Slab.BeginLayout(self.id .. ".layout", { Columns = 2, ExpandW = true })
+
+    Slab.SetLayoutColumn(1)
+    Slab.Text("Entity")
+
+    Slab.SetLayoutColumn(2)
+
+    if
+      Slab.Input(self.id .. ".entity", {
+        Align = "left",
+        Text = entityMod.format(self.editorScreen.database, entity),
+      })
+    then
+      entity = entityMod.parse(Slab.GetInputText())
+      tableMod.clear(self.editorScreen.selectedEntities)
+
+      if entity then
+        self.editorScreen.selectedEntities[entity] = true
+      end
+    end
+
     Slab.SetLayoutColumn(1)
 
     if Slab.Button("Insert") then
@@ -45,16 +81,8 @@ function M:render()
 
   Slab.Separator()
 
-  for entity in
-    self.editorScreen.database.getNextEntity,
-    self.editorScreen.database
-  do
-    local node = self.editorScreen.database:getCell(entity, "node")
-    local root = not node or node.parent == 0
-
-    if root then
-      self:renderEntityNode(entity)
-    end
+  if root then
+    self:renderEntityNode(root)
   end
 end
 
