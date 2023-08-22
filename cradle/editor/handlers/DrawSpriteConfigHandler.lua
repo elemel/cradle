@@ -8,10 +8,11 @@ local M = {}
 
 function M.new(engine)
   local database = assert(engine:getProperty("database"))
+  local resources = assert(engine:getProperty("resources"))
+  local images = assert(resources.images)
 
   local query = sparrow.newQuery(database, {
-    arguments = { "debugColor", "shapeConfig" },
-    inclusions = { "shapeConfig" },
+    inclusions = { "spriteConfig" },
   })
 
   local globalTransform = Transform()
@@ -26,18 +27,7 @@ function M.new(engine)
     love.graphics.scale(scale)
     love.graphics.setLineWidth(1 / scale)
 
-    query:forEach(function(entity, debugColor, shapeConfig)
-      if debugColor then
-        love.graphics.setColor(
-          debugColor.red,
-          debugColor.green,
-          debugColor.blue,
-          debugColor.alpha
-        )
-      else
-        love.graphics.setColor(1, 1, 1, 1)
-      end
-
+    query:forEach(function(entity, spriteConfig)
       transformMod.getGlobalTransform(database, entity, globalTransform)
       love.graphics.push()
       love.graphics.translate(
@@ -48,20 +38,19 @@ function M.new(engine)
         math.atan2(globalTransform.orientation.y, globalTransform.orientation.x)
       )
 
-      if shapeConfig.type == "circle" then
-        local radius = shapeConfig.radius or 0.5
-        love.graphics.circle("line", 0, 0, radius)
-        love.graphics.line(0, 0, radius, 0)
-      elseif shapeConfig.type == "rectangle" then
-        love.graphics.rectangle(
-          "line",
-          -0.5 * shapeConfig.size[1],
-          -0.5 * shapeConfig.size[2],
-          shapeConfig.size[1],
-          shapeConfig.size[2]
-        )
-      else
-        error("Invalid shapeConfig type: " .. shapeConfig.type)
+      local image = spriteConfig.filename and images[spriteConfig.filename]
+
+      if image then
+        local imageWidth, imageHeight = image:getDimensions()
+
+        local alignmentX = 0.5
+        local alignmentY = 0.5
+
+        local originX = alignmentX * imageWidth
+        local originY = alignmentY * imageHeight
+
+        local scale = 0.01
+        love.graphics.draw(image, 0, 0, 0, scale, scale, originX, originY)
       end
 
       love.graphics.pop()

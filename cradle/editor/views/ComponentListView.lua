@@ -17,6 +17,8 @@ local RemoveComponentCommand =
 local ShapeConfigComponentView =
   require("cradle.editor.views.components.ShapeConfigComponentView")
 local Slab = require("Slab")
+local SpriteConfigComponentView =
+  require("cradle.editor.views.components.SpriteConfigComponentView")
 local StringComponentView =
   require("cradle.editor.views.components.StringComponentView")
 local tableMod = require("cradle.table")
@@ -66,6 +68,11 @@ function M:init(editorScreen, id)
       self.editorScreen,
       self.id .. ".components.shapeConfig",
       "shapeConfig"
+    ),
+    spriteConfig = SpriteConfigComponentView.new(
+      self.editorScreen,
+      self.id .. ".components.spriteConfig",
+      "spriteConfig"
     ),
     title = StringComponentView.new(
       self.editorScreen,

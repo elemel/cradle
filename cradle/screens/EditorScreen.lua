@@ -2,6 +2,8 @@ local cdefMod = require("cradle.cdef")
 local Class = require("cradle.Class")
 local DockView = require("cradle.editor.views.DockView")
 local DrawSlabHandler = require("cradle.editor.handlers.DrawSlabHandler")
+local DrawSpriteConfigHandler =
+  require("cradle.editor.handlers.DrawSpriteConfigHandler")
 local DrawWorldConfigHandler =
   require("cradle.editor.handlers.DrawWorldConfigHandler")
 local GameScreen = require("cradle.screens.GameScreen")
@@ -25,6 +27,7 @@ function M:init(application)
   self.database:createColumn("jointConfig")
   self.database:createColumn("node", "node")
   self.database:createColumn("shapeConfig")
+  self.database:createColumn("spriteConfig")
   self.database:createColumn("title")
   self.database:createColumn("transform", "transform")
 
@@ -38,11 +41,23 @@ function M:init(application)
     for component, value in pairs(row) do
       self.database:setCell(entity, component, value)
     end
+
+    love.graphics.setBackgroundColor(0.5, 0.8, 1, 1)
   end
+
+  self.resources = {}
+  self.resources.images = {}
+  self.resources.images["resources/images/motorcycle/frame.png"] =
+    love.graphics.newImage("resources/images/motorcycle/frame.png")
+  self.resources.images["resources/images/motorcycle/front-wheel.png"] =
+    love.graphics.newImage("resources/images/motorcycle/front-wheel.png")
+  self.resources.images["resources/images/motorcycle/rear-wheel.png"] =
+    love.graphics.newImage("resources/images/motorcycle/rear-wheel.png")
 
   self.engine = heart.newEngine()
   self.engine:setProperty("application", self.application)
   self.engine:setProperty("database", self.database)
+  self.engine:setProperty("resources", self.resources)
 
   self.engine:addEvent("draw")
   self.engine:addEvent("keypressed")
@@ -55,6 +70,7 @@ function M:init(application)
   self.engine:addEvent("update")
   self.engine:addEvent("wheelmoved")
 
+  self.engine:addEventHandler("draw", DrawSpriteConfigHandler.new(self.engine))
   self.engine:addEventHandler("draw", DrawWorldConfigHandler.new(self.engine))
   self.engine:addEventHandler("draw", DrawSlabHandler.new(self.engine))
 
@@ -71,6 +87,7 @@ function M:init(application)
     jointConfig = "Joint Config",
     node = "Node",
     shapeConfig = "Shape Config",
+    spriteConfig = "Sprite Config",
     title = "Title",
     transform = "Transform",
   }
@@ -107,6 +124,10 @@ function M:init(application)
         size = { 1, 1 },
         type = "rectangle",
       }
+    end,
+
+    spriteConfig = function()
+      return {}
     end,
 
     title = function()
